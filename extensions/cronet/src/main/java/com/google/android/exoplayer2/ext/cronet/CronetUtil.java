@@ -55,8 +55,7 @@ public final class CronetUtil {
    * @return The {@link CronetEngine}, or {@code null} if no suitable engine could be built.
    */
   @Nullable
-  public static CronetEngine buildCronetEngine(
-      Context context, @Nullable String userAgent, boolean preferGooglePlayServices) {
+  public static CronetEngine buildCronetEngine(Context context, @Nullable String userAgent, boolean preferGooglePlayServices) {
     List<CronetProvider> cronetProviders = new ArrayList<>(CronetProvider.getAllProviders(context));
     // Remove disabled and fallback Cronet providers from list.
     for (int i = cronetProviders.size() - 1; i >= 0; i--) {

@@ -34,10 +34,7 @@ android {
         release {
             shrinkResources true
             minifyEnabled true
-            proguardFiles = [
-                "proguard-rules.txt",
-                getDefaultProguardFile('proguard-android.txt')
-            ]
+            proguardFiles = ["proguard-rules.txt", getDefaultProguardFile('proguard-android.txt')]
             signingConfig signingConfigs.debug
         }
         debug {
@@ -48,7 +45,7 @@ android {
     lintOptions {
         // The demo app isn't indexed, doesn't have translations, and has a
         // banner for AndroidTV that's only in xhdpi density.
-        disable 'GoogleAppIndexingWarning','MissingTranslation','IconDensities'
+        disable 'GoogleAppIndexingWarning', 'MissingTranslation', 'IconDensities'
     }
 
     flavorDimensions "decoderExtensions"

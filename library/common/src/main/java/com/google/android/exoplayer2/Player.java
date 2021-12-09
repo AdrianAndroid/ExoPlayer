@@ -1004,6 +1004,8 @@ public interface Player {
   /** The player has finished playing the media. */
   int STATE_ENDED = 4;
 
+
+
   /**
    * Reasons for {@link #getPlayWhenReady() playWhenReady} changes. One of {@link
    * #PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST}, {@link

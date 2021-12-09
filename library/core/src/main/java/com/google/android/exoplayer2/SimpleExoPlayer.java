@@ -218,8 +218,7 @@ public class SimpleExoPlayer extends BasePlayer
      * @param extractorsFactory An {@link ExtractorsFactory} used to extract progressive media from
      *     its container.
      */
-    public Builder(
-        Context context, RenderersFactory renderersFactory, ExtractorsFactory extractorsFactory) {
+    public Builder(Context context, RenderersFactory renderersFactory, ExtractorsFactory extractorsFactory) {
       this(
           context,
           renderersFactory,
