@@ -463,7 +463,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
                             "video_decoder_gl_surface_view requires an ExoPlayer dependency", e);
                     }
                     break;
-                default:
+                default: // 在例子中走的默认
                     surfaceView = new SurfaceView(context);
                     break;
             }
@@ -499,7 +499,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
             subtitleView.setUserDefaultTextSize();
         }
 
-        // Buffering view.
+        // Buffering view. Prograssbar
         bufferingView = findViewById(R.id.exo_buffering);
         if (bufferingView != null) {
             bufferingView.setVisibility(View.GONE);
@@ -612,14 +612,14 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
         if (useController()) {
             controller.setPlayer(player);
         }
-        updateBuffering();
-        updateErrorMessage();
+        updateBuffering(); // prograssbar
+        updateErrorMessage(); // 显示一些错误的信息
         updateForCurrentTrackSelections(/* isNewPlayer= */ true);
         if (player != null) {
             if (player.isCommandAvailable(COMMAND_SET_VIDEO_SURFACE)) {
                 if (surfaceView instanceof TextureView) {
                     player.setVideoTextureView((TextureView) surfaceView);
-                } else if (surfaceView instanceof SurfaceView) {
+                } else if (surfaceView instanceof SurfaceView) { // 例子中默认的是SurfaceView
                     player.setVideoSurfaceView((SurfaceView) surfaceView);
                 }
                 updateAspectRatio();
@@ -1470,7 +1470,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
         float videoAspectRatio =
             (height == 0 || width == 0) ? 0 : (width * videoSize.pixelWidthHeightRatio) / height;
 
-        if (surfaceView instanceof TextureView) {
+        if (surfaceView instanceof TextureView) {// 例子中不走这块儿代码
             // Try to apply rotation transformation when our surface is a TextureView.
             if (videoAspectRatio > 0
                 && (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270)) {

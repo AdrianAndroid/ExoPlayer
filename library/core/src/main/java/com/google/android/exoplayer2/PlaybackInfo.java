@@ -32,8 +32,7 @@ import java.util.List;
    * Placeholder media period id used while the timeline is empty and no period id is specified.
    * This id is used when playback infos are created with {@link #createDummy(TrackSelectorResult)}.
    */
-  private static final MediaPeriodId PLACEHOLDER_MEDIA_PERIOD_ID =
-      new MediaPeriodId(/* periodUid= */ new Object());
+  private static final MediaPeriodId PLACEHOLDER_MEDIA_PERIOD_ID = new MediaPeriodId(/* periodUid= */ new Object());
 
   /** The current {@link Timeline}. */
   public final Timeline timeline;

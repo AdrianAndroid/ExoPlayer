@@ -748,8 +748,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             this.outputStreamOffsetUs = offsetUs;
         } else {
             if (pendingOutputStreamOffsetCount == pendingOutputStreamOffsetsUs.length) {
-                Log.w(
-                    TAG,
+                Log.w(TAG,
                     "Too many stream changes, so dropping offset: "
                         + pendingOutputStreamOffsetsUs[pendingOutputStreamOffsetCount - 1]);
             } else {
@@ -757,8 +756,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             }
             pendingOutputStreamStartPositionsUs[pendingOutputStreamOffsetCount - 1] = startPositionUs;
             pendingOutputStreamOffsetsUs[pendingOutputStreamOffsetCount - 1] = offsetUs;
-            pendingOutputStreamSwitchTimesUs[pendingOutputStreamOffsetCount - 1] =
-                largestQueuedPresentationTimeUs;
+            pendingOutputStreamSwitchTimesUs[pendingOutputStreamOffsetCount - 1] = largestQueuedPresentationTimeUs;
         }
     }
 
