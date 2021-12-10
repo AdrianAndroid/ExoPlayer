@@ -227,7 +227,8 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
    * @param formats The enabled formats.
    * @param startPositionUs The start position of the new stream in renderer time (microseconds).
    * @param offsetUs The offset that will be added to the timestamps of buffers read via {@link
-   *     #readSource} so that decoder input buffers have monotonically increasing timestamps.
+   *     #readSource} so that decoder input buffers have m
+   *                 onotonically increasing timestamps.
    * @throws ExoPlaybackException If an error occurs.
    */
   protected void onStreamChanged(Format[] formats, long startPositionUs, long offsetUs)
