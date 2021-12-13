@@ -433,6 +433,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
 
         // Create a surface view and insert it into the content frame, if there is one.
         boolean surfaceViewIgnoresVideoAspectRatio = false;
+        // 以下得到SurfaceView
         if (contentFrame != null && surfaceType != SURFACE_TYPE_NONE) {
             ViewGroup.LayoutParams params =
                 new ViewGroup.LayoutParams(
@@ -467,28 +468,30 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
                     surfaceView = new SurfaceView(context);
                     break;
             }
+            // 这是宽度和大小, 全是MATCH_PARENT
             surfaceView.setLayoutParams(params);
             // We don't want surfaceView to be clickable separately to the StyledPlayerView itself, but we
             // do want to register as an OnClickListener so that surfaceView implementations can propagate
             // click events up to the StyledPlayerView by calling their own performClick method.
-            surfaceView.setOnClickListener(componentListener);
+            surfaceView.setOnClickListener(componentListener); // 点击事件等
             surfaceView.setClickable(false);
             contentFrame.addView(surfaceView, 0);
         } else {
             surfaceView = null;
         }
+        // AspectRatio 纵横比
         this.surfaceViewIgnoresVideoAspectRatio = surfaceViewIgnoresVideoAspectRatio;
 
-        // Ad overlay frame layout.
+        // Ad overlay frame layout. 广告的浮层
         adOverlayFrameLayout = findViewById(R.id.exo_ad_overlay);
 
         // Overlay frame layout.
         overlayFrameLayout = findViewById(R.id.exo_overlay);
 
-        // Artwork view.
+        // Artwork view. ImageView
         artworkView = findViewById(R.id.exo_artwork);
         this.useArtwork = useArtwork && artworkView != null;
-        if (defaultArtworkId != 0) {
+        if (defaultArtworkId != 0) { // 设置图片
             defaultArtwork = ContextCompat.getDrawable(getContext(), defaultArtworkId);
         }
 
@@ -597,6 +600,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
             return;
         }
         @Nullable Player oldPlayer = this.player;
+        // 移除旧的player
         if (oldPlayer != null) {
             oldPlayer.removeListener(componentListener);
             if (surfaceView instanceof TextureView) {
@@ -605,10 +609,12 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
                 oldPlayer.clearVideoSurfaceView((SurfaceView) surfaceView);
             }
         }
+        // 标题
         if (subtitleView != null) {
             subtitleView.setCues(null);
         }
         this.player = player;
+        // 设置按钮
         if (useController()) {
             controller.setPlayer(player);
         }

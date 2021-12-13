@@ -297,8 +297,8 @@ public class PlayerActivity extends AppCompatActivity
                 .setTrackSelector(trackSelector)
                 .build();
 
-            player.addListener(new PlayerEventListener());
-            player.addAnalyticsListener(new EventLogger(trackSelector));
+            player.addListener(new PlayerEventListener()); // 回调
+            player.addAnalyticsListener(new EventLogger(trackSelector)); // 打印log
             player.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);
             player.setPlayWhenReady(startAutoPlay);
             playerView.setPlayer(player);

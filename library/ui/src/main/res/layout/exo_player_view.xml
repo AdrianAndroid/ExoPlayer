@@ -23,6 +23,7 @@
     <!-- Video surface will be inserted as the first child of the content frame. -->
 
     <View android:id="@id/exo_shutter"
+        android:contentDescription="shutter翻译为快门"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"/>

@@ -46,7 +46,7 @@ public final class SubtitleView extends FrameLayout implements TextOutput {
    * An output for displaying subtitles.
    *
    * <p>Implementations of this also need to extend {@link View} in order to be attached to the
-   * Android view hierarchy.
+   * Android view hierarchy.SubtitleView
    */
   /* package */ interface Output {
 
