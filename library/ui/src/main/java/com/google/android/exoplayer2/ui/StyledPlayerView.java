@@ -436,8 +436,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
         // 以下得到SurfaceView
         if (contentFrame != null && surfaceType != SURFACE_TYPE_NONE) {
             ViewGroup.LayoutParams params =
-                new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             switch (surfaceType) {
                 case SURFACE_TYPE_TEXTURE_VIEW:
                     surfaceView = new TextureView(context);
@@ -474,8 +473,8 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
             // do want to register as an OnClickListener so that surfaceView implementations can propagate
             // click events up to the StyledPlayerView by calling their own performClick method.
             surfaceView.setOnClickListener(componentListener); // 点击事件等
-            surfaceView.setClickable(false);
-            contentFrame.addView(surfaceView, 0);
+            surfaceView.setClickable(false); // 并没有使用点击事件，只是携带了listener(应该是这样)
+            contentFrame.addView(surfaceView, 0); // 放在最底层
         } else {
             surfaceView = null;
         }
@@ -1604,8 +1603,7 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
             } else if (lastPeriodUidWithTracks != null) {
                 int lastPeriodIndexWithTracks = timeline.getIndexOfPeriod(lastPeriodUidWithTracks);
                 if (lastPeriodIndexWithTracks != C.INDEX_UNSET) {
-                    int lastWindowIndexWithTracks =
-                        timeline.getPeriod(lastPeriodIndexWithTracks, period).windowIndex;
+                    int lastWindowIndexWithTracks = timeline.getPeriod(lastPeriodIndexWithTracks, period).windowIndex;
                     if (player.getCurrentWindowIndex() == lastWindowIndexWithTracks) {
                         // We're in the same window. Suppress the update.
                         return;

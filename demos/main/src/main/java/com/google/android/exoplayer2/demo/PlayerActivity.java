@@ -288,7 +288,7 @@ public class PlayerActivity extends AppCompatActivity
             MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory)
                 .setAdsLoaderProvider(this::getAdsLoader)
                 .setAdViewProvider(playerView);
-
+            // 初始化轨道选择器
             trackSelector = new DefaultTrackSelector(/* context= */ this);
             trackSelector.setParameters(trackSelectorParameters);
             lastSeenTrackGroupArray = null;

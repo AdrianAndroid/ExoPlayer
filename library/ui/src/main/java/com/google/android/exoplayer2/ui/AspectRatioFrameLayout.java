@@ -29,6 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * A {@link FrameLayout} that resizes itself to match a specified aspect ratio.
+ * 就是一个动态改变宽高的ViewGroup
  */
 public final class AspectRatioFrameLayout extends FrameLayout {
 
@@ -229,8 +230,7 @@ public final class AspectRatioFrameLayout extends FrameLayout {
         private boolean aspectRatioMismatch;
         private boolean isScheduled;
 
-        public void scheduleUpdate(
-            float targetAspectRatio, float naturalAspectRatio, boolean aspectRatioMismatch) {
+        public void scheduleUpdate(float targetAspectRatio, float naturalAspectRatio, boolean aspectRatioMismatch) {
             this.targetAspectRatio = targetAspectRatio;
             this.naturalAspectRatio = naturalAspectRatio;
             this.aspectRatioMismatch = aspectRatioMismatch;
@@ -247,8 +247,7 @@ public final class AspectRatioFrameLayout extends FrameLayout {
             if (aspectRatioListener == null) {
                 return;
             }
-            aspectRatioListener.onAspectRatioUpdated(
-                targetAspectRatio, naturalAspectRatio, aspectRatioMismatch);
+            aspectRatioListener.onAspectRatioUpdated(targetAspectRatio, naturalAspectRatio, aspectRatioMismatch);
         }
     }
 }
