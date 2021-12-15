@@ -70,7 +70,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Implements the internal behavior of {@link ExoPlayerImpl}.
  */
 /* package */ final class ExoPlayerImplInternal
-    implements Handler.Callback,
+    implements Handler.Callback, // 系统的回调
     MediaPeriod.Callback,
     TrackSelector.InvalidationListener,
     MediaSourceList.MediaSourceListInfoRefreshListener,
@@ -243,34 +243,34 @@ import java.util.concurrent.atomic.AtomicBoolean;
         PlaybackInfoUpdateListener playbackInfoUpdateListener) {
         this.playbackInfoUpdateListener = playbackInfoUpdateListener;
         this.renderers = renderers;
-        this.trackSelector = trackSelector;
-        this.emptyTrackSelectorResult = emptyTrackSelectorResult;
-        this.loadControl = loadControl;
-        this.bandwidthMeter = bandwidthMeter;
-        this.repeatMode = repeatMode;
-        this.shuffleModeEnabled = shuffleModeEnabled;
-        this.seekParameters = seekParameters;
-        this.livePlaybackSpeedControl = livePlaybackSpeedControl;
-        this.releaseTimeoutMs = releaseTimeoutMs;
-        this.setForegroundModeTimeoutMs = releaseTimeoutMs;
-        this.pauseAtEndOfWindow = pauseAtEndOfWindow;
-        this.clock = clock;
+        this.trackSelector = trackSelector; // DefaultTrackSelector
+        this.emptyTrackSelectorResult = emptyTrackSelectorResult; // TrackSelectorResult
+        this.loadControl = loadControl; // DefaultLoadControl
+        this.bandwidthMeter = bandwidthMeter; // DefaultBandwidthMeter
+        this.repeatMode = repeatMode; // 0
+        this.shuffleModeEnabled = shuffleModeEnabled; // false
+        this.seekParameters = seekParameters; // SeekParameters
+        this.livePlaybackSpeedControl = livePlaybackSpeedControl; // DefaultLivePalybackSpeedControl
+        this.releaseTimeoutMs = releaseTimeoutMs; // 500
+        this.setForegroundModeTimeoutMs = releaseTimeoutMs; // 500
+        this.pauseAtEndOfWindow = pauseAtEndOfWindow; // false
+        this.clock = clock; // SystemClock
 
-        backBufferDurationUs = loadControl.getBackBufferDurationUs();
-        retainBackBufferFromKeyframe = loadControl.retainBackBufferFromKeyframe();
+        backBufferDurationUs = loadControl.getBackBufferDurationUs(); // 0
+        retainBackBufferFromKeyframe = loadControl.retainBackBufferFromKeyframe(); // DefaultLoadControl
 
-        playbackInfo = PlaybackInfo.createDummy(emptyTrackSelectorResult);
-        playbackInfoUpdate = new PlaybackInfoUpdate(playbackInfo);
+        playbackInfo = PlaybackInfo.createDummy(emptyTrackSelectorResult); // TrackSelectorResult
+        playbackInfoUpdate = new PlaybackInfoUpdate(playbackInfo); // PlabackInfo
         rendererCapabilities = new RendererCapabilities[renderers.length];
-        for (int i = 0; i < renderers.length; i++) {
+        for (int i = 0; i < renderers.length; i++) { // 各种Render
             renderers[i].setIndex(i);
             rendererCapabilities[i] = renderers[i].getCapabilities();
         }
         mediaClock = new DefaultMediaClock(this, clock);
         pendingMessages = new ArrayList<>();
-        window = new Timeline.Window();
-        period = new Timeline.Period();
-        trackSelector.init(/* listener= */ this, bandwidthMeter);
+        window = new Timeline.Window(); // Timeline
+        period = new Timeline.Period(); // Timeline
+        trackSelector.init(/* listener= */ this, bandwidthMeter); // DefaultTrackSelector
 
         deliverPendingMessageAtStartPositionRequired = true;
 
