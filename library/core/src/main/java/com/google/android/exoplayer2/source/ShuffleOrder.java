@@ -22,7 +22,7 @@ import java.util.Random;
 /**
  * Shuffled order of indices.
  *
- * <p>The shuffle order must be immutable to ensure thread safety.
+ * <p>The shuffle order must be immutable to ensure thread safety. // 随机顺序
  */
 public interface ShuffleOrder {
 

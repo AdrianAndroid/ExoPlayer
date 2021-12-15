@@ -79,6 +79,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
     /* package */ final TrackSelectorResult emptyTrackSelectorResult;
     /* package */ final Commands permanentAvailableCommands;
 
+    // MediaCodecVideoRenderer，MediaCodecAudioRenderer，TextRenderer，MetadataRenderer，CameraMotionRenderer
     private final Renderer[] renderers;
     private final TrackSelector trackSelector;
     private final HandlerWrapper playbackInfoUpdateHandler;
@@ -177,20 +178,20 @@ import java.util.concurrent.CopyOnWriteArraySet;
                 + Util.DEVICE_DEBUG_INFO
                 + "]");
         checkState(renderers.length > 0);
-        this.renderers = checkNotNull(renderers);
-        this.trackSelector = checkNotNull(trackSelector);
-        this.mediaSourceFactory = mediaSourceFactory;
-        this.bandwidthMeter = bandwidthMeter;
-        this.analyticsCollector = analyticsCollector;
-        this.useLazyPreparation = useLazyPreparation;
-        this.seekParameters = seekParameters;
-        this.seekBackIncrementMs = seekBackIncrementMs;
-        this.seekForwardIncrementMs = seekForwardIncrementMs;
-        this.pauseAtEndOfMediaItems = pauseAtEndOfMediaItems;
-        this.applicationLooper = applicationLooper;
-        this.clock = clock;
-        repeatMode = Player.REPEAT_MODE_OFF;
-        Player playerForListeners = wrappingPlayer != null ? wrappingPlayer : this;
+        this.renderers = checkNotNull(renderers); // MediaCodecVideoRenderer，MediaCodecAudioRenderer，。。。
+        this.trackSelector = checkNotNull(trackSelector); //DefaultTrackSelector
+        this.mediaSourceFactory = mediaSourceFactory; // DefaultMediaSourceFactory
+        this.bandwidthMeter = bandwidthMeter; // DefaultBandWidthMeter
+        this.analyticsCollector = analyticsCollector; // AnalyticsCollector
+        this.useLazyPreparation = useLazyPreparation; // true
+        this.seekParameters = seekParameters; // SeekParameters
+        this.seekBackIncrementMs = seekBackIncrementMs; // 5000
+        this.seekForwardIncrementMs = seekForwardIncrementMs; // 15000
+        this.pauseAtEndOfMediaItems = pauseAtEndOfMediaItems; // false
+        this.applicationLooper = applicationLooper; // Looper(main)
+        this.clock = clock; // SystemClock
+        repeatMode = Player.REPEAT_MODE_OFF; // 0
+        Player playerForListeners = wrappingPlayer != null ? wrappingPlayer : this; // SimpleExoPlayer
         listeners =
             new ListenerSet<>(
                 applicationLooper,
@@ -206,33 +207,29 @@ import java.util.concurrent.CopyOnWriteArraySet;
                 /* info= */ null);
         period = new Timeline.Period();
         permanentAvailableCommands =
-            new Commands.Builder()
-                .addAll(
-                    COMMAND_PLAY_PAUSE,
-                    COMMAND_PREPARE_STOP,
-                    COMMAND_SET_SPEED_AND_PITCH,
-                    COMMAND_SET_SHUFFLE_MODE,
-                    COMMAND_SET_REPEAT_MODE,
-                    COMMAND_GET_CURRENT_MEDIA_ITEM,
-                    COMMAND_GET_TIMELINE,
-                    COMMAND_GET_MEDIA_ITEMS_METADATA,
-                    COMMAND_SET_MEDIA_ITEMS_METADATA,
-                    COMMAND_CHANGE_MEDIA_ITEMS)
-                .addAll(additionalPermanentAvailableCommands)
-                .build();
-        availableCommands =
-            new Commands.Builder()
-                .addAll(permanentAvailableCommands)
-                .add(COMMAND_SEEK_TO_DEFAULT_POSITION)
-                .add(COMMAND_SEEK_TO_WINDOW)
-                .build();
+            new Commands.Builder().addAll(
+                COMMAND_PLAY_PAUSE,
+                COMMAND_PREPARE_STOP,
+                COMMAND_SET_SPEED_AND_PITCH,
+                COMMAND_SET_SHUFFLE_MODE,
+                COMMAND_SET_REPEAT_MODE,
+                COMMAND_GET_CURRENT_MEDIA_ITEM,
+                COMMAND_GET_TIMELINE,
+                COMMAND_GET_MEDIA_ITEMS_METADATA,
+                COMMAND_SET_MEDIA_ITEMS_METADATA,
+                COMMAND_CHANGE_MEDIA_ITEMS
+            ).addAll(additionalPermanentAvailableCommands).build();
+        availableCommands = new Commands.Builder()
+            .addAll(permanentAvailableCommands)
+            .add(COMMAND_SEEK_TO_DEFAULT_POSITION)
+            .add(COMMAND_SEEK_TO_WINDOW)
+            .build();
         mediaMetadata = MediaMetadata.EMPTY;
         playlistMetadata = MediaMetadata.EMPTY;
         maskingWindowIndex = C.INDEX_UNSET;
         playbackInfoUpdateHandler = clock.createHandler(applicationLooper, /* callback= */ null);
         playbackInfoUpdateListener =
-            playbackInfoUpdate ->
-                playbackInfoUpdateHandler.post(() -> handlePlaybackInfo(playbackInfoUpdate));
+            playbackInfoUpdate -> playbackInfoUpdateHandler.post(() -> handlePlaybackInfo(playbackInfoUpdate));
         playbackInfo = PlaybackInfo.createDummy(emptyTrackSelectorResult);
         if (analyticsCollector != null) {
             analyticsCollector.setPlayer(playerForListeners, applicationLooper);
