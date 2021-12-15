@@ -755,6 +755,7 @@ public class SimpleExoPlayer extends BasePlayer
 
             // Set initial values.
             audioVolume = 1;
+            // 获取音频audioSeesionId
             if (Util.SDK_INT < 21) {
                 audioSessionId = initializeKeepSessionIdAudioTrack(C.AUDIO_SESSION_ID_UNSET);
             } else {
@@ -764,17 +765,16 @@ public class SimpleExoPlayer extends BasePlayer
             throwsWhenUsingWrongThread = true;
 
             // Build the player and associated objects.
-            Commands additionalPermanentAvailableCommands = new Commands.Builder()
-                .addAll(
-                    COMMAND_GET_AUDIO_ATTRIBUTES,
-                    COMMAND_GET_VOLUME,
-                    COMMAND_GET_DEVICE_VOLUME,
-                    COMMAND_SET_VOLUME,
-                    COMMAND_SET_DEVICE_VOLUME,
-                    COMMAND_ADJUST_DEVICE_VOLUME,
-                    COMMAND_SET_VIDEO_SURFACE,
-                    COMMAND_GET_TEXT)
-                .build();
+            Commands additionalPermanentAvailableCommands = new Commands.Builder().addAll(
+                COMMAND_GET_AUDIO_ATTRIBUTES,
+                COMMAND_GET_VOLUME,
+                COMMAND_GET_DEVICE_VOLUME,
+                COMMAND_SET_VOLUME,
+                COMMAND_SET_DEVICE_VOLUME,
+                COMMAND_ADJUST_DEVICE_VOLUME,
+                COMMAND_SET_VIDEO_SURFACE,
+                COMMAND_GET_TEXT
+            ).build();
             player = new ExoPlayerImpl(
                 renderers,
                 builder.trackSelector,
