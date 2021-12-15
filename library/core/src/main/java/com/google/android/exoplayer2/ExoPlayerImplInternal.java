@@ -241,8 +241,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
         Looper applicationLooper,
         Clock clock,
         PlaybackInfoUpdateListener playbackInfoUpdateListener) {
-        this.playbackInfoUpdateListener = playbackInfoUpdateListener;
-        this.renderers = renderers;
+        this.playbackInfoUpdateListener = playbackInfoUpdateListener; // PlaybackInfoUpdateListener
+        this.renderers = renderers; // Renderers
         this.trackSelector = trackSelector; // DefaultTrackSelector
         this.emptyTrackSelectorResult = emptyTrackSelectorResult; // TrackSelectorResult
         this.loadControl = loadControl; // DefaultLoadControl
