@@ -2843,8 +2843,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         Pair<Object, Long> periodPosition;
         try {
             periodPosition =
-                seekTimeline.getPeriodPosition(
-                    window, period, seekPosition.windowIndex, seekPosition.windowPositionUs);
+                seekTimeline.getPeriodPosition(window, period, seekPosition.windowIndex, seekPosition.windowPositionUs);
         } catch (IndexOutOfBoundsException e) {
             // The window index of the seek position was outside the bounds of the timeline.
             return null;
@@ -2865,8 +2864,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 // because subsequent periods must start at position 0 and don't need to be resolved.
                 int newWindowIndex = timeline.getPeriodByUid(periodPosition.first, period).windowIndex;
                 periodPosition =
-                    timeline.getPeriodPosition(
-                        window, period, newWindowIndex, seekPosition.windowPositionUs);
+                    timeline.getPeriodPosition(window, period, newWindowIndex, seekPosition.windowPositionUs);
             }
             return periodPosition;
         }
