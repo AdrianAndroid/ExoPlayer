@@ -1151,6 +1151,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         long periodPositionUs;
         long requestedContentPositionUs;
         boolean seekPositionAdjusted;
+        // 找到对应的位置
         @Nullable
         Pair<Object, Long> resolvedSeekPosition =
             resolveSeekPosition(
@@ -1161,7 +1162,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 shuffleModeEnabled,
                 window,
                 period);
-        if (resolvedSeekPosition == null) {
+        if (resolvedSeekPosition == null) { // 没找到位置
             // The seek position was valid for the timeline that it was performed into, but the
             // timeline has changed or is not ready and a suitable seek position could not be resolved.
             Pair<MediaPeriodId, Long> firstPeriodAndPosition =
@@ -1176,15 +1177,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
             long resolvedContentPositionUs = resolvedSeekPosition.second;
             requestedContentPositionUs =
                 seekPosition.windowPositionUs == C.TIME_UNSET ? C.TIME_UNSET : resolvedContentPositionUs;
-            periodId =
-                queue.resolveMediaPeriodIdForAds(
-                    playbackInfo.timeline, periodUid, resolvedContentPositionUs);
+            periodId = queue.resolveMediaPeriodIdForAds(playbackInfo.timeline, periodUid, resolvedContentPositionUs);
             if (periodId.isAd()) {
                 playbackInfo.timeline.getPeriodByUid(periodId.periodUid, period);
-                periodPositionUs =
-                    period.getFirstAdIndexToPlay(periodId.adGroupIndex) == periodId.adIndexInAdGroup
-                        ? period.getAdResumePositionUs()
-                        : 0;
+                periodPositionUs = period.getFirstAdIndexToPlay(periodId.adGroupIndex) == periodId.adIndexInAdGroup
+                    ? period.getAdResumePositionUs() : 0;
                 seekPositionAdjusted = true;
             } else {
                 periodPositionUs = resolvedContentPositionUs;
