@@ -1171,7 +1171,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
             periodPositionUs = firstPeriodAndPosition.second;
             requestedContentPositionUs = C.TIME_UNSET;
             seekPositionAdjusted = !playbackInfo.timeline.isEmpty();
-        } else {
+        } else { // 找到了合适的位置
             // Update the resolved seek position to take ads into account.
             Object periodUid = resolvedSeekPosition.first;
             long resolvedContentPositionUs = resolvedSeekPosition.second;
@@ -1190,10 +1190,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
         }
 
         try {
-            if (playbackInfo.timeline.isEmpty()) {
+            if (playbackInfo.timeline.isEmpty()) { // 是空的
                 // Save seek position for later, as we are still waiting for a prepared source.
                 pendingInitialSeekPosition = seekPosition;
-            } else if (resolvedSeekPosition == null) {
+            } else if (resolvedSeekPosition == null) { // 没有找到合适的位置
                 // End playback, as we didn't manage to find a valid seek position.
                 if (playbackInfo.playbackState != Player.STATE_IDLE) {
                     setState(Player.STATE_ENDED);
@@ -1206,14 +1206,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
             } else {
                 // Execute the seek in the current media periods.
                 long newPeriodPositionUs = periodPositionUs;
-                if (periodId.equals(playbackInfo.periodId)) {
+                if (periodId.equals(playbackInfo.periodId)) { // 相同的periodId
                     MediaPeriodHolder playingPeriodHolder = queue.getPlayingPeriod();
-                    if (playingPeriodHolder != null
-                        && playingPeriodHolder.prepared
-                        && newPeriodPositionUs != 0) {
-                        newPeriodPositionUs =
-                            playingPeriodHolder.mediaPeriod.getAdjustedSeekPositionUs(
-                                newPeriodPositionUs, seekParameters);
+                    if (playingPeriodHolder != null && playingPeriodHolder.prepared && newPeriodPositionUs != 0) {
+                        newPeriodPositionUs = playingPeriodHolder.mediaPeriod.getAdjustedSeekPositionUs(
+                            newPeriodPositionUs, seekParameters);
                     }
                     if (C.usToMs(newPeriodPositionUs) == C.usToMs(playbackInfo.positionUs)
                         && (playbackInfo.playbackState == Player.STATE_BUFFERING
@@ -1223,11 +1220,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
                         return;
                     }
                 }
-                newPeriodPositionUs =
-                    seekToPeriodPosition(
-                        periodId,
-                        newPeriodPositionUs,
-                        /* forceBufferingState= */ playbackInfo.playbackState == Player.STATE_ENDED);
+                newPeriodPositionUs = seekToPeriodPosition(
+                    periodId,
+                    newPeriodPositionUs,
+                    /* forceBufferingState= */ playbackInfo.playbackState == Player.STATE_ENDED);
                 seekPositionAdjusted |= periodPositionUs != newPeriodPositionUs;
                 periodPositionUs = newPeriodPositionUs;
                 updateLivePlaybackSpeedControl(
@@ -1238,19 +1234,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
                     /* positionForTargetOffsetOverrideUs= */ requestedContentPositionUs);
             }
         } finally {
-            playbackInfo =
-                handlePositionDiscontinuity(
-                    periodId,
-                    periodPositionUs,
-                    requestedContentPositionUs,
-                    /* discontinuityStartPositionUs= */ periodPositionUs,
-                    /* reportDiscontinuity= */ seekPositionAdjusted,
-                    Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT);
+            playbackInfo = handlePositionDiscontinuity(
+                periodId,
+                periodPositionUs,
+                requestedContentPositionUs,
+                /* discontinuityStartPositionUs= */ periodPositionUs,
+                /* reportDiscontinuity= */ seekPositionAdjusted,
+                Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT);
         }
     }
 
-    private long seekToPeriodPosition(
-        MediaPeriodId periodId, long periodPositionUs, boolean forceBufferingState)
+    private long seekToPeriodPosition(MediaPeriodId periodId, long periodPositionUs, boolean forceBufferingState)
         throws ExoPlaybackException {
         // Force disable renderers if they are reading from a period other than the one being played.
         return seekToPeriodPosition(
@@ -1328,10 +1322,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
     private void resetRendererPosition(long periodPositionUs) throws ExoPlaybackException {
         MediaPeriodHolder playingMediaPeriod = queue.getPlayingPeriod();
-        rendererPositionUs =
-            playingMediaPeriod == null
-                ? periodPositionUs
-                : playingMediaPeriod.toRendererTime(periodPositionUs);
+        rendererPositionUs = playingMediaPeriod == null
+            ? periodPositionUs
+            : playingMediaPeriod.toRendererTime(periodPositionUs);
         mediaClock.resetPosition(rendererPositionUs);
         for (Renderer renderer : renderers) {
             if (isRendererEnabled(renderer)) {
@@ -1429,10 +1422,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
         MediaPeriodId mediaPeriodId = playbackInfo.periodId;
         long startPositionUs = playbackInfo.positionUs;
-        long requestedContentPositionUs =
-            playbackInfo.periodId.isAd() || isUsingPlaceholderPeriod(playbackInfo, period)
-                ? playbackInfo.requestedContentPositionUs
-                : playbackInfo.positionUs;
+        long requestedContentPositionUs = playbackInfo.periodId.isAd() || isUsingPlaceholderPeriod(playbackInfo, period)
+            ? playbackInfo.requestedContentPositionUs
+            : playbackInfo.positionUs;
         boolean resetTrackInfo = false;
         if (resetPosition) {
             pendingInitialSeekPosition = null;
