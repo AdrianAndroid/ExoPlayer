@@ -807,10 +807,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
         isRebuffering = false;
         notifyTrackSelectionPlayWhenReadyChanged(playWhenReady);
         if (!shouldPlayWhenReady()) {
+            //--》 数据加载好， 不直接开始
             stopRenderers();
             updatePlaybackPositions();
         } else {
-            if (playbackInfo.playbackState == Player.STATE_READY) {
+            //--》 数据加载好， 直接开始
+            if (playbackInfo.playbackState == Player.STATE_READY) { // READY
                 startRenderers();
                 handler.sendEmptyMessage(MSG_DO_SOME_WORK);
             } else if (playbackInfo.playbackState == Player.STATE_BUFFERING) {
@@ -889,7 +891,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         mediaClock.start();
         for (Renderer renderer : renderers) {
             if (isRendererEnabled(renderer)) {
-                renderer.start();
+                renderer.start(); // BaseRenderer : PS:应该是MediaCodecVideoRenderers & MediaCodecAudioRenderers
             }
         }
     }
@@ -1003,8 +1005,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
         boolean renderersAllowPlayback = true;
         if (playingPeriodHolder.prepared) {
             long rendererPositionElapsedRealtimeUs = SystemClock.elapsedRealtime() * 1000;
+            // 难道这是上一帧数据？
             playingPeriodHolder.mediaPeriod.discardBuffer(
-                playbackInfo.positionUs - backBufferDurationUs, retainBackBufferFromKeyframe);
+                /*positionUs*/playbackInfo.positionUs - backBufferDurationUs
+                , /*字面上意思是关键帧*/retainBackBufferFromKeyframe);
             for (int i = 0; i < renderers.length; i++) {
                 Renderer renderer = renderers[i];
                 if (!isRendererEnabled(renderer)) {
@@ -1020,6 +1024,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 // the next stream or is waiting for the next stream. This is to avoid getting stuck if
                 // tracks in the current period have uneven durations and are still being read by another
                 // renderer. See: https://github.com/google/ExoPlayer/issues/1874.
+                // 确定渲染器是否允许继续播放。播放可以继续，如果
+                // 渲染器准备好或结束。如果渲染器正在提前读入，也继续播放
+                // 下一个流或正在等待下一个流。这是为了避免卡住，如果
+                // 当前时期的曲目具有不均匀的持续时间，并且仍在被另一个人阅读
+                // 渲染器。请参阅：https://github.com/google/ExoPlayer/issues/1874
                 boolean isReadingAhead = playingPeriodHolder.sampleStreams[i] != renderer.getStream();
                 boolean isWaitingForNextStream = !isReadingAhead && renderer.hasReadStreamToEnd();
                 boolean allowsPlayback =

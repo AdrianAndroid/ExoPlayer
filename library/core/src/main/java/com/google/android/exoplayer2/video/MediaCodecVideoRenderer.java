@@ -461,6 +461,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         }
     }
 
+    // 做开始之前的准备
     @Override
     protected void onStarted() {
         super.onStarted();
