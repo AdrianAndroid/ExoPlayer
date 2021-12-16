@@ -40,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A renderer for text.
+ * A renderer for text. 文本渲染器
  *
  * <p>{@link Subtitle}s are decoded from sample data using {@link SubtitleDecoder} instances
  * obtained from a {@link SubtitleDecoderFactory}. The actual rendering of the subtitle {@link Cue}s
