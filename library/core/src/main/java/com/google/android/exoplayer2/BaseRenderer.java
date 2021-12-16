@@ -202,7 +202,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
 
     @Override
     public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
-        log(getClass(), "render ... ");
+        //log(getClass(), "render ... ");
     }
 
     @Override
