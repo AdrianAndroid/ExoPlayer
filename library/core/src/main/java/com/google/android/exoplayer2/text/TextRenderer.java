@@ -197,7 +197,7 @@ public final class TextRenderer extends BaseRenderer implements Callback {
     if (nextSubtitle == null) {
       checkNotNull(decoder).setPositionUs(positionUs);
       try {
-        nextSubtitle = checkNotNull(decoder).dequeueOutputBuffer();
+        nextSubtitle = checkNotNull(decoder).dequeueOutputBuffer(); // 出队输出缓冲区
       } catch (SubtitleDecoderException e) {
         handleDecoderError(e);
         return;
