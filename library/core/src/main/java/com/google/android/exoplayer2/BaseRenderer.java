@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.source.SampleStream;
 import com.google.android.exoplayer2.source.SampleStream.ReadDataResult;
 import com.google.android.exoplayer2.source.SampleStream.ReadFlags;
 import com.google.android.exoplayer2.util.Assertions;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.MediaClock;
 
 import java.io.IOException;
@@ -33,6 +34,11 @@ import java.io.IOException;
  * An abstract base class suitable for most {@link Renderer} implementations.
  */
 public abstract class BaseRenderer implements Renderer, RendererCapabilities {
+
+    // 打印log
+    public static void log(Class clz, String msg) {
+        Log.i(clz.getSimpleName(), msg);
+    }
 
     private final int trackType;
     private final FormatHolder formatHolder;
@@ -193,6 +199,11 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
     }
 
     // RendererCapabilities implementation.
+
+    @Override
+    public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
+        log(getClass(), "render ... ");
+    }
 
     @Override
     @AdaptiveSupport

@@ -1583,6 +1583,7 @@ public final class AnalyticsCollectorTest {
               new FakeRenderer(C.TRACK_TYPE_AUDIO) {
                 @Override
                 public void render(long positionUs, long realtimeUs) throws ExoPlaybackException {
+                  super.render(positionUs, realtimeUs);
                   // Fail when rendering the audio stream. This will happen during the period
                   // transition.
                   throw createRendererException(

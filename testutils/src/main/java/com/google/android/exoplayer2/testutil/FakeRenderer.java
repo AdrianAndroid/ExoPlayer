@@ -85,6 +85,7 @@ public class FakeRenderer extends BaseRenderer {
 
   @Override
   public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
+    super.render(positionUs, elapsedRealtimeUs);
     if (isEnded) {
       return;
     }

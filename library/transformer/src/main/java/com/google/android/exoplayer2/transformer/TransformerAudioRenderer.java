@@ -112,6 +112,7 @@ import java.nio.ByteBuffer;
 
   @Override
   public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
+    super.render(positionUs, elapsedRealtimeUs);
     if (!isRendererStarted || isEnded()) {
       return;
     }

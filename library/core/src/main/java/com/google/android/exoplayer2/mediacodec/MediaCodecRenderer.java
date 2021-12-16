@@ -855,6 +855,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
 
     @Override
     public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
+        super.render(positionUs, elapsedRealtimeUs);
         if (pendingOutputEndOfStream) {
             pendingOutputEndOfStream = false;
             processEndOfStream();

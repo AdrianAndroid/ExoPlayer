@@ -255,6 +255,7 @@ public abstract class DecoderAudioRenderer<
 
   @Override
   public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
+    super.render(positionUs, elapsedRealtimeUs);
     if (outputStreamEnded) {
       try {
         audioSink.playToEndOfStream();

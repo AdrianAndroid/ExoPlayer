@@ -22,6 +22,7 @@ import static com.google.android.exoplayer2.util.Assertions.checkNotNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.FormatHolder;
 import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
@@ -54,6 +55,11 @@ import java.nio.ByteBuffer;
 
   @Override
   public void render(long positionUs, long elapsedRealtimeUs) {
+    try {
+      super.render(positionUs, elapsedRealtimeUs);
+    } catch (ExoPlaybackException e) {
+      e.printStackTrace();
+    }
     if (!isRendererStarted || isEnded()) {
       return;
     }
