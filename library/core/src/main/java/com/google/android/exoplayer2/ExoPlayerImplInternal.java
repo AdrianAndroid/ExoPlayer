@@ -495,7 +495,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                     setShuffleModeEnabledInternal(msg.arg1 != 0);
                     break;
                 case MSG_DO_SOME_WORK:
-                    log("handleMessage MSG_DO_SOME_WORK");
+                    log("handleMessage MSG_DO_SOME_WORK currentThread -> " + Thread.currentThread().getName());
                     doSomeWork();
                     break;
                 case MSG_SEEK_TO:
