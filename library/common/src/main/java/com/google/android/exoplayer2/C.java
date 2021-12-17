@@ -46,6 +46,7 @@ public final class C {
   /**
    * Special constant representing an unset or unknown time or duration. Suitable for use in any
    * time base.
+   * 表示未设置或未知的时间或持续时间的特殊常量。适合在任何情况下使用时基。
    */
   public static final long TIME_UNSET = Long.MIN_VALUE + 1;
 

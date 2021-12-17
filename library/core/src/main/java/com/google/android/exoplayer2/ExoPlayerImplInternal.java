@@ -2019,12 +2019,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
             if (readingPeriodHolder.info.isFinal || pendingPauseAtEndOfPeriod) {
                 for (int i = 0; i < renderers.length; i++) {
                     Renderer renderer = renderers[i];
-                    SampleStream sampleStream = readingPeriodHolder.sampleStreams[i];
+                    // 应该就是一个音频流和一个视频流（正常的）
+                    SampleStream sampleStream = readingPeriodHolder.sampleStreams[i]; // ChunkSampleStream
                     // Defer setting the stream as final until the renderer has actually consumed the whole
                     // stream in case of playlist changes that cause the stream to be no longer final.
                     if (sampleStream != null
                         && renderer.getStream() == sampleStream
-                        && renderer.hasReadStreamToEnd()) {
+                        && renderer.hasReadStreamToEnd()) { // 到结尾，就发送结尾消息
                         long streamEndPositionUs =
                             readingPeriodHolder.info.durationUs != C.TIME_UNSET
                                 && readingPeriodHolder.info.durationUs != C.TIME_END_OF_SOURCE
@@ -2102,8 +2103,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
             if (!isRendererEnabled(renderer)) {
                 continue;
             }
-            boolean rendererIsReadingOldStream =
-                renderer.getStream() != readingPeriodHolder.sampleStreams[i];
+            boolean rendererIsReadingOldStream = renderer.getStream() != readingPeriodHolder.sampleStreams[i];
             boolean rendererShouldBeEnabled = newTrackSelectorResult.isRendererEnabled(i);
             if (rendererShouldBeEnabled && !rendererIsReadingOldStream) {
                 // All done.
@@ -2425,8 +2425,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         readingMediaPeriod.allRenderersInCorrectState = true;
     }
 
-    private void enableRenderer(int rendererIndex, boolean wasRendererEnabled)
-        throws ExoPlaybackException {
+    private void enableRenderer(int rendererIndex, boolean wasRendererEnabled) throws ExoPlaybackException {
         Renderer renderer = renderers[rendererIndex];
         if (isRendererEnabled(renderer)) {
             return;
@@ -2434,8 +2433,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         MediaPeriodHolder periodHolder = queue.getReadingPeriod();
         boolean mayRenderStartOfStream = periodHolder == queue.getPlayingPeriod();
         TrackSelectorResult trackSelectorResult = periodHolder.getTrackSelectorResult();
-        RendererConfiguration rendererConfiguration =
-            trackSelectorResult.rendererConfigurations[rendererIndex];
+        RendererConfiguration rendererConfiguration = trackSelectorResult.rendererConfigurations[rendererIndex];
         ExoTrackSelection newSelection = trackSelectorResult.selections[rendererIndex];
         Format[] formats = getFormats(newSelection);
         // The renderer needs enabling with its new track selection.
