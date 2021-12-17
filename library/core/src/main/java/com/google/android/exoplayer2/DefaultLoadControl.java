@@ -245,7 +245,6 @@ public class DefaultLoadControl implements LoadControl {
   }
 
   private final DefaultAllocator allocator;
-
   private final long minBufferUs;
   private final long maxBufferUs;
   private final long bufferForPlaybackUs;
@@ -254,7 +253,6 @@ public class DefaultLoadControl implements LoadControl {
   private final boolean prioritizeTimeOverSizeThresholds;
   private final long backBufferDurationUs;
   private final boolean retainBackBufferFromKeyframe;
-
   private int targetBufferBytes;
   private boolean isLoading;
 
