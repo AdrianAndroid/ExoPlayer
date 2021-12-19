@@ -915,7 +915,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
             return;
         }
 
-        // Update the playback position.
+        // Update the playback position. // 不连续性
         long discontinuityPositionUs =
             playingPeriodHolder.prepared
                 ? playingPeriodHolder.mediaPeriod.readDiscontinuity()
@@ -935,9 +935,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
                         Player.DISCONTINUITY_REASON_INTERNAL);
             }
         } else {
-            rendererPositionUs =
-                mediaClock.syncAndGetPositionUs(
-                    /* isReadingAhead= */ playingPeriodHolder != queue.getReadingPeriod());
+            rendererPositionUs = mediaClock.syncAndGetPositionUs(
+                /* isReadingAhead= */ playingPeriodHolder != queue.getReadingPeriod());
             long periodPositionUs = playingPeriodHolder.toPeriodTime(rendererPositionUs);
             maybeTriggerPendingMessages(playbackInfo.positionUs, periodPositionUs);
             playbackInfo.positionUs = periodPositionUs;
@@ -999,11 +998,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
         TraceUtil.beginSection("doSomeWork");
 
-        updatePlaybackPositions();
+        updatePlaybackPositions(); // TODO: 有点儿向外传递的意思吧
 
         boolean renderersEnded = true;
         boolean renderersAllowPlayback = true;
-        if (playingPeriodHolder.prepared) {
+        if (playingPeriodHolder.prepared) { // 准备好了，就应该是渲染了
             long rendererPositionElapsedRealtimeUs = SystemClock.elapsedRealtime() * 1000;
             // 难道这是上一帧数据？
             playingPeriodHolder.mediaPeriod.discardBuffer(
@@ -1017,6 +1016,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 // TODO: Each renderer should return the maximum delay before which it wishes to be called
                 // again. The minimum of these values should then be used as the delay before the next
                 // invocation of this method.
+                log("rendererPositionUs = " + rendererPositionUs + " , rendererPositionElapsedRealtimeUs = " +
+                    rendererPositionElapsedRealtimeUs); // 不断累加
                 renderer.render(rendererPositionUs, rendererPositionElapsedRealtimeUs);
                 renderersEnded = renderersEnded && renderer.isEnded();
                 // Determine whether the renderer allows playback to continue. Playback can continue if the
@@ -1597,6 +1598,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         if (pendingMessages.isEmpty() || playbackInfo.periodId.isAd()) {
             return;
         }
+        // 如果这是重置渲染器后的第一次调用，请在潜在的触发位置中包含oldPeriodPositionUs, 但请确保我们值传递一次.
         // If this is the first call after resetting the renderer position, include oldPeriodPositionUs
         // in potential trigger positions, but make sure we deliver it only once.
         if (deliverPendingMessageAtStartPositionRequired) {
@@ -1605,8 +1607,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         }
 
         // Correct next index if necessary (e.g. after seeking, timeline changes, or new messages)
-        int currentPeriodIndex =
-            playbackInfo.timeline.getIndexOfPeriod(playbackInfo.periodId.periodUid);
+        int currentPeriodIndex = playbackInfo.timeline.getIndexOfPeriod(playbackInfo.periodId.periodUid);
         int nextPendingMessageIndex = min(nextPendingMessageIndexHint, pendingMessages.size());
         PendingMessageInfo previousInfo =
             nextPendingMessageIndex > 0 ? pendingMessages.get(nextPendingMessageIndex - 1) : null;
@@ -1640,7 +1641,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
             && nextInfo.resolvedPeriodTimeUs > oldPeriodPositionUs
             && nextInfo.resolvedPeriodTimeUs <= newPeriodPositionUs) {
             try {
-                sendMessageToTarget(nextInfo.message);
+                sendMessageToTarget(nextInfo.message); // 向外界传递消息，exp:SimpleExoPlayer
             } finally {
                 if (nextInfo.message.getDeleteAfterDelivery() || nextInfo.message.isCanceled()) {
                     pendingMessages.remove(nextPendingMessageIndex);

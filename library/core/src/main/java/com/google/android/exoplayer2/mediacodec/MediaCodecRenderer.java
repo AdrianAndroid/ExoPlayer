@@ -287,10 +287,11 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     private static final int DRAIN_ACTION_FLUSH = 1;
     /**
      * The codec should be flushed and updated to use the pending DRM session.
+     * 应刷新并更新编解码器以使用挂起的 DRM 会话。
      */
     private static final int DRAIN_ACTION_FLUSH_AND_UPDATE_DRM_SESSION = 2;
     /**
-     * The codec should be reinitialized.
+     * The codec should be reinitialized. 应该重新初始化编码器
      */
     private static final int DRAIN_ACTION_REINITIALIZE = 3;
 
@@ -2091,7 +2092,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     @TargetApi(23) // codecDrainAction == DRAIN_ACTION_UPDATE_DRM_SESSION implies SDK_INT >= 23.
     private void processEndOfStream() throws ExoPlaybackException {
         switch (codecDrainAction) {
-            case DRAIN_ACTION_REINITIALIZE:
+            case DRAIN_ACTION_REINITIALIZE: // 应该重新初始化编码器
                 reinitializeCodec();
                 break;
             case DRAIN_ACTION_FLUSH_AND_UPDATE_DRM_SESSION:

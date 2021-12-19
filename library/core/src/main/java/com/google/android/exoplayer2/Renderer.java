@@ -424,28 +424,33 @@ public interface Renderer extends PlayerMessage.Target {
 
     /**
      * Incrementally renders the {@link SampleStream}.
-     *
+     * 增量渲染
      * <p>If the renderer is in the {@link #STATE_ENABLED} state then each call to this method will do
      * work toward being ready to render the {@link SampleStream} when the renderer is started. If the
      * renderer is in the {@link #STATE_STARTED} state then calls to this method will render the
      * {@link SampleStream} in sync with the specified media positions.
+     * 如果渲染器处于STATE_ENABLED状态，那么每次调用此方法都会在渲染器启动时准备好渲染SampleStream. 如果渲染器处于STATE_STARTED状态，
+     * 则调用此方法将与指定的媒体位置同步渲染SampleStream
      *
      * <p>The renderer may also render the very start of the media at the current position (e.g. the
      * first frame of a video stream) while still in the {@link #STATE_ENABLED} state, unless it's the
      * initial start of the media after calling {@link #enable(RendererConfiguration, Format[],
      * SampleStream, long, boolean, boolean, long, long)} with {@code mayRenderStartOfStream} set to
      * {@code false}.
+     * 渲染器也可以在当前位置渲染媒体的最开始（例：视频流的第一帧）同时处于STATE_ENABLE状态，除非...
      *
      * <p>This method should return quickly, and should not block if the renderer is unable to make
      * useful progress.
+     * 这个方法该快速返回，如果渲染器无法制作，应该不会阻塞有益的进展。
      *
      * <p>This method may be called when the renderer is in the following states: {@link
      * #STATE_ENABLED}, {@link #STATE_STARTED}.
      *
      * @param positionUs        The current media time in microseconds, measured at the start of the current
-     *                          iteration of the rendering loop.
+     *                          iteration of the rendering loop. 在当前开始时测量渲染循环的迭代
      * @param elapsedRealtimeUs {@link android.os.SystemClock#elapsedRealtime()} in microseconds,
      *                          measured at the start of the current iteration of the rendering loop.
+     *                                                                          在渲染循环的当前迭代开始时测量。
      * @throws ExoPlaybackException If an error occurs.
      */
     void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException;
