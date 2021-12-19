@@ -1792,8 +1792,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             return true;
         }
 
-        float newCodecOperatingRate =
-            getCodecOperatingRateV23(targetPlaybackSpeed, format, getStreamFormats());
+        float newCodecOperatingRate = getCodecOperatingRateV23(targetPlaybackSpeed, format, getStreamFormats());
         if (codecOperatingRate == newCodecOperatingRate) {
             // No change.
             return true;

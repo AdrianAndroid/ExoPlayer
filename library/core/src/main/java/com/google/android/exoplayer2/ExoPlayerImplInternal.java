@@ -981,7 +981,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
     private void doSomeWork() throws ExoPlaybackException, IOException {
         long operationStartTimeMs = clock.uptimeMillis();
-        updatePeriods();
+        updatePeriods();// 更新参数， 更新编解码器等
 
         if (playbackInfo.playbackState == Player.STATE_IDLE
             || playbackInfo.playbackState == Player.STATE_ENDED) {
@@ -2137,14 +2137,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
             }
             MediaPeriodHolder oldPlayingPeriodHolder = queue.getPlayingPeriod();
             MediaPeriodHolder newPlayingPeriodHolder = queue.advancePlayingPeriod();
-            playbackInfo =
-                handlePositionDiscontinuity(
-                    newPlayingPeriodHolder.info.id,
-                    newPlayingPeriodHolder.info.startPositionUs,
-                    newPlayingPeriodHolder.info.requestedContentPositionUs,
-                    /* discontinuityStartPositionUs= */ newPlayingPeriodHolder.info.startPositionUs,
-                    /* reportDiscontinuity= */ true,
-                    Player.DISCONTINUITY_REASON_AUTO_TRANSITION);
+            playbackInfo = handlePositionDiscontinuity(
+                newPlayingPeriodHolder.info.id,
+                newPlayingPeriodHolder.info.startPositionUs,
+                newPlayingPeriodHolder.info.requestedContentPositionUs,
+                /* discontinuityStartPositionUs= */ newPlayingPeriodHolder.info.startPositionUs,
+                /* reportDiscontinuity= */ true,
+                Player.DISCONTINUITY_REASON_AUTO_TRANSITION
+            );
             updateLivePlaybackSpeedControl(
                 /* newTimeline= */ playbackInfo.timeline,
                 /* newPeriodId= */ newPlayingPeriodHolder.info.id,
@@ -2338,11 +2338,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
         long contentPositionUs,
         long discontinuityStartPositionUs,
         boolean reportDiscontinuity,
-        @DiscontinuityReason int discontinuityReason) {
-        deliverPendingMessageAtStartPositionRequired =
-            deliverPendingMessageAtStartPositionRequired
-                || positionUs != playbackInfo.positionUs
-                || !mediaPeriodId.equals(playbackInfo.periodId);
+        @DiscontinuityReason int discontinuityReason
+    ) {
+        deliverPendingMessageAtStartPositionRequired = deliverPendingMessageAtStartPositionRequired
+            || positionUs != playbackInfo.positionUs
+            || !mediaPeriodId.equals(playbackInfo.periodId);
         resetPendingPauseAtEndOfPeriod();
         TrackGroupArray trackGroupArray = playbackInfo.trackGroups;
         TrackSelectorResult trackSelectorResult = playbackInfo.trackSelectorResult;
