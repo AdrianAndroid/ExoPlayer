@@ -107,6 +107,7 @@ public final class MediaFormatUtil {
 
   /**
    * Sets a {@link MediaFormat}'s codec specific data buffers.
+   * 设置 MediaFormat 的编解码器特定数据缓冲区
    *
    * @param format The {@link MediaFormat} being configured.
    * @param csdBuffers The csd buffers to set.

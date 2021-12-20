@@ -73,7 +73,7 @@ import java.nio.ByteBuffer;
     private final MediaMuxer mediaMuxer;
     private final String outputMimeType;
     private final MediaCodec.BufferInfo bufferInfo;
-    private       boolean isStarted;
+    private boolean isStarted;
 
     private FrameworkMuxer(MediaMuxer mediaMuxer, String outputMimeType) {
         this.mediaMuxer = mediaMuxer;
