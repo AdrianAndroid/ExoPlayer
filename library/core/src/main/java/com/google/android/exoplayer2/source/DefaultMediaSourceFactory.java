@@ -103,6 +103,10 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
 
     private static final String TAG = "DefaultMediaSourceFactory";
 
+    private static void log(String msg) {
+        Log.i(TAG, msg);
+    }
+
     private final DataSource.Factory dataSourceFactory;
     private final SparseArray<MediaSourceFactory> mediaSourceFactories;
     @C.ContentType
@@ -127,6 +131,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      */
     public DefaultMediaSourceFactory(Context context) {
         this(new DefaultDataSourceFactory(context));
+        log("DefaultMediaSourceFactory(Context context)");
     }
 
     /**
@@ -138,6 +143,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      */
     public DefaultMediaSourceFactory(Context context, ExtractorsFactory extractorsFactory) {
         this(new DefaultDataSourceFactory(context), extractorsFactory);
+        log("DefaultMediaSourceFactory(Context context, ExtractorsFactory extractorsFactory)");
     }
 
     /**
@@ -148,6 +154,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      */
     public DefaultMediaSourceFactory(DataSource.Factory dataSourceFactory) {
         this(dataSourceFactory, new DefaultExtractorsFactory());
+        log("DefaultMediaSourceFactory(DataSource.Factory dataSourceFactory)");
     }
 
     /**
@@ -158,9 +165,9 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @param extractorsFactory An {@link ExtractorsFactory} used to extract progressive media from
      *                          its container.
      */
-    public DefaultMediaSourceFactory(
-        DataSource.Factory dataSourceFactory, ExtractorsFactory extractorsFactory) {
-        this.dataSourceFactory = dataSourceFactory;
+    public DefaultMediaSourceFactory(DataSource.Factory dataSourceFactory, ExtractorsFactory extractorsFactory) {
+        log("DefaultMediaSourceFactory(DataSource.Factory dataSourceFactory, ExtractorsFactory extractorsFactory)");
+        this.dataSourceFactory = dataSourceFactory; // CacheDataSource
         mediaSourceFactories = loadDelegates(dataSourceFactory, extractorsFactory);
         supportedTypes = new int[mediaSourceFactories.size()];
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
@@ -180,8 +187,8 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @param adsLoaderProvider A provider for {@link AdsLoader} instances.
      * @return This factory, for convenience.
      */
-    public DefaultMediaSourceFactory setAdsLoaderProvider(
-        @Nullable AdsLoaderProvider adsLoaderProvider) {
+    public DefaultMediaSourceFactory setAdsLoaderProvider(@Nullable AdsLoaderProvider adsLoaderProvider) {
+        log("setAdsLoaderProvider(@Nullable AdsLoaderProvider adsLoaderProvider)");
         this.adsLoaderProvider = adsLoaderProvider;
         return this;
     }
@@ -193,6 +200,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @return This factory, for convenience.
      */
     public DefaultMediaSourceFactory setAdViewProvider(@Nullable AdViewProvider adViewProvider) {
+        log("setAdViewProvider(@Nullable AdViewProvider adViewProvider)");
         this.adViewProvider = adViewProvider;
         return this;
     }
@@ -205,6 +213,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @return This factory, for convenience.
      */
     public DefaultMediaSourceFactory setLiveTargetOffsetMs(long liveTargetOffsetMs) {
+        log("setLiveTargetOffsetMs(long liveTargetOffsetMs)");
         this.liveTargetOffsetMs = liveTargetOffsetMs;
         return this;
     }
@@ -217,6 +226,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @return This factory, for convenience.
      */
     public DefaultMediaSourceFactory setLiveMinOffsetMs(long liveMinOffsetMs) {
+        log("setLiveMinOffsetMs(long liveMinOffsetMs)");
         this.liveMinOffsetMs = liveMinOffsetMs;
         return this;
     }
@@ -229,6 +239,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @return This factory, for convenience.
      */
     public DefaultMediaSourceFactory setLiveMaxOffsetMs(long liveMaxOffsetMs) {
+        log("setLiveMaxOffsetMs(long liveMaxOffsetMs)");
         this.liveMaxOffsetMs = liveMaxOffsetMs;
         return this;
     }
@@ -241,6 +252,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @return This factory, for convenience.
      */
     public DefaultMediaSourceFactory setLiveMinSpeed(float minSpeed) {
+        log("setLiveMinSpeed(float minSpeed)");
         this.liveMinSpeed = minSpeed;
         return this;
     }
@@ -253,6 +265,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
      * @return This factory, for convenience.
      */
     public DefaultMediaSourceFactory setLiveMaxSpeed(float maxSpeed) {
+        log("setLiveMaxSpeed(float maxSpeed)");
         this.liveMaxSpeed = maxSpeed;
         return this;
     }
@@ -261,6 +274,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     @Override
     public DefaultMediaSourceFactory setDrmHttpDataSourceFactory(
         @Nullable HttpDataSource.Factory drmHttpDataSourceFactory) {
+        log("setDrmHttpDataSourceFactory(@Nullable HttpDataSource.Factory drmHttpDataSourceFactory)");
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
             mediaSourceFactories.valueAt(i).setDrmHttpDataSourceFactory(drmHttpDataSourceFactory);
         }
@@ -270,6 +284,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     @SuppressWarnings("deprecation") // Calling through to the same deprecated method.
     @Override
     public DefaultMediaSourceFactory setDrmUserAgent(@Nullable String userAgent) {
+        log("setDrmUserAgent(@Nullable String userAgent)");
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
             mediaSourceFactories.valueAt(i).setDrmUserAgent(userAgent);
         }
@@ -278,8 +293,8 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
 
     @SuppressWarnings("deprecation") // Calling through to the same deprecated method.
     @Override
-    public DefaultMediaSourceFactory setDrmSessionManager(
-        @Nullable DrmSessionManager drmSessionManager) {
+    public DefaultMediaSourceFactory setDrmSessionManager(@Nullable DrmSessionManager drmSessionManager) {
+        log("setDrmSessionManager(@Nullable DrmSessionManager drmSessionManager)");
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
             mediaSourceFactories.valueAt(i).setDrmSessionManager(drmSessionManager);
         }
@@ -289,6 +304,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     @Override
     public DefaultMediaSourceFactory setDrmSessionManagerProvider(
         @Nullable DrmSessionManagerProvider drmSessionManagerProvider) {
+        log("setDrmSessionManagerProvider(@Nullable DrmSessionManagerProvider drmSessionManagerProvider)");
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
             mediaSourceFactories.valueAt(i).setDrmSessionManagerProvider(drmSessionManagerProvider);
         }
@@ -298,6 +314,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     @Override
     public DefaultMediaSourceFactory setLoadErrorHandlingPolicy(
         @Nullable LoadErrorHandlingPolicy loadErrorHandlingPolicy) {
+        log("setLoadErrorHandlingPolicy(@Nullable LoadErrorHandlingPolicy loadErrorHandlingPolicy)");
         this.loadErrorHandlingPolicy = loadErrorHandlingPolicy;
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
             mediaSourceFactories.valueAt(i).setLoadErrorHandlingPolicy(loadErrorHandlingPolicy);
@@ -313,6 +330,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     @Deprecated
     @Override
     public DefaultMediaSourceFactory setStreamKeys(@Nullable List<StreamKey> streamKeys) {
+        log("setStreamKeys(@Nullable List<StreamKey> streamKeys)");
         for (int i = 0; i < mediaSourceFactories.size(); i++) {
             mediaSourceFactories.valueAt(i).setStreamKeys(streamKeys);
         }
@@ -321,16 +339,17 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
 
     @Override
     public int[] getSupportedTypes() {
+        log("getSupportedTypes()");
         return Arrays.copyOf(supportedTypes, supportedTypes.length);
     }
 
     @Override
     public MediaSource createMediaSource(MediaItem mediaItem) {
+        log("createMediaSource(MediaItem mediaItem)");
         Assertions.checkNotNull(mediaItem.playbackProperties);
         @C.ContentType
-        int type =
-            Util.inferContentTypeForUriAndMimeType(
-                mediaItem.playbackProperties.uri, mediaItem.playbackProperties.mimeType);
+        int type = Util.inferContentTypeForUriAndMimeType(
+            mediaItem.playbackProperties.uri, mediaItem.playbackProperties.mimeType);
         @Nullable MediaSourceFactory mediaSourceFactory = mediaSourceFactories.get(type);
         Assertions.checkNotNull(
             mediaSourceFactory, "No suitable media source factory found for content type: " + type);
@@ -393,6 +412,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     // internal methods
 
     private static MediaSource maybeClipMediaSource(MediaItem mediaItem, MediaSource mediaSource) {
+        log("maybeClipMediaSource(MediaItem mediaItem, MediaSource mediaSource)");
         if (mediaItem.clippingProperties.startPositionMs == 0
             && mediaItem.clippingProperties.endPositionMs == C.TIME_END_OF_SOURCE
             && !mediaItem.clippingProperties.relativeToDefaultPosition) {
@@ -408,6 +428,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     }
 
     private MediaSource maybeWrapWithAdsMediaSource(MediaItem mediaItem, MediaSource mediaSource) {
+        log("maybeWrapWithAdsMediaSource(MediaItem mediaItem, MediaSource mediaSource)");
         Assertions.checkNotNull(mediaItem.playbackProperties);
         @Nullable
         MediaItem.AdsConfiguration adsConfiguration = mediaItem.playbackProperties.adsConfiguration;
@@ -438,8 +459,9 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
             adViewProvider);
     }
 
-    private static SparseArray<MediaSourceFactory> loadDelegates(
-        DataSource.Factory dataSourceFactory, ExtractorsFactory extractorsFactory) {
+    private static SparseArray<MediaSourceFactory> loadDelegates(DataSource.Factory dataSourceFactory,
+                                                                 ExtractorsFactory extractorsFactory) {
+        log("loadDelegates(DataSource.Factory dataSourceFactory, ExtractorsFactory extractorsFactory)");
         SparseArray<MediaSourceFactory> factories = new SparseArray<>();
         try {
             Class<? extends MediaSourceFactory> factoryClazz =
