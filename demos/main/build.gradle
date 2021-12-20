@@ -82,6 +82,8 @@ dependencies {
     withDecoderExtensionsImplementation project(modulePrefix + 'extension-opus')
     withDecoderExtensionsImplementation project(modulePrefix + 'extension-vp9')
     withDecoderExtensionsImplementation project(modulePrefix + 'extension-rtmp')
+
+    implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'

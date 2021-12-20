@@ -59,6 +59,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -221,9 +222,7 @@ public class SampleChooserActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, View view, int groupPosition,
-                                int childPosition, long id) {
-
+    public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
         // Save the selected item first to be able to restore it if the tested code crashes.
         SharedPreferences.Editor prefEditor = getPreferences(MODE_PRIVATE).edit();
         prefEditor.putInt(GROUP_POSITION_PREFERENCE_KEY, groupPosition);
@@ -231,10 +230,21 @@ public class SampleChooserActivity extends AppCompatActivity
         prefEditor.apply();
 
         PlaylistHolder playlistHolder = (PlaylistHolder) view.getTag();
+        //[MediaItem{mediaId='', playbackProperties=PlaybackProperties{
+        // uri=https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd, mimeType='application/dash+xml',
+        // drmConfiguration=null, adsConfiguration=null, streamKeys=[], customCacheKey='null', subtitles=[], tag=null},
+        // liveConfiguration=LiveConfiguration{targetOffsetMs=-9223372036854775807, minOffsetMs=-9223372036854775807,
+        // maxOffsetMs=-9223372036854775807, minPlaybackSpeed=-3.4028235E38, maxPlaybackSpeed=-3.4028235E38},
+        // mediaMetadata=com.google.android.exoplayer2.MediaMetadata@443c8041,
+        // clippingProperties=ClippingProperties{startPositionMs=0, endPositionMs=-9223372036854775808,
+        // relativeToLiveWindow=false, relativeToDefaultPosition=false, startsAtKeyFrame=false}}]
         Intent intent = new Intent(this, PlayerActivity.class);
-        intent
-            .putExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, isNonNullAndChecked(preferExtensionDecodersMenuItem));
+        intent.putExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA,
+            isNonNullAndChecked(preferExtensionDecodersMenuItem));
         IntentUtil.addToIntent(playlistHolder.mediaItems, intent);
+        Log.i(TAG, intent.toString());
+        // Intent { act=com.google.android.exoplayer.demo.action.VIEW dat=https://storage.googleapis.com/... cmp=com
+        // .google.android.exoplayer2.demo/.PlayerActivity (has extras) }
         startActivity(intent);
         return true;
     }
@@ -242,14 +252,12 @@ public class SampleChooserActivity extends AppCompatActivity
     private void onSampleDownloadButtonClicked(PlaylistHolder playlistHolder) {
         int downloadUnsupportedStringId = getDownloadUnsupportedStringId(playlistHolder);
         if (downloadUnsupportedStringId != 0) {
-            Toast.makeText(getApplicationContext(), downloadUnsupportedStringId, Toast.LENGTH_LONG)
-                .show();
+            Toast.makeText(getApplicationContext(), downloadUnsupportedStringId, Toast.LENGTH_LONG).show();
         } else {
-            RenderersFactory renderersFactory =
-                DemoUtil.buildRenderersFactory(
-                    /* context= */ this, isNonNullAndChecked(preferExtensionDecodersMenuItem));
-            downloadTracker.toggleDownload(
-                getSupportFragmentManager(), playlistHolder.mediaItems.get(0), renderersFactory);
+            RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(
+                /* context= */ this, isNonNullAndChecked(preferExtensionDecodersMenuItem));
+            downloadTracker.toggleDownload(getSupportFragmentManager(),
+                playlistHolder.mediaItems.get(0), renderersFactory);
         }
     }
 
@@ -298,6 +306,7 @@ public class SampleChooserActivity extends AppCompatActivity
                     Util.closeQuietly(dataSource);
                 }
             }
+            Log.i(TAG, new Gson().toJson(result)); // 把json文件全部解析出来了
             return result;
         }
 
@@ -567,14 +576,11 @@ public class SampleChooserActivity extends AppCompatActivity
             sampleTitle.setText(playlistHolder.title);
 
             boolean canDownload = getDownloadUnsupportedStringId(playlistHolder) == 0;
-            boolean isDownloaded =
-                canDownload && downloadTracker.isDownloaded(playlistHolder.mediaItems.get(0));
+            boolean isDownloaded = canDownload && downloadTracker.isDownloaded(playlistHolder.mediaItems.get(0));
             ImageButton downloadButton = view.findViewById(R.id.download_button);
             downloadButton.setTag(playlistHolder);
-            downloadButton.setColorFilter(
-                canDownload ? (isDownloaded ? 0xFF42A5F5 : 0xFFBDBDBD) : 0xFF666666);
-            downloadButton.setImageResource(
-                isDownloaded ? R.drawable.ic_download_done : R.drawable.ic_download);
+            downloadButton.setColorFilter(canDownload ? (isDownloaded ? 0xFF42A5F5 : 0xFFBDBDBD) : 0xFF666666);
+            downloadButton.setImageResource(isDownloaded ? R.drawable.ic_download_done : R.drawable.ic_download);
         }
     }
 
@@ -588,6 +594,14 @@ public class SampleChooserActivity extends AppCompatActivity
             this.title = title;
             this.mediaItems = Collections.unmodifiableList(new ArrayList<>(mediaItems));
         }
+
+        @Override
+        public String toString() {
+            return "PlaylistHolder{" +
+                "title='" + title + '\'' +
+                ", mediaItems=" + mediaItems +
+                '}';
+        }
     }
 
     private static final class PlaylistGroup {
@@ -598,6 +612,14 @@ public class SampleChooserActivity extends AppCompatActivity
         public PlaylistGroup(String title) {
             this.title = title;
             this.playlists = new ArrayList<>();
+        }
+
+        @Override
+        public String toString() {
+            return "PlaylistGroup{" +
+                "title='" + title + '\'' +
+                ", playlists=" + playlists +
+                '}';
         }
     }
 }
