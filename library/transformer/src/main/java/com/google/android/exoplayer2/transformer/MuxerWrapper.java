@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 
 /**
  * A wrapper around a media muxer.
+ * 一个media muxer 的包装类
  *
  * <p>This wrapper can contain at most one video track and one audio track.
  */
