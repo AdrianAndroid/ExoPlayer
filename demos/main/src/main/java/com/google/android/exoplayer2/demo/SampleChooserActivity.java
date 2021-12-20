@@ -121,7 +121,7 @@ public class SampleChooserActivity extends AppCompatActivity
             Arrays.sort(uris);
         }
 
-        useExtensionRenderers = DemoUtil.useExtensionRenderers();
+        useExtensionRenderers = DemoUtil.useExtensionRenderers(); // false
         downloadTracker = DemoUtil.getDownloadTracker(/* context= */ this);
         loadSample();
 

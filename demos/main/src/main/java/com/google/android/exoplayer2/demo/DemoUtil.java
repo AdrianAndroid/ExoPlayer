@@ -227,7 +227,7 @@ public final class DemoUtil {
 
     private static synchronized File getDownloadDirectory(Context context) {
         if (downloadDirectory == null) {
-            downloadDirectory = context.getExternalFilesDir(/* type= */ null);
+            downloadDirectory = context.getExternalFilesDir(/* type= */ null); //*.android.exoplayer2.demo/files
             if (downloadDirectory == null) {
                 downloadDirectory = context.getFilesDir();
             }
