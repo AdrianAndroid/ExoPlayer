@@ -284,13 +284,16 @@ public class PlayerActivity extends AppCompatActivity
             }
 
             boolean preferExtensionDecoders = intent.getBooleanExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, false);
-            RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders);
-            MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory)
+            RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders); //
+            // DefaultRednderersFactory
+            MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory) //
+                // DefaultMediaSourceFacotry
                 .setAdsLoaderProvider(this::getAdsLoader)
                 .setAdViewProvider(playerView);
             // 初始化轨道选择器
             trackSelector = new DefaultTrackSelector(/* context= */ this);
             trackSelector.setParameters(trackSelectorParameters);
+            //{"allowAudioMixedChannelCountAdaptiveness":false,"allowAudioMixedMimeTypeAdaptiveness":false,"allowAudioMixedSampleRateAdaptiveness":false,"allowMultipleAdaptiveSelections":true,"allowVideoMixedMimeTypeAdaptiveness":false,"allowVideoNonSeamlessAdaptiveness":true,"disabledTextTrackSelectionFlags":0,"exceedAudioConstraintsIfNecessary":true,"exceedRendererCapabilitiesIfNecessary":true,"exceedVideoConstraintsIfNecessary":true,"rendererDisabledFlags":{"mKeys":[0,0,0,0,0,0,0,0,0,0,0,0,0],"mSize":0,"mValues":[false,false,false,false,false,false,false,false,false,false,false,false,false]},"selectionOverrides":{"mGarbage":false,"mKeys":[0,0,0,0,0,0,0,0,0,0,0,0,0],"mSize":0,"mValues":[null,null,null,null,null,null,null,null,null,null,null,null,null]},"tunnelingEnabled":false,"forceHighestSupportedBitrate":false,"forceLowestBitrate":false,"maxAudioBitrate":2147483647,"maxAudioChannelCount":2147483647,"maxVideoBitrate":2147483647,"maxVideoFrameRate":2147483647,"maxVideoHeight":2147483647,"maxVideoWidth":2147483647,"minVideoBitrate":0,"minVideoFrameRate":0,"minVideoHeight":0,"minVideoWidth":0,"preferredAudioLanguages":[],"preferredAudioMimeTypes":[],"preferredAudioRoleFlags":0,"preferredTextLanguages":[],"preferredTextRoleFlags":0,"preferredVideoMimeTypes":[],"selectUndeterminedTextLanguage":false,"viewportHeight":1040,"viewportOrientationMayChange":true,"viewportWidth":1664}
             lastSeenTrackGroupArray = null;
             player = new SimpleExoPlayer.Builder(/* context= */ this, renderersFactory)
                 .setMediaSourceFactory(mediaSourceFactory)

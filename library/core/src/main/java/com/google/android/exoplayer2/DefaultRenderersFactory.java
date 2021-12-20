@@ -315,6 +315,7 @@ public class DefaultRenderersFactory implements RenderersFactory {
         TextOutput textRendererOutput,
         MetadataOutput metadataRendererOutput) {
         ArrayList<Renderer> renderersList = new ArrayList<>();
+        // buildVideoRenderers
         buildVideoRenderers(
             context,
             extensionRendererMode,
@@ -324,9 +325,10 @@ public class DefaultRenderersFactory implements RenderersFactory {
             videoRendererEventListener,
             allowedVideoJoiningTimeMs,
             renderersList);
+
+        // buildAudioRenderers
         @Nullable
-        AudioSink audioSink =
-            buildAudioSink(context, enableFloatOutput, enableAudioTrackPlaybackParams, enableOffload);
+        AudioSink audioSink = buildAudioSink(context, enableFloatOutput, enableAudioTrackPlaybackParams, enableOffload);
         if (audioSink != null) {
             buildAudioRenderers(
                 context,
@@ -338,19 +340,27 @@ public class DefaultRenderersFactory implements RenderersFactory {
                 audioRendererEventListener,
                 renderersList);
         }
+
+        // buildTextRenderers
         buildTextRenderers(
             context,
             textRendererOutput,
             eventHandler.getLooper(),
             extensionRendererMode,
             renderersList);
+
+        // buildMetadataRenders
         buildMetadataRenderers(
             context,
             metadataRendererOutput,
             eventHandler.getLooper(),
             extensionRendererMode,
             renderersList);
+
+        // buildCameraMotionRenderers
         buildCameraMotionRenderers(context, extensionRendererMode, renderersList);
+
+        // buildMiscellaneousRenderers // do nothing
         buildMiscellaneousRenderers(context, eventHandler, extensionRendererMode, renderersList);
         return renderersList.toArray(new Renderer[0]);
     }
@@ -602,8 +612,8 @@ public class DefaultRenderersFactory implements RenderersFactory {
      * @param extensionRendererMode The extension renderer mode.
      * @param out                   An array to which the built renderers should be appended.
      */
-    protected void buildCameraMotionRenderers(
-        Context context, @ExtensionRendererMode int extensionRendererMode, ArrayList<Renderer> out) {
+    protected void buildCameraMotionRenderers(Context context, @ExtensionRendererMode int extensionRendererMode,
+                                              ArrayList<Renderer> out) {
         out.add(new CameraMotionRenderer());
     }
 

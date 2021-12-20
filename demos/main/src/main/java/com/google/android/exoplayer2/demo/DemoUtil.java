@@ -182,22 +182,12 @@ public final class DemoUtil {
     private static synchronized void ensureDownloadManagerInitialized(Context context) {
         if (downloadManager == null) {
             DefaultDownloadIndex downloadIndex = new DefaultDownloadIndex(getDatabaseProvider(context));
-            upgradeActionFile(
-                context, DOWNLOAD_ACTION_FILE, downloadIndex, /* addNewDownloadsAsCompleted= */ false);
-            upgradeActionFile(
-                context,
-                DOWNLOAD_TRACKER_ACTION_FILE,
-                downloadIndex,
-                /* addNewDownloadsAsCompleted= */ true);
-            downloadManager =
-                new DownloadManager(
-                    context,
-                    getDatabaseProvider(context),
-                    getDownloadCache(context),
-                    getHttpDataSourceFactory(context),
-                    Executors.newFixedThreadPool(/* nThreads= */ 6));
-            downloadTracker =
-                new DownloadTracker(context, getHttpDataSourceFactory(context), downloadManager);
+            upgradeActionFile(context, DOWNLOAD_ACTION_FILE, downloadIndex, /* addNewDownloadsAsCompleted= */ false);
+            upgradeActionFile(context, DOWNLOAD_TRACKER_ACTION_FILE, downloadIndex,/* addNewDownloadsAsCompleted= */
+                true);
+            downloadManager = new DownloadManager(context, getDatabaseProvider(context), getDownloadCache(context),
+                getHttpDataSourceFactory(context), Executors.newFixedThreadPool(/* nThreads= */ 6));
+            downloadTracker = new DownloadTracker(context, getHttpDataSourceFactory(context), downloadManager);
         }
     }
 

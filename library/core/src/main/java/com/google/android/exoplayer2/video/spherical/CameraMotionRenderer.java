@@ -95,11 +95,13 @@ public final class CameraMotionRenderer extends BaseRenderer {
 
     @Override
     public void render(long positionUs, long elapsedRealtimeUs) {
+        // 打印log
         try {
             super.render(positionUs, elapsedRealtimeUs);
         } catch (ExoPlaybackException e) {
             e.printStackTrace();
         }
+        // 正式代码
         // Keep reading available samples as long as the sample time is not too far into the future.
         while (!hasReadStreamToEnd() && lastTimestampUs < positionUs + SAMPLE_WINDOW_DURATION_US) {
             buffer.clear();

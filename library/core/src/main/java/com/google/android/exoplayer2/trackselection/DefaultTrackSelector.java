@@ -731,6 +731,47 @@ public class DefaultTrackSelector extends MappingTrackSelector {
      */
     public static final class Parameters extends TrackSelectionParameters implements Parcelable {
 
+        @Override
+        public String toString() {
+            return "Parameters{" +
+                "maxVideoWidth=" + maxVideoWidth +
+                ", maxVideoHeight=" + maxVideoHeight +
+                ", maxVideoFrameRate=" + maxVideoFrameRate +
+                ", maxVideoBitrate=" + maxVideoBitrate +
+                ", minVideoWidth=" + minVideoWidth +
+                ", minVideoHeight=" + minVideoHeight +
+                ", minVideoFrameRate=" + minVideoFrameRate +
+                ", minVideoBitrate=" + minVideoBitrate +
+                ", viewportWidth=" + viewportWidth +
+                ", viewportHeight=" + viewportHeight +
+                ", viewportOrientationMayChange=" + viewportOrientationMayChange +
+                ", preferredVideoMimeTypes=" + preferredVideoMimeTypes +
+                ", preferredAudioLanguages=" + preferredAudioLanguages +
+                ", preferredAudioRoleFlags=" + preferredAudioRoleFlags +
+                ", maxAudioChannelCount=" + maxAudioChannelCount +
+                ", maxAudioBitrate=" + maxAudioBitrate +
+                ", preferredAudioMimeTypes=" + preferredAudioMimeTypes +
+                ", preferredTextLanguages=" + preferredTextLanguages +
+                ", preferredTextRoleFlags=" + preferredTextRoleFlags +
+                ", selectUndeterminedTextLanguage=" + selectUndeterminedTextLanguage +
+                ", forceLowestBitrate=" + forceLowestBitrate +
+                ", forceHighestSupportedBitrate=" + forceHighestSupportedBitrate +
+                ", disabledTextTrackSelectionFlags=" + disabledTextTrackSelectionFlags +
+                ", exceedVideoConstraintsIfNecessary=" + exceedVideoConstraintsIfNecessary +
+                ", allowVideoMixedMimeTypeAdaptiveness=" + allowVideoMixedMimeTypeAdaptiveness +
+                ", allowVideoNonSeamlessAdaptiveness=" + allowVideoNonSeamlessAdaptiveness +
+                ", exceedAudioConstraintsIfNecessary=" + exceedAudioConstraintsIfNecessary +
+                ", allowAudioMixedMimeTypeAdaptiveness=" + allowAudioMixedMimeTypeAdaptiveness +
+                ", allowAudioMixedSampleRateAdaptiveness=" + allowAudioMixedSampleRateAdaptiveness +
+                ", allowAudioMixedChannelCountAdaptiveness=" + allowAudioMixedChannelCountAdaptiveness +
+                ", exceedRendererCapabilitiesIfNecessary=" + exceedRendererCapabilitiesIfNecessary +
+                ", tunnelingEnabled=" + tunnelingEnabled +
+                ", allowMultipleAdaptiveSelections=" + allowMultipleAdaptiveSelections +
+                ", selectionOverrides=" + selectionOverrides +
+                ", rendererDisabledFlags=" + rendererDisabledFlags +
+                '}';
+        }
+
         /**
          * An instance with default values, except those obtained from the {@link Context}.
          *

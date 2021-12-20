@@ -435,11 +435,9 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
         } else if (result == C.RESULT_FORMAT_READ) {
             Format format = Assertions.checkNotNull(formatHolder.format);
             if (format.subsampleOffsetUs != Format.OFFSET_SAMPLE_RELATIVE) {
-                format =
-                    format
-                        .buildUpon()
-                        .setSubsampleOffsetUs(format.subsampleOffsetUs + streamOffsetUs)
-                        .build();
+                format = format.buildUpon()
+                    .setSubsampleOffsetUs(format.subsampleOffsetUs + streamOffsetUs)
+                    .build();
                 formatHolder.format = format;
             }
         }
