@@ -422,13 +422,11 @@ public class DefaultRenderersFactory implements RenderersFactory {
                     android.os.Handler.class,
                     com.google.android.exoplayer2.video.VideoRendererEventListener.class,
                     int.class);
-            Renderer renderer =
-                (Renderer)
-                    constructor.newInstance(
-                        allowedVideoJoiningTimeMs,
-                        eventHandler,
-                        eventListener,
-                        MAX_DROPPED_VIDEO_FRAME_COUNT_TO_NOTIFY);
+            Renderer renderer = (Renderer) constructor.newInstance(
+                allowedVideoJoiningTimeMs,
+                eventHandler,
+                eventListener,
+                MAX_DROPPED_VIDEO_FRAME_COUNT_TO_NOTIFY);
             out.add(extensionRendererIndex++, renderer);
             Log.i(TAG, "Loaded LibvpxVideoRenderer.");
         } catch (ClassNotFoundException e) {
@@ -441,19 +439,16 @@ public class DefaultRenderersFactory implements RenderersFactory {
         try {
             // Full class names used for constructor args so the LINT rule triggers if any of them move.
             Class<?> clazz = Class.forName("com.google.android.exoplayer2.ext.av1.Libgav1VideoRenderer");
-            Constructor<?> constructor =
-                clazz.getConstructor(
-                    long.class,
-                    android.os.Handler.class,
-                    com.google.android.exoplayer2.video.VideoRendererEventListener.class,
-                    int.class);
-            Renderer renderer =
-                (Renderer)
-                    constructor.newInstance(
-                        allowedVideoJoiningTimeMs,
-                        eventHandler,
-                        eventListener,
-                        MAX_DROPPED_VIDEO_FRAME_COUNT_TO_NOTIFY);
+            Constructor<?> constructor = clazz.getConstructor(
+                long.class,
+                android.os.Handler.class,
+                com.google.android.exoplayer2.video.VideoRendererEventListener.class,
+                int.class);
+            Renderer renderer = (Renderer) constructor.newInstance(
+                allowedVideoJoiningTimeMs,
+                eventHandler,
+                eventListener,
+                MAX_DROPPED_VIDEO_FRAME_COUNT_TO_NOTIFY);
             out.add(extensionRendererIndex++, renderer);
             Log.i(TAG, "Loaded Libgav1VideoRenderer.");
         } catch (ClassNotFoundException e) {

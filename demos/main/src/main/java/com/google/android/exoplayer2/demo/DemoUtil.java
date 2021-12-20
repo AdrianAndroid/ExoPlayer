@@ -170,11 +170,9 @@ public final class DemoUtil {
 
     private static synchronized Cache getDownloadCache(Context context) {
         if (downloadCache == null) {
-            File downloadContentDirectory =
-                new File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY);
+            File downloadContentDirectory = new File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY);
             downloadCache =
-                new SimpleCache(
-                    downloadContentDirectory, new NoOpCacheEvictor(), getDatabaseProvider(context));
+                new SimpleCache(downloadContentDirectory, new NoOpCacheEvictor(), getDatabaseProvider(context));
         }
         return downloadCache;
     }
