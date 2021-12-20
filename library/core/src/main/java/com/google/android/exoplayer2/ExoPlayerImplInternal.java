@@ -103,6 +103,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         public void incrementPendingOperationAcks(int operationAcks) {
             hasPendingChange |= operationAcks > 0;
             this.operationAcks += operationAcks;
+            log("operationAcks = " + this.operationAcks);
         }
 
         public void setPlaybackInfo(PlaybackInfo playbackInfo) {
@@ -716,7 +717,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
             /* resetRenderers= */ false,
             /* resetPosition= */ false,
             /* releaseMediaSourceList= */ false,
-            /* resetError= */ true);
+            /* resetError= */ true); // 重置
         loadControl.onPrepared();
         setState(playbackInfo.timeline.isEmpty() ? Player.STATE_ENDED : Player.STATE_BUFFERING);
         mediaSourceList.prepare(bandwidthMeter.getTransferListener());
@@ -1404,7 +1405,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         boolean resetRenderers,
         boolean resetPosition,
         boolean releaseMediaSourceList,
-        boolean resetError) {
+        boolean resetError) { // 恢复到默认位置
         handler.removeMessages(MSG_DO_SOME_WORK);
         pendingRecoverableRendererError = null;
         isRebuffering = false;
