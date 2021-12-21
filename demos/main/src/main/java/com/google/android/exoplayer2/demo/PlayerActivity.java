@@ -282,7 +282,6 @@ public class PlayerActivity extends AppCompatActivity
             if (mediaItems.isEmpty()) {
                 return false;
             }
-
             boolean preferExtensionDecoders = intent.getBooleanExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, false);
             RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders); //
             // DefaultRednderersFactory
@@ -321,7 +320,7 @@ public class PlayerActivity extends AppCompatActivity
     private List<MediaItem> createMediaItems(Intent intent) {
         String action = intent.getAction();
         boolean actionIsListView = IntentUtil.ACTION_VIEW_LIST.equals(action);
-        if (!actionIsListView && !IntentUtil.ACTION_VIEW.equals(action)) {
+        if (!actionIsListView && !IntentUtil.ACTION_VIEW.equals(action)) {// 此处说明不是列表
             showToast(getString(R.string.unexpected_intent_action, action));
             finish();
             return Collections.emptyList();
