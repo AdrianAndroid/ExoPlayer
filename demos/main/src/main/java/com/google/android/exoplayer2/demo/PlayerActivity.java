@@ -283,8 +283,9 @@ public class PlayerActivity extends AppCompatActivity
                 return false;
             }
             boolean preferExtensionDecoders = intent.getBooleanExtra(IntentUtil.PREFER_EXTENSION_DECODERS_EXTRA, false);
-            RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders); //
-            // DefaultRednderersFactory
+            // 处理音视频的播放
+            RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders);
+            // DefaultRednderersFactory， 加载的源文件
             MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory) //
                 // DefaultMediaSourceFacotry
                 .setAdsLoaderProvider(this::getAdsLoader)

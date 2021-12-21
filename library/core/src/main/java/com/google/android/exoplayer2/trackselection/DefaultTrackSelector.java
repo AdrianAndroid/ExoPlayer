@@ -1356,8 +1356,7 @@ public class DefaultTrackSelector extends MappingTrackSelector {
     // MappingTrackSelector implementation.
 
     @Override
-    protected final Pair<@NullableType RendererConfiguration[], @NullableType ExoTrackSelection[]>
-    selectTracks(
+    protected final Pair<@NullableType RendererConfiguration[], @NullableType ExoTrackSelection[]> selectTracks(
         MappedTrackInfo mappedTrackInfo,
         @Capabilities int[][][] rendererFormatSupports,
         @AdaptiveSupport int[] rendererMixedMimeTypeAdaptationSupports,
@@ -2165,8 +2164,7 @@ public class DefaultTrackSelector extends MappingTrackSelector {
      * allowExceedsCapabilities} is set and the format support is {@link
      * C#FORMAT_EXCEEDS_CAPABILITIES}.
      */
-    protected static boolean isSupported(
-        @Capabilities int formatSupport, boolean allowExceedsCapabilities) {
+    protected static boolean isSupported(@Capabilities int formatSupport, boolean allowExceedsCapabilities) {
         @FormatSupport int maskedSupport = RendererCapabilities.getFormatSupport(formatSupport);
         return maskedSupport == C.FORMAT_HANDLED
             || (allowExceedsCapabilities && maskedSupport == C.FORMAT_EXCEEDS_CAPABILITIES);
@@ -2417,11 +2415,10 @@ public class DefaultTrackSelector extends MappingTrackSelector {
             int bestLanguageScore = 0;
             int bestLanguageIndex = Integer.MAX_VALUE;
             for (int i = 0; i < parameters.preferredAudioLanguages.size(); i++) {
-                int score =
-                    getFormatLanguageScore(
-                        format,
-                        parameters.preferredAudioLanguages.get(i),
-                        /* allowUndeterminedFormatLanguage= */ false);
+                int score = getFormatLanguageScore(
+                    format,
+                    parameters.preferredAudioLanguages.get(i),
+                    /* allowUndeterminedFormatLanguage= */ false);
                 if (score > 0) {
                     bestLanguageIndex = i;
                     bestLanguageScore = score;
@@ -2430,23 +2427,20 @@ public class DefaultTrackSelector extends MappingTrackSelector {
             }
             preferredLanguageIndex = bestLanguageIndex;
             preferredLanguageScore = bestLanguageScore;
-            preferredRoleFlagsScore =
-                Integer.bitCount(format.roleFlags & parameters.preferredAudioRoleFlags);
+            preferredRoleFlagsScore = Integer.bitCount(format.roleFlags & parameters.preferredAudioRoleFlags);
             isDefaultSelectionFlag = (format.selectionFlags & C.SELECTION_FLAG_DEFAULT) != 0;
             channelCount = format.channelCount;
             sampleRate = format.sampleRate;
             bitrate = format.bitrate;
-            isWithinConstraints =
-                (format.bitrate == Format.NO_VALUE || format.bitrate <= parameters.maxAudioBitrate)
-                    && (format.channelCount == Format.NO_VALUE
-                    || format.channelCount <= parameters.maxAudioChannelCount);
+            isWithinConstraints = (format.bitrate == Format.NO_VALUE || format.bitrate <= parameters.maxAudioBitrate)
+                && (format.channelCount == Format.NO_VALUE
+                || format.channelCount <= parameters.maxAudioChannelCount);
             String[] localeLanguages = Util.getSystemLanguageCodes();
             int bestLocaleMatchIndex = Integer.MAX_VALUE;
             int bestLocaleMatchScore = 0;
             for (int i = 0; i < localeLanguages.length; i++) {
-                int score =
-                    getFormatLanguageScore(
-                        format, localeLanguages[i], /* allowUndeterminedFormatLanguage= */ false);
+                int score = getFormatLanguageScore(
+                    format, localeLanguages[i], /* allowUndeterminedFormatLanguage= */ false);
                 if (score > 0) {
                     bestLocaleMatchIndex = i;
                     bestLocaleMatchScore = score;

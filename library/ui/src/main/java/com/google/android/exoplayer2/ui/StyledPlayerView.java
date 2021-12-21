@@ -1244,11 +1244,8 @@ public class StyledPlayerView extends FrameLayout implements AdViewProvider {
     public List<AdOverlayInfo> getAdOverlayInfos() {
         List<AdOverlayInfo> overlayViews = new ArrayList<>();
         if (overlayFrameLayout != null) {
-            overlayViews.add(
-                new AdOverlayInfo(
-                    overlayFrameLayout,
-                    AdOverlayInfo.PURPOSE_NOT_VISIBLE,
-                    /* detailedReason= */ "Transparent overlay does not impact viewability"));
+            overlayViews.add(new AdOverlayInfo(overlayFrameLayout, AdOverlayInfo.PURPOSE_NOT_VISIBLE,
+                /* detailedReason= */ "Transparent overlay does not impact viewability"));
         }
         if (controller != null) {
             overlayViews.add(new AdOverlayInfo(controller, AdOverlayInfo.PURPOSE_CONTROLS));
