@@ -643,7 +643,7 @@ public final class CacheDataSource implements DataSource {
         log("open(DataSpec dataSpec) = " + dataSpec);
         try {
             String key = cacheKeyFactory.buildCacheKey(dataSpec);
-            DataSpec requestDataSpec = dataSpec.buildUpon().setKey(key).build();
+            DataSpec requestDataSpec = dataSpec.buildUpon().setKey(key).build(); // 新建了一个DataSpec
             this.requestDataSpec = requestDataSpec;
             actualUri = getRedirectedUriOrDefault(cache, key, /* defaultUri= */ requestDataSpec.uri);
             readPosition = dataSpec.position;

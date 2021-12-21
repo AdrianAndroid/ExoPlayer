@@ -26,7 +26,6 @@ import com.google.android.exoplayer2.util.Assertions;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,23 +34,6 @@ import java.util.Map;
  * Defines a region of data in a resource.
  */
 public final class DataSpec {
-
-    @Override
-    public String toString() {
-        return "DataSpec{" +
-            "uri=" + uri +
-            ", uriPositionOffset=" + uriPositionOffset +
-            ", httpMethod=" + httpMethod +
-            ", httpBody=" + Arrays.toString(httpBody) +
-            ", httpRequestHeaders=" + httpRequestHeaders +
-            ", absoluteStreamPosition=" + absoluteStreamPosition +
-            ", position=" + position +
-            ", length=" + length +
-            ", key='" + key + '\'' +
-            ", flags=" + flags +
-            ", customData=" + customData +
-            '}';
-    }
 
     /**
      * Builds {@link DataSpec} instances.
@@ -833,4 +815,20 @@ public final class DataSpec {
             customData);
     }
 
+    @Override
+    public String toString() {
+        return "DataSpec["
+            + getHttpMethodString()
+            + " "
+            + uri
+            + ", "
+            + position
+            + ", "
+            + length
+            + ", "
+            + key
+            + ", "
+            + flags
+            + "]";
+    }
 }
