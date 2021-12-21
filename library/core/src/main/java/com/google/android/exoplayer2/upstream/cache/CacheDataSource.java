@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.upstream.TeeDataSource;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.upstream.cache.Cache.CacheException;
 import com.google.android.exoplayer2.util.Assertions;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.PriorityTaskManager;
 
 import java.io.IOException;
@@ -56,6 +57,10 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
  * written into the cache.
  */
 public final class CacheDataSource implements DataSource {
+
+    private static void log(String msg) {
+        Log.i("CacheDataSource", msg);
+    }
 
     /**
      * {@link DataSource.Factory} for {@link CacheDataSource} instances.
@@ -92,6 +97,7 @@ public final class CacheDataSource implements DataSource {
          * @return This factory.
          */
         public Factory setCache(Cache cache) {
+            log("setCache(Cache cache)");
             this.cache = cache;
             return this;
         }
@@ -102,6 +108,7 @@ public final class CacheDataSource implements DataSource {
          */
         @Nullable
         public Cache getCache() {
+            log("getCache()");
             return cache;
         }
 
@@ -115,6 +122,7 @@ public final class CacheDataSource implements DataSource {
          * @return This factory.
          */
         public Factory setCacheReadDataSourceFactory(DataSource.Factory cacheReadDataSourceFactory) {
+            log("setCacheReadDataSourceFactory(DataSource.Factory cacheReadDataSourceFactory)");
             this.cacheReadDataSourceFactory = cacheReadDataSourceFactory;
             return this;
         }
@@ -129,8 +137,8 @@ public final class CacheDataSource implements DataSource {
          *                                  DataSinks} for writing data to the cache, or {@code null} to disable writing.
          * @return This factory.
          */
-        public Factory setCacheWriteDataSinkFactory(
-            @Nullable DataSink.Factory cacheWriteDataSinkFactory) {
+        public Factory setCacheWriteDataSinkFactory(@Nullable DataSink.Factory cacheWriteDataSinkFactory) {
+            log("setCacheWriteDataSinkFactory(@Nullable DataSink.Factory cacheWriteDataSinkFactory)");
             this.cacheWriteDataSinkFactory = cacheWriteDataSinkFactory;
             this.cacheIsReadOnly = cacheWriteDataSinkFactory == null;
             return this;
@@ -145,6 +153,7 @@ public final class CacheDataSource implements DataSource {
          * @return This factory.
          */
         public Factory setCacheKeyFactory(CacheKeyFactory cacheKeyFactory) {
+            log("setCacheKeyFactory(CacheKeyFactory cacheKeyFactory)");
             this.cacheKeyFactory = cacheKeyFactory;
             return this;
         }
@@ -153,6 +162,7 @@ public final class CacheDataSource implements DataSource {
          * Returns the {@link CacheKeyFactory} that will be used.
          */
         public CacheKeyFactory getCacheKeyFactory() {
+            log("getCacheKeyFactory()");
             return cacheKeyFactory;
         }
 
@@ -167,8 +177,8 @@ public final class CacheDataSource implements DataSource {
          *                                  cache, or {@code null} to cause failure in the case of a cache miss.
          * @return This factory.
          */
-        public Factory setUpstreamDataSourceFactory(
-            @Nullable DataSource.Factory upstreamDataSourceFactory) {
+        public Factory setUpstreamDataSourceFactory(@Nullable DataSource.Factory upstreamDataSourceFactory) {
+            log("setUpstreamDataSourceFactory(@Nullable DataSource.Factory upstreamDataSourceFactory)");
             this.upstreamDataSourceFactory = upstreamDataSourceFactory;
             return this;
         }
@@ -191,8 +201,8 @@ public final class CacheDataSource implements DataSource {
          * @param upstreamPriorityTaskManager The upstream {@link PriorityTaskManager}.
          * @return This factory.
          */
-        public Factory setUpstreamPriorityTaskManager(
-            @Nullable PriorityTaskManager upstreamPriorityTaskManager) {
+        public Factory setUpstreamPriorityTaskManager(@Nullable PriorityTaskManager upstreamPriorityTaskManager) {
+            log("setUpstreamPriorityTaskManager(@Nullable PriorityTaskManager upstreamPriorityTaskManager)");
             this.upstreamPriorityTaskManager = upstreamPriorityTaskManager;
             return this;
         }
@@ -203,6 +213,7 @@ public final class CacheDataSource implements DataSource {
          */
         @Nullable
         public PriorityTaskManager getUpstreamPriorityTaskManager() {
+            log("getUpstreamPriorityTaskManager()");
             return upstreamPriorityTaskManager;
         }
 
@@ -216,6 +227,7 @@ public final class CacheDataSource implements DataSource {
          * @return This factory.
          */
         public Factory setUpstreamPriority(int upstreamPriority) {
+            log("setUpstreamPriority(int upstreamPriority)");
             this.upstreamPriority = upstreamPriority;
             return this;
         }
@@ -229,6 +241,7 @@ public final class CacheDataSource implements DataSource {
          * @return This factory.
          */
         public Factory setFlags(@CacheDataSource.Flags int flags) {
+            log("setFlags(@CacheDataSource.Flags int flags)");
             this.flags = flags;
             return this;
         }
@@ -242,12 +255,14 @@ public final class CacheDataSource implements DataSource {
          * @return This factory.
          */
         public Factory setEventListener(@Nullable EventListener eventListener) {
+            log("setEventListener(@Nullable EventListener eventListener)");
             this.eventListener = eventListener;
             return this;
         }
 
         @Override
         public CacheDataSource createDataSource() {
+            log("createDataSource()");
             return createDataSourceInternal(
                 upstreamDataSourceFactory != null ? upstreamDataSourceFactory.createDataSource() : null,
                 flags,
@@ -266,6 +281,7 @@ public final class CacheDataSource implements DataSource {
          * @return An instance suitable for downloading content.
          */
         public CacheDataSource createDataSourceForDownloading() {
+            log("createDataSourceForDownloading()");
             return createDataSourceInternal(
                 upstreamDataSourceFactory != null ? upstreamDataSourceFactory.createDataSource() : null,
                 flags | FLAG_BLOCK_ON_CACHE,
@@ -287,12 +303,14 @@ public final class CacheDataSource implements DataSource {
          * @return An instance suitable for reading cached content as part of removing a download.
          */
         public CacheDataSource createDataSourceForRemovingDownload() {
+            log("createDataSourceForRemovingDownload()");
             return createDataSourceInternal(
                 /* upstreamDataSource= */ null, flags | FLAG_BLOCK_ON_CACHE, C.PRIORITY_DOWNLOAD);
         }
 
         private CacheDataSource createDataSourceInternal(@Nullable DataSource upstreamDataSource, @Flags int flags,
                                                          int upstreamPriority) {
+            log("createDataSourceInternal(@Nullable DataSource upstreamDataSource, @Flags int flags, int upstreamPriority)");
             Cache cache = checkNotNull(this.cache);
             @Nullable DataSink cacheWriteDataSink;
             if (cacheIsReadOnly || upstreamDataSource == null) {
@@ -443,6 +461,7 @@ public final class CacheDataSource implements DataSource {
      */
     public CacheDataSource(Cache cache, @Nullable DataSource upstreamDataSource) {
         this(cache, upstreamDataSource, /* flags= */ 0);
+        log("CacheDataSource(Cache cache, @Nullable DataSource upstreamDataSource)");
     }
 
     /**
@@ -463,6 +482,7 @@ public final class CacheDataSource implements DataSource {
             new CacheDataSink(cache, CacheDataSink.DEFAULT_FRAGMENT_SIZE),
             flags,
             /* eventListener= */ null);
+        log("CacheDataSource(Cache cache, @Nullable DataSource upstreamDataSource, @Flags int flags)");
     }
 
     /**
@@ -495,6 +515,13 @@ public final class CacheDataSource implements DataSource {
             flags,
             eventListener,
             /* cacheKeyFactory= */ null);
+        log("CacheDataSource(" +
+            "        Cache cache," +
+            "        @Nullable DataSource upstreamDataSource," +
+            "        DataSource cacheReadDataSource," +
+            "        @Nullable DataSink cacheWriteDataSink," +
+            "        @Flags int flags," +
+            "        @Nullable EventListener eventListener) ");
     }
 
     /**
@@ -531,6 +558,14 @@ public final class CacheDataSource implements DataSource {
             /* upstreamPriorityTaskManager= */ null,
             /* upstreamPriority= */ C.PRIORITY_PLAYBACK,
             eventListener);
+        log("CacheDataSource(" +
+            "        Cache cache," +
+            "        @Nullable DataSource upstreamDataSource," +
+            "        DataSource cacheReadDataSource," +
+            "        @Nullable DataSink cacheWriteDataSink," +
+            "        @Flags int flags," +
+            "        @Nullable EventListener eventListener," +
+            "        @Nullable CacheKeyFactory cacheKeyFactory)");
     }
 
     private CacheDataSource(
@@ -543,6 +578,18 @@ public final class CacheDataSource implements DataSource {
         @Nullable PriorityTaskManager upstreamPriorityTaskManager,
         int upstreamPriority,
         @Nullable EventListener eventListener) {
+
+        log("CacheDataSource(" +
+            "        Cache cache," +
+            "        @Nullable DataSource upstreamDataSource," +
+            "        DataSource cacheReadDataSource," +
+            "        @Nullable DataSink cacheWriteDataSink," +
+            "        @Nullable CacheKeyFactory cacheKeyFactory," +
+            "        @Flags int flags," +
+            "        @Nullable PriorityTaskManager upstreamPriorityTaskManager," +
+            "        int upstreamPriority," +
+            "        @Nullable EventListener eventListener)");
+
         this.cache = cache;
         this.cacheReadDataSource = cacheReadDataSource;
         this.cacheKeyFactory = cacheKeyFactory != null ? cacheKeyFactory : CacheKeyFactory.DEFAULT;
@@ -553,8 +600,7 @@ public final class CacheDataSource implements DataSource {
         if (upstreamDataSource != null) {
             if (upstreamPriorityTaskManager != null) {
                 upstreamDataSource =
-                    new PriorityDataSource(
-                        upstreamDataSource, upstreamPriorityTaskManager, upstreamPriority);
+                    new PriorityDataSource(upstreamDataSource, upstreamPriorityTaskManager, upstreamPriority);
             }
             this.upstreamDataSource = upstreamDataSource;
             this.cacheWriteDataSource =
@@ -572,6 +618,7 @@ public final class CacheDataSource implements DataSource {
      * Returns the {@link Cache} used by this instance.
      */
     public Cache getCache() {
+        log("getCache()");
         return cache;
     }
 
@@ -579,11 +626,13 @@ public final class CacheDataSource implements DataSource {
      * Returns the {@link CacheKeyFactory} used by this instance.
      */
     public CacheKeyFactory getCacheKeyFactory() {
+        log("getCacheKeyFactory()");
         return cacheKeyFactory;
     }
 
     @Override
     public void addTransferListener(TransferListener transferListener) {
+        log("addTransferListener(TransferListener transferListener)");
         checkNotNull(transferListener);
         cacheReadDataSource.addTransferListener(transferListener);
         upstreamDataSource.addTransferListener(transferListener);
@@ -591,6 +640,7 @@ public final class CacheDataSource implements DataSource {
 
     @Override
     public long open(DataSpec dataSpec) throws IOException {
+        log("open(DataSpec dataSpec) = " + dataSpec);
         try {
             String key = cacheKeyFactory.buildCacheKey(dataSpec);
             DataSpec requestDataSpec = dataSpec.buildUpon().setKey(key).build();
@@ -634,6 +684,7 @@ public final class CacheDataSource implements DataSource {
 
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
+        // log("read(byte[] buffer, int offset, int length)"); // TODO 一直调用
         if (length == 0) {
             return 0;
         }
@@ -678,11 +729,13 @@ public final class CacheDataSource implements DataSource {
     @Override
     @Nullable
     public Uri getUri() {
+        log("getUri() actualUri=" + actualUri);
         return actualUri;
     }
 
     @Override
     public Map<String, List<String>> getResponseHeaders() {
+        log("getResponseHeaders()");
         // TODO: Implement.
         return isReadingFromUpstream()
             ? upstreamDataSource.getResponseHeaders()
@@ -691,6 +744,7 @@ public final class CacheDataSource implements DataSource {
 
     @Override
     public void close() throws IOException {
+        log("close()");
         requestDataSpec = null;
         actualUri = null;
         readPosition = 0;
@@ -719,6 +773,7 @@ public final class CacheDataSource implements DataSource {
      *                        reading from {@link #upstreamDataSource}, which is the currently open source.
      */
     private void openNextSource(DataSpec requestDataSpec, boolean checkCache) throws IOException {
+        log("openNextSource(DataSpec requestDataSpec, boolean checkCache)");
         @Nullable CacheSpan nextSpan;
         String key = castNonNull(requestDataSpec.key);
         if (currentRequestIgnoresCache) {
@@ -829,6 +884,7 @@ public final class CacheDataSource implements DataSource {
     }
 
     private void setNoBytesRemainingAndMaybeStoreLength(String key) throws IOException {
+        log("setNoBytesRemainingAndMaybeStoreLength(String key)  key = " + key);
         bytesRemaining = 0;
         if (isWritingToCache()) {
             ContentMetadataMutations mutations = new ContentMetadataMutations();
@@ -838,27 +894,33 @@ public final class CacheDataSource implements DataSource {
     }
 
     private static Uri getRedirectedUriOrDefault(Cache cache, String key, Uri defaultUri) {
+        log("getRedirectedUriOrDefault(Cache cache, String key, Uri defaultUri)");
         @Nullable Uri redirectedUri = ContentMetadata.getRedirectedUri(cache.getContentMetadata(key));
         return redirectedUri != null ? redirectedUri : defaultUri;
     }
 
     private boolean isReadingFromUpstream() {
+        log("isReadingFromUpstream()");
         return !isReadingFromCache();
     }
 
     private boolean isBypassingCache() {
+        log("isBypassingCache()");
         return currentDataSource == upstreamDataSource;
     }
 
     private boolean isReadingFromCache() {
+        // log("isReadingFromCache()"); //一直调用
         return currentDataSource == cacheReadDataSource;
     }
 
     private boolean isWritingToCache() {
+        log("isWritingToCache()");
         return currentDataSource == cacheWriteDataSource;
     }
 
     private void closeCurrentSource() throws IOException {
+        log("closeCurrentSource()");
         if (currentDataSource == null) {
             return;
         }
@@ -875,12 +937,14 @@ public final class CacheDataSource implements DataSource {
     }
 
     private void handleBeforeThrow(Throwable exception) {
+        log("handleBeforeThrow()");
         if (isReadingFromCache() || exception instanceof CacheException) {
             seenCacheError = true;
         }
     }
 
     private int shouldIgnoreCacheForRequest(DataSpec dataSpec) {
+        log("shouldIgnoreCacheForRequest()");
         if (ignoreCacheOnError && seenCacheError) {
             return CACHE_IGNORED_REASON_ERROR;
         } else if (ignoreCacheForUnsetLengthRequests && dataSpec.length == C.LENGTH_UNSET) {
@@ -891,12 +955,14 @@ public final class CacheDataSource implements DataSource {
     }
 
     private void notifyCacheIgnored(@CacheIgnoredReason int reason) {
+        log("notifyCacheIgnored()");
         if (eventListener != null) {
             eventListener.onCacheIgnored(reason);
         }
     }
 
     private void notifyBytesRead() {
+        log("notifyBytesRead()");
         if (eventListener != null && totalCachedBytesRead > 0) {
             eventListener.onCachedBytesRead(cache.getCacheSpace(), totalCachedBytesRead);
             totalCachedBytesRead = 0;
