@@ -44,9 +44,6 @@ import java.util.UUID;
  */
 public final class MediaItem implements Bundleable {
 
-
-
-
     /**
      * Creates a {@link MediaItem} for the given URI.
      *
@@ -644,41 +641,45 @@ public final class MediaItem implements Bundleable {
     public static final class DrmConfiguration {
 
         /**
-         * The UUID of the protection scheme.
+         * The UUID of the protection scheme. 保护方案的UUID。
          */
         public final UUID uuid;
 
         /**
          * Optional default DRM license server {@link Uri}. If {@code null} then the DRM license server
-         * must be specified by the media.
+         * must be specified by the media.  可选的默认DRM许可证服务器。 如果为null，则必须由媒体指定DRM许可证服务器。
          */
         @Nullable
         public final Uri licenseUri;
 
         /**
          * The headers to attach to the request to the DRM license server.
+         * 附加到DRM许可证服务器请求的标头。
          */
         public final Map<String, String> requestHeaders;
 
         /**
          * Whether the DRM configuration is multi session enabled.
+         * DRM配置是否启用多会话。
          */
         public final boolean multiSession;
 
         /**
          * Whether clear samples within protected content should be played when keys for the encrypted
          * part of the content have yet to be loaded.
+         * 当内容的加密部分的密钥尚未加载时，是否应该播放受保护内容中的清晰样本。
          */
         public final boolean playClearContentWithoutKey;
 
         /**
          * Whether to force use of {@link #licenseUri} even if the media specifies its own DRM license
-         * server URI.
+         * server URI. 即使媒体指定了自己的DRM许可证服务器URI，是否也强制使用{@link #licenseUri}
          */
         public final boolean forceDefaultLicenseUri;
 
         /**
          * The types of clear tracks for which to use a DRM session.
+         * 使用DRM会话的清晰轨道类型
          */
         public final List<Integer> sessionForClearTypes;
 
