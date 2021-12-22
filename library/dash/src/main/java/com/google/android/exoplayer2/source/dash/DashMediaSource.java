@@ -1298,7 +1298,7 @@ public final class DashMediaSource extends BaseMediaSource {
 
         @Override
         public int getPeriodCount() {
-            log("public int getPeriodCount() -> " + manifest.getPeriodCount());
+            // log("public int getPeriodCount() -> " + manifest.getPeriodCount());
             return manifest.getPeriodCount();
         }
 
@@ -1325,7 +1325,8 @@ public final class DashMediaSource extends BaseMediaSource {
 
         @Override
         public Window getWindow(int windowIndex, Window window, long defaultPositionProjectionUs) {
-            log("Window getWindow(int windowIndex, Window window, long defaultPositionProjectionUs)");
+            log("Window getWindow(windowIndex=" + windowIndex + ",defaultPositionProjectionUs=" +
+                defaultPositionProjectionUs);
             Assertions.checkIndex(windowIndex, 0, 1);
             long windowDefaultStartPositionUs = getAdjustedWindowDefaultStartPositionUs(defaultPositionProjectionUs);
             return window.set(
@@ -1542,20 +1543,20 @@ public final class DashMediaSource extends BaseMediaSource {
 
         @Override
         public void maybeThrowError() throws IOException {
-            log("ManifestLoadErrorThrower # maybeThrowError()");
+            //log("ManifestLoadErrorThrower # maybeThrowError()");
             loader.maybeThrowError();
             maybeThrowManifestError();
         }
 
         @Override
         public void maybeThrowError(int minRetryCount) throws IOException {
-            log("ManifestLoadErrorThrower # maybeThrowError");
+            //log("ManifestLoadErrorThrower # maybeThrowError");
             loader.maybeThrowError(minRetryCount);
             maybeThrowManifestError();
         }
 
         private void maybeThrowManifestError() throws IOException {
-            log("ManifestLoadErrorThrower # maybeThrowManifestError");
+            //log("ManifestLoadErrorThrower # maybeThrowManifestError");
             if (manifestFatalError != null) {
                 throw manifestFatalError;
             }
