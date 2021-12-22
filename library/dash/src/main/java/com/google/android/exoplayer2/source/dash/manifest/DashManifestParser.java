@@ -111,7 +111,8 @@ public class DashManifestParser extends DefaultHandler implements ParsingLoadabl
                     "inputStream does not contain a valid media presentation description",
                     /* cause= */ null);
             }
-            return parseMediaPresentationDescription(xpp, new BaseUrl(uri.toString()));
+            DashManifest dashManifest = parseMediaPresentationDescription(xpp, new BaseUrl(uri.toString()));
+            return dashManifest;
         } catch (XmlPullParserException e) {
             throw ParserException.createForMalformedManifest(/* message= */ null, /* cause= */ e);
         }
@@ -367,8 +368,7 @@ public class DashManifestParser extends DefaultHandler implements ParsingLoadabl
             }
         } while (!XmlPullParserUtil.isEndTag(xpp, "Period"));
 
-        return Pair.create(
-            buildPeriod(id, startMs, adaptationSets, eventStreams, assetIdentifier), durationMs);
+        return Pair.create(buildPeriod(id, startMs, adaptationSets, eventStreams, assetIdentifier), durationMs);
     }
 
     protected Period buildPeriod(
