@@ -117,8 +117,8 @@ public final class DemoUtil {
                 log("USE_CRONET_FOR_NETWORKING");
                 context = context.getApplicationContext();
                 @Nullable
-                CronetEngine cronetEngine =
-                    CronetUtil.buildCronetEngine(context, USER_AGENT, /* preferGMSCoreCronet= */ false);
+                CronetEngine cronetEngine = CronetUtil.buildCronetEngine(context,
+                    USER_AGENT, /* preferGMSCoreCronet= */ false);
                 if (cronetEngine != null) {
                     httpDataSourceFactory =
                         new CronetDataSource.Factory(cronetEngine, Executors.newSingleThreadExecutor());
@@ -177,6 +177,7 @@ public final class DemoUtil {
         return downloadCache;
     }
 
+    // 圣诞节
     private static synchronized void ensureDownloadManagerInitialized(Context context) {
         if (downloadManager == null) {
             DefaultDownloadIndex downloadIndex = new DefaultDownloadIndex(getDatabaseProvider(context));
