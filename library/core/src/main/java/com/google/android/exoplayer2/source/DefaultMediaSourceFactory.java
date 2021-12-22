@@ -348,49 +348,31 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
         log("createMediaSource(MediaItem mediaItem)");
         Assertions.checkNotNull(mediaItem.playbackProperties);
         @C.ContentType
-        int type = Util.inferContentTypeForUriAndMimeType(
-            mediaItem.playbackProperties.uri, mediaItem.playbackProperties.mimeType);
+        int type = Util.inferContentTypeForUriAndMimeType(mediaItem.playbackProperties.uri,
+            mediaItem.playbackProperties.mimeType);
         @Nullable MediaSourceFactory mediaSourceFactory = mediaSourceFactories.get(type);
-        Assertions.checkNotNull(
-            mediaSourceFactory, "No suitable media source factory found for content type: " + type);
+        Assertions.checkNotNull(mediaSourceFactory, "No suitable media source factory found for content type: " + type);
 
         // Make sure to retain the very same media item instance, if no value needs to be overridden.
-        if ((mediaItem.liveConfiguration.targetOffsetMs == C.TIME_UNSET
-            && liveTargetOffsetMs != C.TIME_UNSET)
-            || (mediaItem.liveConfiguration.minPlaybackSpeed == C.RATE_UNSET
-            && liveMinSpeed != C.RATE_UNSET)
-            || (mediaItem.liveConfiguration.maxPlaybackSpeed == C.RATE_UNSET
-            && liveMaxSpeed != C.RATE_UNSET)
-            || (mediaItem.liveConfiguration.minOffsetMs == C.TIME_UNSET
-            && liveMinOffsetMs != C.TIME_UNSET)
-            || (mediaItem.liveConfiguration.maxOffsetMs == C.TIME_UNSET
-            && liveMaxOffsetMs != C.TIME_UNSET)) {
-            mediaItem =
-                mediaItem
-                    .buildUpon()
-                    .setLiveTargetOffsetMs(
-                        mediaItem.liveConfiguration.targetOffsetMs == C.TIME_UNSET
-                            ? liveTargetOffsetMs
-                            : mediaItem.liveConfiguration.targetOffsetMs)
-                    .setLiveMinPlaybackSpeed(
-                        mediaItem.liveConfiguration.minPlaybackSpeed == C.RATE_UNSET
-                            ? liveMinSpeed
-                            : mediaItem.liveConfiguration.minPlaybackSpeed)
-                    .setLiveMaxPlaybackSpeed(
-                        mediaItem.liveConfiguration.maxPlaybackSpeed == C.RATE_UNSET
-                            ? liveMaxSpeed
-                            : mediaItem.liveConfiguration.maxPlaybackSpeed)
-                    .setLiveMinOffsetMs(
-                        mediaItem.liveConfiguration.minOffsetMs == C.TIME_UNSET
-                            ? liveMinOffsetMs
-                            : mediaItem.liveConfiguration.minOffsetMs)
-                    .setLiveMaxOffsetMs(
-                        mediaItem.liveConfiguration.maxOffsetMs == C.TIME_UNSET
-                            ? liveMaxOffsetMs
-                            : mediaItem.liveConfiguration.maxOffsetMs)
-                    .build();
+        if ((mediaItem.liveConfiguration.targetOffsetMs == C.TIME_UNSET && liveTargetOffsetMs != C.TIME_UNSET)
+            || (mediaItem.liveConfiguration.minPlaybackSpeed == C.RATE_UNSET && liveMinSpeed != C.RATE_UNSET)
+            || (mediaItem.liveConfiguration.maxPlaybackSpeed == C.RATE_UNSET && liveMaxSpeed != C.RATE_UNSET)
+            || (mediaItem.liveConfiguration.minOffsetMs == C.TIME_UNSET && liveMinOffsetMs != C.TIME_UNSET)
+            || (mediaItem.liveConfiguration.maxOffsetMs == C.TIME_UNSET && liveMaxOffsetMs != C.TIME_UNSET)) {
+            mediaItem = mediaItem.buildUpon()
+                .setLiveTargetOffsetMs(mediaItem.liveConfiguration.targetOffsetMs == C.TIME_UNSET
+                    ? liveTargetOffsetMs : mediaItem.liveConfiguration.targetOffsetMs)
+                .setLiveMinPlaybackSpeed(mediaItem.liveConfiguration.minPlaybackSpeed == C.RATE_UNSET
+                    ? liveMinSpeed : mediaItem.liveConfiguration.minPlaybackSpeed)
+                .setLiveMaxPlaybackSpeed(mediaItem.liveConfiguration.maxPlaybackSpeed == C.RATE_UNSET
+                    ? liveMaxSpeed : mediaItem.liveConfiguration.maxPlaybackSpeed)
+                .setLiveMinOffsetMs(mediaItem.liveConfiguration.minOffsetMs == C.TIME_UNSET
+                    ? liveMinOffsetMs : mediaItem.liveConfiguration.minOffsetMs)
+                .setLiveMaxOffsetMs(mediaItem.liveConfiguration.maxOffsetMs == C.TIME_UNSET
+                    ? liveMaxOffsetMs : mediaItem.liveConfiguration.maxOffsetMs)
+                .build();
         }
-        MediaSource mediaSource = mediaSourceFactory.createMediaSource(mediaItem);
+        MediaSource mediaSource = mediaSourceFactory.createMediaSource(mediaItem); // DashMediaSource$Factory
 
         List<MediaItem.Subtitle> subtitles = castNonNull(mediaItem.playbackProperties).subtitles;
         if (!subtitles.isEmpty()) {
@@ -401,8 +383,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
                     .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy);
             for (int i = 0; i < subtitles.size(); i++) {
                 mediaSources[i + 1] =
-                    singleSampleSourceFactory.createMediaSource(
-                        subtitles.get(i), /* durationUs= */ C.TIME_UNSET);
+                    singleSampleSourceFactory.createMediaSource(subtitles.get(i), /* durationUs= */ C.TIME_UNSET);
             }
             mediaSource = new MergingMediaSource(mediaSources);
         }
@@ -475,8 +456,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
         }
         try {
             Class<? extends MediaSourceFactory> factoryClazz =
-                Class.forName(
-                    "com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource$Factory")
+                Class.forName("com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource$Factory")
                     .asSubclass(MediaSourceFactory.class);
             factories.put(
                 C.TYPE_SS,
@@ -502,8 +482,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
         } catch (Exception e) {
             // Expected if the app was built without the RTSP module.
         }
-        factories.put(
-            C.TYPE_OTHER, new ProgressiveMediaSource.Factory(dataSourceFactory, extractorsFactory));
+        factories.put(C.TYPE_OTHER, new ProgressiveMediaSource.Factory(dataSourceFactory, extractorsFactory));
         return factories;
     }
 }
