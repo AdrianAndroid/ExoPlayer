@@ -119,7 +119,7 @@ public final class DemoUtil {
                 @Nullable
                 CronetEngine cronetEngine = CronetUtil.buildCronetEngine(context,
                     USER_AGENT, /* preferGMSCoreCronet= */ false);
-                if (cronetEngine != null) {
+                if (cronetEngine != null) { // 那此处就是null
                     httpDataSourceFactory =
                         new CronetDataSource.Factory(cronetEngine, Executors.newSingleThreadExecutor());
                 }
@@ -177,7 +177,6 @@ public final class DemoUtil {
         return downloadCache;
     }
 
-    // 圣诞节
     private static synchronized void ensureDownloadManagerInitialized(Context context) {
         if (downloadManager == null) {
             DefaultDownloadIndex downloadIndex = new DefaultDownloadIndex(getDatabaseProvider(context));

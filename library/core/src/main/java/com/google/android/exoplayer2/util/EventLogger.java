@@ -114,8 +114,8 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onPlayWhenReadyChanged(
-        EventTime eventTime, boolean playWhenReady, @Player.PlayWhenReadyChangeReason int reason) {
+    public void onPlayWhenReadyChanged(EventTime eventTime, boolean playWhenReady,
+                                       @Player.PlayWhenReadyChangeReason int reason) {
         logd(
             eventTime,
             "playWhenReady",
@@ -123,8 +123,8 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onPlaybackSuppressionReasonChanged(
-        EventTime eventTime, @PlaybackSuppressionReason int playbackSuppressionReason) {
+    public void onPlaybackSuppressionReasonChanged(EventTime eventTime,
+                                                   @PlaybackSuppressionReason int playbackSuppressionReason) {
         logd(
             eventTime,
             "playbackSuppressionReason",
@@ -194,8 +194,7 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onPlaybackParametersChanged(
-        EventTime eventTime, PlaybackParameters playbackParameters) {
+    public void onPlaybackParametersChanged(EventTime eventTime, PlaybackParameters playbackParameters) {
         logd(eventTime, "playbackParameters", playbackParameters.toString());
     }
 
@@ -238,8 +237,7 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onMediaItemTransition(
-        EventTime eventTime, @Nullable MediaItem mediaItem, int reason) {
+    public void onMediaItemTransition(EventTime eventTime, @Nullable MediaItem mediaItem, int reason) {
         logd(
             "mediaItem ["
                 + getEventTimeString(eventTime)
@@ -254,8 +252,7 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onTracksChanged(
-        EventTime eventTime, TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+    public void onTracksChanged(EventTime eventTime, TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
         MappedTrackInfo mappedTrackInfo = trackSelector != null ? trackSelector.getCurrentMappedTrackInfo() : null;
         if (mappedTrackInfo == null) {
             logd(eventTime, "tracks", "[]");
@@ -352,20 +349,18 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onAudioDecoderInitialized(
-        EventTime eventTime, String decoderName, long initializationDurationMs) {
+    public void onAudioDecoderInitialized(EventTime eventTime, String decoderName, long initializationDurationMs) {
         logd(eventTime, "audioDecoderInitialized", decoderName);
     }
 
     @Override
-    public void onAudioInputFormatChanged(
-        EventTime eventTime, Format format, @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
+    public void onAudioInputFormatChanged(EventTime eventTime, Format format,
+                                          @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
         logd(eventTime, "audioInputFormat", Format.toLogString(format));
     }
 
     @Override
-    public void onAudioUnderrun(
-        EventTime eventTime, int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
+    public void onAudioUnderrun(EventTime eventTime, int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
         loge(
             eventTime,
             "audioTrackUnderrun",
@@ -418,14 +413,13 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onVideoDecoderInitialized(
-        EventTime eventTime, String decoderName, long initializationDurationMs) {
+    public void onVideoDecoderInitialized(EventTime eventTime, String decoderName, long initializationDurationMs) {
         logd(eventTime, "videoDecoderInitialized", decoderName);
     }
 
     @Override
-    public void onVideoInputFormatChanged(
-        EventTime eventTime, Format format, @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
+    public void onVideoInputFormatChanged(EventTime eventTime, Format format,
+                                          @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
         logd(eventTime, "videoInputFormat", Format.toLogString(format));
     }
 
@@ -455,8 +449,7 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onLoadStarted(
-        EventTime eventTime, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+    public void onLoadStarted(EventTime eventTime, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
         // Do nothing.
     }
 
@@ -471,20 +464,18 @@ public class EventLogger implements AnalyticsListener {
     }
 
     @Override
-    public void onLoadCanceled(
-        EventTime eventTime, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+    public void onLoadCanceled(EventTime eventTime, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
         // Do nothing.
     }
 
     @Override
-    public void onLoadCompleted(
-        EventTime eventTime, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
+    public void onLoadCompleted(EventTime eventTime, LoadEventInfo loadEventInfo, MediaLoadData mediaLoadData) {
         // Do nothing.
     }
 
     @Override
-    public void onBandwidthEstimate(
-        EventTime eventTime, int totalLoadTimeMs, long totalBytesLoaded, long bitrateEstimate) {
+    public void onBandwidthEstimate(EventTime eventTime, int totalLoadTimeMs, long totalBytesLoaded,
+                                    long bitrateEstimate) {
         // Do nothing.
     }
 
@@ -640,8 +631,7 @@ public class EventLogger implements AnalyticsListener {
         }
     }
 
-    private static String getAdaptiveSupportString(
-        int trackCount, @AdaptiveSupport int adaptiveSupport) {
+    private static String getAdaptiveSupportString(int trackCount, @AdaptiveSupport int adaptiveSupport) {
         if (trackCount < 2) {
             return "N/A";
         }
@@ -660,8 +650,7 @@ public class EventLogger implements AnalyticsListener {
     // Suppressing reference equality warning because the track group stored in the track selection
     // must point to the exact track group object to be considered part of it.
     @SuppressWarnings("ReferenceEquality")
-    private static String getTrackStatusString(
-        @Nullable TrackSelection selection, TrackGroup group, int trackIndex) {
+    private static String getTrackStatusString(@Nullable TrackSelection selection, TrackGroup group, int trackIndex) {
         return getTrackStatusString(
             selection != null
                 && selection.getTrackGroup() == group
@@ -715,8 +704,7 @@ public class EventLogger implements AnalyticsListener {
         }
     }
 
-    private static String getMediaItemTransitionReasonString(
-        @Player.MediaItemTransitionReason int reason) {
+    private static String getMediaItemTransitionReasonString(@Player.MediaItemTransitionReason int reason) {
         switch (reason) {
             case Player.MEDIA_ITEM_TRANSITION_REASON_AUTO:
                 return "AUTO";
@@ -731,8 +719,7 @@ public class EventLogger implements AnalyticsListener {
         }
     }
 
-    private static String getPlaybackSuppressionReasonString(
-        @PlaybackSuppressionReason int playbackSuppressionReason) {
+    private static String getPlaybackSuppressionReasonString(@PlaybackSuppressionReason int playbackSuppressionReason) {
         switch (playbackSuppressionReason) {
             case Player.PLAYBACK_SUPPRESSION_REASON_NONE:
                 return "NONE";
@@ -743,8 +730,7 @@ public class EventLogger implements AnalyticsListener {
         }
     }
 
-    private static String getPlayWhenReadyChangeReasonString(
-        @Player.PlayWhenReadyChangeReason int reason) {
+    private static String getPlayWhenReadyChangeReasonString(@Player.PlayWhenReadyChangeReason int reason) {
         switch (reason) {
             case Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY:
                 return "AUDIO_BECOMING_NOISY";
