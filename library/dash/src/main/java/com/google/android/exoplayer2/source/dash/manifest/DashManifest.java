@@ -188,11 +188,9 @@ public class DashManifest implements FilterableManifest<DashManifest> {
                 }
             } else {
                 Period period = getPeriod(periodIndex);
-                ArrayList<AdaptationSet> copyAdaptationSets =
-                    copyAdaptationSets(period.adaptationSets, keys);
+                ArrayList<AdaptationSet> copyAdaptationSets = copyAdaptationSets(period.adaptationSets, keys);
                 Period copiedPeriod =
-                    new Period(
-                        period.id, period.startMs - shiftMs, copyAdaptationSets, period.eventStreams);
+                    new Period(period.id, period.startMs - shiftMs, copyAdaptationSets, period.eventStreams);
                 copyPeriods.add(copiedPeriod);
             }
         }
@@ -230,14 +228,13 @@ public class DashManifest implements FilterableManifest<DashManifest> {
                 key = keys.poll();
             } while (key.periodIndex == periodIndex && key.groupIndex == adaptationSetIndex);
 
-            copyAdaptationSets.add(
-                new AdaptationSet(
-                    adaptationSet.id,
-                    adaptationSet.type,
-                    copyRepresentations,
-                    adaptationSet.accessibilityDescriptors,
-                    adaptationSet.essentialProperties,
-                    adaptationSet.supplementalProperties));
+            copyAdaptationSets.add(new AdaptationSet(
+                adaptationSet.id,
+                adaptationSet.type,
+                copyRepresentations,
+                adaptationSet.accessibilityDescriptors,
+                adaptationSet.essentialProperties,
+                adaptationSet.supplementalProperties));
         } while (key.periodIndex == periodIndex);
         // Add back the last key which doesn't belong to the period being processed
         keys.addFirst(key);
