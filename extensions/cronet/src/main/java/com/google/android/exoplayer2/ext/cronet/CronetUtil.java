@@ -108,8 +108,7 @@ public final class CronetUtil {
          * copy because GMSCore CronetProvider classes are unavailable in some (internal to Google)
          * build configurations.
          */
-        private static final String GOOGLE_PLAY_SERVICES_PROVIDER_NAME =
-            "Google-Play-Services-Cronet-Provider";
+        private static final String GOOGLE_PLAY_SERVICES_PROVIDER_NAME = "Google-Play-Services-Cronet-Provider";
 
         private final boolean preferGooglePlayServices;
 
@@ -144,8 +143,7 @@ public final class CronetUtil {
         /**
          * Compares version strings of format "12.123.35.23".
          */
-        private static int compareVersionStrings(
-            @Nullable String versionLeft, @Nullable String versionRight) {
+        private static int compareVersionStrings(@Nullable String versionLeft, @Nullable String versionRight) {
             if (versionLeft == null || versionRight == null) {
                 return 0;
             }
