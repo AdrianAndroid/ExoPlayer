@@ -95,6 +95,7 @@ public abstract class BaseMediaSource implements MediaSource {
      * @param timeline The new {@link Timeline}.
      */
     protected final void refreshSourceInfo(Timeline timeline) {
+        log("refreshSourceInfo(Timeline timeline)");
         this.timeline = timeline;
         for (MediaSourceCaller caller : mediaSourceCallers) {
             caller.onSourceInfoRefreshed(/* source= */ this, timeline);
@@ -111,6 +112,7 @@ public abstract class BaseMediaSource implements MediaSource {
      */
     protected final MediaSourceEventListener.EventDispatcher createEventDispatcher(
         @Nullable MediaPeriodId mediaPeriodId) {
+        log("MediaSourceEventListener.EventDispatcher createEventDispatcher(");
         return eventDispatcher.withParameters(
             /* windowIndex= */ 0, mediaPeriodId, /* mediaTimeOffsetMs= */ 0);
     }
@@ -125,6 +127,7 @@ public abstract class BaseMediaSource implements MediaSource {
      */
     protected final MediaSourceEventListener.EventDispatcher createEventDispatcher(
         MediaPeriodId mediaPeriodId, long mediaTimeOffsetMs) {
+        log("MediaSourceEventListener.EventDispatcher createEventDispatcher");
         Assertions.checkNotNull(mediaPeriodId);
         return eventDispatcher.withParameters(/* windowIndex= */ 0, mediaPeriodId, mediaTimeOffsetMs);
     }
@@ -141,6 +144,7 @@ public abstract class BaseMediaSource implements MediaSource {
      */
     protected final MediaSourceEventListener.EventDispatcher createEventDispatcher(
         int windowIndex, @Nullable MediaPeriodId mediaPeriodId, long mediaTimeOffsetMs) {
+        log("MediaSourceEventListener.EventDispatcher createEventDispatcher");
         return eventDispatcher.withParameters(windowIndex, mediaPeriodId, mediaTimeOffsetMs);
     }
 
@@ -154,6 +158,7 @@ public abstract class BaseMediaSource implements MediaSource {
      */
     protected final DrmSessionEventListener.EventDispatcher createDrmEventDispatcher(
         @Nullable MediaPeriodId mediaPeriodId) {
+        log("DrmSessionEventListener.EventDispatcher createDrmEventDispatcher");
         return drmEventDispatcher.withParameters(/* windowIndex= */ 0, mediaPeriodId);
     }
 
@@ -168,6 +173,7 @@ public abstract class BaseMediaSource implements MediaSource {
      */
     protected final DrmSessionEventListener.EventDispatcher createDrmEventDispatcher(
         int windowIndex, @Nullable MediaPeriodId mediaPeriodId) {
+        log("DrmSessionEventListener.EventDispatcher createDrmEventDispatcher");
         return drmEventDispatcher.withParameters(windowIndex, mediaPeriodId);
     }
 
@@ -175,11 +181,13 @@ public abstract class BaseMediaSource implements MediaSource {
      * Returns whether the source is enabled.
      */
     protected final boolean isEnabled() {
+        log("boolean isEnabled()");
         return !enabledMediaSourceCallers.isEmpty();
     }
 
     @Override
     public final void addEventListener(Handler handler, MediaSourceEventListener eventListener) {
+        log("addEventListener(Handler handler, MediaSourceEventListener eventListener)");
         Assertions.checkNotNull(handler);
         Assertions.checkNotNull(eventListener);
         eventDispatcher.addEventListener(handler, eventListener);
@@ -187,11 +195,13 @@ public abstract class BaseMediaSource implements MediaSource {
 
     @Override
     public final void removeEventListener(MediaSourceEventListener eventListener) {
+        log("removeEventListener(MediaSourceEventListener eventListener)");
         eventDispatcher.removeEventListener(eventListener);
     }
 
     @Override
     public final void addDrmEventListener(Handler handler, DrmSessionEventListener eventListener) {
+        log("addDrmEventListener(Handler handler, DrmSessionEventListener eventListener)");
         Assertions.checkNotNull(handler);
         Assertions.checkNotNull(eventListener);
         drmEventDispatcher.addEventListener(handler, eventListener);
@@ -199,12 +209,13 @@ public abstract class BaseMediaSource implements MediaSource {
 
     @Override
     public final void removeDrmEventListener(DrmSessionEventListener eventListener) {
+        log("removeDrmEventListener(DrmSessionEventListener eventListener)");
         drmEventDispatcher.removeEventListener(eventListener);
     }
 
     @Override
-    public final void prepareSource(
-        MediaSourceCaller caller, @Nullable TransferListener mediaTransferListener) {
+    public final void prepareSource(MediaSourceCaller caller, @Nullable TransferListener mediaTransferListener) {
+        log("prepareSource(MediaSourceCaller caller, @Nullable TransferListener mediaTransferListener)");
         Looper looper = Looper.myLooper();
         Assertions.checkArgument(this.looper == null || this.looper == looper);
         @Nullable Timeline timeline = this.timeline;
@@ -221,6 +232,7 @@ public abstract class BaseMediaSource implements MediaSource {
 
     @Override
     public final void enable(MediaSourceCaller caller) {
+        log("enable(MediaSourceCaller caller)");
         Assertions.checkNotNull(looper);
         boolean wasDisabled = enabledMediaSourceCallers.isEmpty();
         enabledMediaSourceCallers.add(caller);
@@ -231,6 +243,7 @@ public abstract class BaseMediaSource implements MediaSource {
 
     @Override
     public final void disable(MediaSourceCaller caller) {
+        log("disable(MediaSourceCaller caller)");
         boolean wasEnabled = !enabledMediaSourceCallers.isEmpty();
         enabledMediaSourceCallers.remove(caller);
         if (wasEnabled && enabledMediaSourceCallers.isEmpty()) {
@@ -240,6 +253,7 @@ public abstract class BaseMediaSource implements MediaSource {
 
     @Override
     public final void releaseSource(MediaSourceCaller caller) {
+        log("releaseSource(MediaSourceCaller caller)");
         mediaSourceCallers.remove(caller);
         if (mediaSourceCallers.isEmpty()) {
             looper = null;
