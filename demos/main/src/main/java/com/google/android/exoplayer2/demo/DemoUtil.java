@@ -149,8 +149,7 @@ public final class DemoUtil {
         return dataSourceFactory;
     }
 
-    public static synchronized DownloadNotificationHelper getDownloadNotificationHelper(
-        Context context) {
+    public static synchronized DownloadNotificationHelper getDownloadNotificationHelper(Context context) {
         if (downloadNotificationHelper == null) {
             downloadNotificationHelper =
                 new DownloadNotificationHelper(context, DOWNLOAD_NOTIFICATION_CHANNEL_ID);
@@ -223,8 +222,8 @@ public final class DemoUtil {
         return downloadDirectory;
     }
 
-    private static CacheDataSource.Factory buildReadOnlyCacheDataSource(
-        DataSource.Factory upstreamFactory, Cache cache) {
+    private static CacheDataSource.Factory buildReadOnlyCacheDataSource(DataSource.Factory upstreamFactory,
+                                                                        Cache cache) {
         return new CacheDataSource.Factory()
             .setCache(cache)
             .setUpstreamDataSourceFactory(upstreamFactory)

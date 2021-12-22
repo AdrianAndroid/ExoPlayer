@@ -40,7 +40,10 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:textSize="10sp"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"
+            tools:text="playWhenReady:true playbackState:buffering window:0 \n
+            video/avc(id:1 r:3840x1714 rb:254 db:73 mcdb:12 dk:1 vfpo:-71586 \n
+            audio/mp4a-latm(id:0 hz:44100 ch:2 sib:0 sb:0 rb:627 db:0 mcdb:0 dk:0))" />
 
         <LinearLayout
             android:id="@+id/controls_root"
