@@ -469,8 +469,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
     @Override
     public void setMediaSources(List<MediaSource> mediaSources, boolean resetPosition) {
-        setMediaSourcesInternal(
-            mediaSources,
+        setMediaSourcesInternal(mediaSources,
             /* startWindowIndex= */ C.INDEX_UNSET,
             /* startPositionMs= */ C.TIME_UNSET,
             /* resetToDefaultPosition= */ resetPosition);
@@ -479,8 +478,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
     @Override
     public void setMediaSources(
         List<MediaSource> mediaSources, int startWindowIndex, long startPositionMs) {
-        setMediaSourcesInternal(
-            mediaSources, startWindowIndex, startPositionMs, /* resetToDefaultPosition= */ false);
+        setMediaSourcesInternal(mediaSources, startWindowIndex, startPositionMs, /* resetToDefaultPosition= */ false);
     }
 
     @Override
@@ -1603,8 +1601,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
         long currentPositionMs = getCurrentPosition();
         pendingOperationAcks++;
         if (!mediaSourceHolderSnapshots.isEmpty()) {
-            removeMediaSourceHolders(
-                /* fromIndex= */ 0, /* toIndexExclusive= */ mediaSourceHolderSnapshots.size());
+            removeMediaSourceHolders(/* fromIndex= */ 0, /* toIndexExclusive= */ mediaSourceHolderSnapshots.size());
         }
         List<MediaSourceList.MediaSourceHolder> holders = addMediaSourceHolders(/* index= */ 0, mediaSources);
         Timeline timeline = createMaskingTimeline();
