@@ -141,8 +141,7 @@ import java.util.Set;
      * @param shuffleOrder The new shuffle order.
      * @return The new {@link Timeline}.
      */
-    public Timeline addMediaSources(
-        int index, List<MediaSourceHolder> holders, ShuffleOrder shuffleOrder) {
+    public Timeline addMediaSources(int index, List<MediaSourceHolder> holders, ShuffleOrder shuffleOrder) {
         if (!holders.isEmpty()) {
             this.shuffleOrder = shuffleOrder;
             for (int insertionIndex = index; insertionIndex < index + holders.size(); insertionIndex++) {
@@ -152,14 +151,13 @@ import java.util.Set;
                     Timeline previousTimeline = previousHolder.mediaSource.getTimeline();
                     holder.reset(
                         /* firstWindowIndexInChild= */ previousHolder.firstWindowIndexInChild
-                            + previousTimeline.getWindowCount());
+                            + previousTimeline.getWindowCount()
+                    );
                 } else {
                     holder.reset(/* firstWindowIndexInChild= */ 0);
                 }
                 Timeline newTimeline = holder.mediaSource.getTimeline();
-                correctOffsets(
-                    /* startIndex= */ insertionIndex,
-                    /* windowOffsetUpdate= */ newTimeline.getWindowCount());
+                correctOffsets(/* startIndex= */ insertionIndex,/* windowOffsetUpdate= */ newTimeline.getWindowCount());
                 mediaSourceHolders.add(insertionIndex, holder);
                 mediaSourceByUid.put(holder.uid, holder);
                 if (isPrepared) {
