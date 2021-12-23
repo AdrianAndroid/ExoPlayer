@@ -293,13 +293,27 @@ public class PlayerActivity extends AppCompatActivity
             // 初始化轨道选择器
             trackSelector = new DefaultTrackSelector(/* context= */ this); // 轨道选择器
             trackSelector.setParameters(trackSelectorParameters);
-            //{"allowAudioMixedChannelCountAdaptiveness":false,"allowAudioMixedMimeTypeAdaptiveness":false,"allowAudioMixedSampleRateAdaptiveness":false,"allowMultipleAdaptiveSelections":true,"allowVideoMixedMimeTypeAdaptiveness":false,"allowVideoNonSeamlessAdaptiveness":true,"disabledTextTrackSelectionFlags":0,"exceedAudioConstraintsIfNecessary":true,"exceedRendererCapabilitiesIfNecessary":true,"exceedVideoConstraintsIfNecessary":true,"rendererDisabledFlags":{"mKeys":[0,0,0,0,0,0,0,0,0,0,0,0,0],"mSize":0,"mValues":[false,false,false,false,false,false,false,false,false,false,false,false,false]},"selectionOverrides":{"mGarbage":false,"mKeys":[0,0,0,0,0,0,0,0,0,0,0,0,0],"mSize":0,"mValues":[null,null,null,null,null,null,null,null,null,null,null,null,null]},"tunnelingEnabled":false,"forceHighestSupportedBitrate":false,"forceLowestBitrate":false,"maxAudioBitrate":2147483647,"maxAudioChannelCount":2147483647,"maxVideoBitrate":2147483647,"maxVideoFrameRate":2147483647,"maxVideoHeight":2147483647,"maxVideoWidth":2147483647,"minVideoBitrate":0,"minVideoFrameRate":0,"minVideoHeight":0,"minVideoWidth":0,"preferredAudioLanguages":[],"preferredAudioMimeTypes":[],"preferredAudioRoleFlags":0,"preferredTextLanguages":[],"preferredTextRoleFlags":0,"preferredVideoMimeTypes":[],"selectUndeterminedTextLanguage":false,"viewportHeight":1040,"viewportOrientationMayChange":true,"viewportWidth":1664}
+            //{"allowAudioMixedChannelCountAdaptiveness":false,"allowAudioMixedMimeTypeAdaptiveness":false,
+            // "allowAudioMixedSampleRateAdaptiveness":false,"allowMultipleAdaptiveSelections":true,
+            // "allowVideoMixedMimeTypeAdaptiveness":false,"allowVideoNonSeamlessAdaptiveness":true,
+            // "disabledTextTrackSelectionFlags":0,"exceedAudioConstraintsIfNecessary":true,
+            // "exceedRendererCapabilitiesIfNecessary":true,"exceedVideoConstraintsIfNecessary":true,
+            // "rendererDisabledFlags":{"mKeys":[0,0,0,0,0,0,0,0,0,0,0,0,0],"mSize":0,
+            // "mValues":[false,false,false,false,false,false,false,false,false,false,false,false,false]},
+            // "selectionOverrides":{"mGarbage":false,"mKeys":[0,0,0,0,0,0,0,0,0,0,0,0,0],"mSize":0,
+            // "mValues":[null,null,null,null,null,null,null,null,null,null,null,null,null]},"tunnelingEnabled":false,
+            // "forceHighestSupportedBitrate":false,"forceLowestBitrate":false,"maxAudioBitrate":2147483647,
+            // "maxAudioChannelCount":2147483647,"maxVideoBitrate":2147483647,"maxVideoFrameRate":2147483647,
+            // "maxVideoHeight":2147483647,"maxVideoWidth":2147483647,"minVideoBitrate":0,"minVideoFrameRate":0,
+            // "minVideoHeight":0,"minVideoWidth":0,"preferredAudioLanguages":[],"preferredAudioMimeTypes":[],
+            // "preferredAudioRoleFlags":0,"preferredTextLanguages":[],"preferredTextRoleFlags":0,
+            // "preferredVideoMimeTypes":[],"selectUndeterminedTextLanguage":false,"viewportHeight":1040,
+            // "viewportOrientationMayChange":true,"viewportWidth":1664}
             lastSeenTrackGroupArray = null;
             player = new SimpleExoPlayer.Builder(/* context= */ this, renderersFactory)
                 .setMediaSourceFactory(mediaSourceFactory)
                 .setTrackSelector(trackSelector)
                 .build();
-
             player.addListener(new PlayerEventListener()); // 回调
             player.addAnalyticsListener(new EventLogger(trackSelector)); // 打印log
             player.setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true);

@@ -358,7 +358,8 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
             || (mediaItem.liveConfiguration.minPlaybackSpeed == C.RATE_UNSET && liveMinSpeed != C.RATE_UNSET)
             || (mediaItem.liveConfiguration.maxPlaybackSpeed == C.RATE_UNSET && liveMaxSpeed != C.RATE_UNSET)
             || (mediaItem.liveConfiguration.minOffsetMs == C.TIME_UNSET && liveMinOffsetMs != C.TIME_UNSET)
-            || (mediaItem.liveConfiguration.maxOffsetMs == C.TIME_UNSET && liveMaxOffsetMs != C.TIME_UNSET)) {
+            || (mediaItem.liveConfiguration.maxOffsetMs == C.TIME_UNSET && liveMaxOffsetMs != C.TIME_UNSET)
+        ) {
             mediaItem = mediaItem.buildUpon()
                 .setLiveTargetOffsetMs(mediaItem.liveConfiguration.targetOffsetMs == C.TIME_UNSET
                     ? liveTargetOffsetMs : mediaItem.liveConfiguration.targetOffsetMs)
