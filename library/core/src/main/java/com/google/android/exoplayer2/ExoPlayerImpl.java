@@ -1606,8 +1606,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
             removeMediaSourceHolders(
                 /* fromIndex= */ 0, /* toIndexExclusive= */ mediaSourceHolderSnapshots.size());
         }
-        List<MediaSourceList.MediaSourceHolder> holders =
-            addMediaSourceHolders(/* index= */ 0, mediaSources);
+        List<MediaSourceList.MediaSourceHolder> holders = addMediaSourceHolders(/* index= */ 0, mediaSources);
         Timeline timeline = createMaskingTimeline();
         if (!timeline.isEmpty() && startWindowIndex >= timeline.getWindowCount()) {
             throw new IllegalSeekPositionException(timeline, startWindowIndex, startPositionMs);
@@ -1620,11 +1619,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
             startWindowIndex = currentWindowIndex;
             startPositionMs = currentPositionMs;
         }
-        PlaybackInfo newPlaybackInfo =
-            maskTimelineAndPosition(
-                playbackInfo,
-                timeline,
-                getPeriodPositionOrMaskWindowPosition(timeline, startWindowIndex, startPositionMs));
+        PlaybackInfo newPlaybackInfo = maskTimelineAndPosition(
+            playbackInfo,
+            timeline,
+            getPeriodPositionOrMaskWindowPosition(timeline, startWindowIndex, startPositionMs));
         // Mask the playback state.
         int maskingPlaybackState = newPlaybackInfo.playbackState;
         if (startWindowIndex != C.INDEX_UNSET && newPlaybackInfo.playbackState != STATE_IDLE) {
@@ -1637,13 +1635,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
             }
         }
         newPlaybackInfo = newPlaybackInfo.copyWithPlaybackState(maskingPlaybackState);
-        internalPlayer.setMediaSources(
-            holders, startWindowIndex, C.msToUs(startPositionMs), shuffleOrder);
-        boolean positionDiscontinuity =
-            !playbackInfo.periodId.periodUid.equals(newPlaybackInfo.periodId.periodUid)
-                && !playbackInfo.timeline.isEmpty();
-        updatePlaybackInfo(
-            newPlaybackInfo,
+        internalPlayer.setMediaSources(holders, startWindowIndex, C.msToUs(startPositionMs), shuffleOrder);
+        boolean positionDiscontinuity = !playbackInfo.periodId.periodUid.equals(newPlaybackInfo.periodId.periodUid)
+            && !playbackInfo.timeline.isEmpty();
+        updatePlaybackInfo(newPlaybackInfo,
             /* timelineChangeReason= */ TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED,
             /* ignored */ PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST,
             /* seekProcessed= */ false,

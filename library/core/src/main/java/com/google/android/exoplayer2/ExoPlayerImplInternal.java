@@ -344,10 +344,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
         int windowIndex,
         long positionUs,
         ShuffleOrder shuffleOrder) {
-        handler.obtainMessage(
-            MSG_SET_MEDIA_SOURCES,
-            new MediaSourceListUpdateMessage(mediaSources, shuffleOrder, windowIndex, positionUs))
-            .sendToTarget();
+        handler.obtainMessage(MSG_SET_MEDIA_SOURCES,
+            new MediaSourceListUpdateMessage(mediaSources, shuffleOrder, windowIndex, positionUs)).sendToTarget();
     }
 
     public void addMediaSources(
