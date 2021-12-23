@@ -394,17 +394,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
             return;
         }
         PlaybackInfo playbackInfo = this.playbackInfo.copyWithPlaybackError(null);
-        playbackInfo = playbackInfo.copyWithPlaybackState(
-            playbackInfo.timeline.isEmpty() ? Player.STATE_ENDED : Player.STATE_BUFFERING
-        );
+        playbackInfo = playbackInfo
+            .copyWithPlaybackState(playbackInfo.timeline.isEmpty() ? Player.STATE_ENDED : Player.STATE_BUFFERING);
         // Trigger internal prepare first before updating the playback info and notifying external
         // listeners to ensure that new operations issued in the listener notifications reach the
         // player after this prepare. The internal player can't change the playback info immediately
         // because it uses a callback.
         pendingOperationAcks++;
         internalPlayer.prepare();
-        updatePlaybackInfo(
-            playbackInfo,
+        updatePlaybackInfo(playbackInfo,
             /* ignored */ TIMELINE_CHANGE_REASON_SOURCE_UPDATE,
             /* ignored */ PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST,
             /* seekProcessed= */ false,
