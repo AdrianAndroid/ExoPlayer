@@ -70,8 +70,7 @@ import java.util.List;
 
     @Override
     public Message obtainMessage(int what, int arg1, int arg2, @Nullable Object obj) {
-        return obtainSystemMessage()
-            .setMessage(handler.obtainMessage(what, arg1, arg2, obj), /* handler= */ this);
+        return obtainSystemMessage().setMessage(handler.obtainMessage(what, arg1, arg2, obj), /* handler= */ this);
     }
 
     @Override
@@ -121,9 +120,7 @@ import java.util.List;
 
     private static SystemMessage obtainSystemMessage() {
         synchronized (messagePool) {
-            return messagePool.isEmpty()
-                ? new SystemMessage()
-                : messagePool.remove(messagePool.size() - 1);
+            return messagePool.isEmpty() ? new SystemMessage() : messagePool.remove(messagePool.size() - 1);
         }
     }
 

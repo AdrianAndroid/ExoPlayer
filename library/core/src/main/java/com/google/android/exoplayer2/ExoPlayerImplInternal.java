@@ -510,12 +510,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
                     break;
                 case MSG_SET_FOREGROUND_MODE:
                     log("handleMessage MSG_SET_FOREGROUND_MODE");
-                    setForegroundModeInternal(/* foregroundMode= */ msg.arg1 != 0, /* processedFlag= */
-                        (AtomicBoolean) msg.obj);
+                    setForegroundModeInternal(/* foregroundMode= */ msg.arg1 != 0,
+                        /* processedFlag= */(AtomicBoolean) msg.obj);
                     break;
                 case MSG_STOP:
                     log("handleMessage MSG_STOP");
-                    stopInternal(/* forceResetRenderers= */ false, /* acknowledgeStop= */ true);
+                    stopInternal(/* forceResetRenderers= */ false,
+                        /* acknowledgeStop= */ true);
                     break;
                 case MSG_PERIOD_PREPARED:
                     log("handleMessage MSG_PERIOD_PREPARED");

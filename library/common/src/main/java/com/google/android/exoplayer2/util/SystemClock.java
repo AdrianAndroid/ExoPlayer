@@ -18,6 +18,7 @@ package com.google.android.exoplayer2.util;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Looper;
+
 import androidx.annotation.Nullable;
 
 /**
@@ -26,30 +27,36 @@ import androidx.annotation.Nullable;
  */
 public class SystemClock implements Clock {
 
-  protected SystemClock() {}
+    private void log(String msg) {
+        Log.i("SystemClock", msg);
+    }
 
-  @Override
-  public long currentTimeMillis() {
-    return System.currentTimeMillis();
-  }
+    protected SystemClock() {
+    }
 
-  @Override
-  public long elapsedRealtime() {
-    return android.os.SystemClock.elapsedRealtime();
-  }
+    @Override
+    public long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
 
-  @Override
-  public long uptimeMillis() {
-    return android.os.SystemClock.uptimeMillis();
-  }
+    @Override
+    public long elapsedRealtime() {
+        return android.os.SystemClock.elapsedRealtime();
+    }
 
-  @Override
-  public HandlerWrapper createHandler(Looper looper, @Nullable Callback callback) {
-    return new SystemHandlerWrapper(new Handler(looper, callback));
-  }
+    @Override
+    public long uptimeMillis() {
+        return android.os.SystemClock.uptimeMillis();
+    }
 
-  @Override
-  public void onThreadBlocked() {
-    // Do nothing.
-  }
+    @Override
+    public HandlerWrapper createHandler(Looper looper, @Nullable Callback callback) {
+        log("new SystemHandlerWrapper looper=" + looper + " , callback=" + callback);
+        return new SystemHandlerWrapper(new Handler(looper, callback));
+    }
+
+    @Override
+    public void onThreadBlocked() {
+        // Do nothing.
+    }
 }
