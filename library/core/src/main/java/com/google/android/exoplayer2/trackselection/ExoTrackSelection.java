@@ -36,7 +36,8 @@ import org.checkerframework.checker.nullness.compatqual.NullableType;
  * {@link #updateSelectedTrack(long, long, long, List, MediaChunkIterator[])} or {@link
  * #evaluateQueueSize(long, List)}. This only happens between calls to {@link #enable()} and {@link
  * #disable()}.
- * 轨道
+ * 作为调用updateSelectedTrack(long, long, long, List, MediaChunkIterator[])或evaluateQueueSize(long, List)的结果，
+ * TrackSelection可以更改单独选择的轨道。这只发生在调用enable()和disable()之间.
  */
 public interface ExoTrackSelection extends TrackSelection {
 

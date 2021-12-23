@@ -152,31 +152,30 @@ import java.util.concurrent.CopyOnWriteArraySet;
      */
     @SuppressLint("HandlerLeak")
     public ExoPlayerImpl(
-        Renderer[] renderers,
-        TrackSelector trackSelector,
-        MediaSourceFactory mediaSourceFactory,
-        LoadControl loadControl,
-        BandwidthMeter bandwidthMeter,
-        @Nullable AnalyticsCollector analyticsCollector,
-        boolean useLazyPreparation,
-        SeekParameters seekParameters,
-        long seekBackIncrementMs,
-        long seekForwardIncrementMs,
-        LivePlaybackSpeedControl livePlaybackSpeedControl,
-        long releaseTimeoutMs,
-        boolean pauseAtEndOfMediaItems,
-        Clock clock,
-        Looper applicationLooper,
-        @Nullable Player wrappingPlayer,
-        Commands additionalPermanentAvailableCommands) {
-        Log.i(TAG,
-            "Init "
-                + Integer.toHexString(System.identityHashCode(this))
-                + " ["
-                + ExoPlayerLibraryInfo.VERSION_SLASHY
-                + "] ["
-                + Util.DEVICE_DEBUG_INFO
-                + "]");
+        Renderer[] renderers, // 5种Renderer
+        TrackSelector trackSelector, // DefaultTrackSelector
+        MediaSourceFactory mediaSourceFactory, // DefaultMediaSourceFactory
+        LoadControl loadControl, // DefaultLoadControl
+        BandwidthMeter bandwidthMeter, // DefaultBandwidthMeter
+        @Nullable AnalyticsCollector analyticsCollector, // AnalyticsCollector
+        boolean useLazyPreparation, // true
+        SeekParameters seekParameters, // SeekParamters
+        long seekBackIncrementMs, // 500
+        long seekForwardIncrementMs, // 15000
+        LivePlaybackSpeedControl livePlaybackSpeedControl, // DefaultLivePlaybackSpeedControl
+        long releaseTimeoutMs, // 500
+        boolean pauseAtEndOfMediaItems, // false
+        Clock clock, // SystemClock
+        Looper applicationLooper, // Looper(main, tid 1)
+        @Nullable Player wrappingPlayer, // SimpleExoPlayer
+        Commands additionalPermanentAvailableCommands) { // Player$Command
+        Log.i(TAG, "Init "
+            + Integer.toHexString(System.identityHashCode(this))
+            + " ["
+            + ExoPlayerLibraryInfo.VERSION_SLASHY
+            + "] ["
+            + Util.DEVICE_DEBUG_INFO
+            + "]");
         checkState(renderers.length > 0);
         this.renderers = checkNotNull(renderers); // MediaCodecVideoRenderer，MediaCodecAudioRenderer，。。。
         this.trackSelector = checkNotNull(trackSelector); //DefaultTrackSelector
@@ -192,23 +191,20 @@ import java.util.concurrent.CopyOnWriteArraySet;
         this.clock = clock; // SystemClock
         repeatMode = Player.REPEAT_MODE_OFF; // 0
         Player playerForListeners = wrappingPlayer != null ? wrappingPlayer : this; // SimpleExoPlayer
-        listeners =
-            new ListenerSet<>(
-                applicationLooper,
-                clock,
-                (listener, flags) -> listener.onEvents(playerForListeners, new Events(flags)));
+        listeners = new ListenerSet<>(
+            applicationLooper, // Looper(main, tid 1)
+            clock, // SystemClock
+            (listener, flags) -> listener.onEvents(playerForListeners, new Events(flags))); // SimpleExoPlayer
         audioOffloadListeners = new CopyOnWriteArraySet<>();
         mediaSourceHolderSnapshots = new ArrayList<>();
-        shuffleOrder = new ShuffleOrder.DefaultShuffleOrder(/* length= */ 0);
-        emptyTrackSelectorResult =
-            new TrackSelectorResult(
-                new RendererConfiguration[renderers.length],
-                new ExoTrackSelection[renderers.length],
-                /* info= */ null);
+        shuffleOrder = new ShuffleOrder.DefaultShuffleOrder(/* length= */ 0); // ShuffleOrder$DefaultShuffleOrder
+        emptyTrackSelectorResult = new TrackSelectorResult(
+            new RendererConfiguration[renderers.length],
+            new ExoTrackSelection[renderers.length],
+            /* info= */ null);
         period = new Timeline.Period();
-        permanentAvailableCommands =
-            new Commands.Builder().addAll(
-                COMMAND_PLAY_PAUSE,
+        permanentAvailableCommands = new Commands.Builder()
+            .addAll(COMMAND_PLAY_PAUSE,
                 COMMAND_PREPARE_STOP,
                 COMMAND_SET_SPEED_AND_PITCH,
                 COMMAND_SET_SHUFFLE_MODE,
@@ -217,8 +213,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
                 COMMAND_GET_TIMELINE,
                 COMMAND_GET_MEDIA_ITEMS_METADATA,
                 COMMAND_SET_MEDIA_ITEMS_METADATA,
-                COMMAND_CHANGE_MEDIA_ITEMS
-            ).addAll(additionalPermanentAvailableCommands).build();
+                COMMAND_CHANGE_MEDIA_ITEMS)
+            .addAll(additionalPermanentAvailableCommands)
+            .build();
         availableCommands = new Commands.Builder()
             .addAll(permanentAvailableCommands)
             .add(COMMAND_SEEK_TO_DEFAULT_POSITION)
@@ -1330,7 +1327,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
                 newMediaMetadata.buildUpon().populateFromMetadata(newPlaybackInfo.staticMetadata).build();
         }
         boolean metadataChanged = !newMediaMetadata.equals(mediaMetadata);
-        mediaMetadata = newMediaMetadata;
+        mediaMetadata = newMediaMetadata; // MediaMetadata
 
         if (!previousPlaybackInfo.timeline.equals(newPlaybackInfo.timeline)) {
             listeners.queueEvent(Player.EVENT_TIMELINE_CHANGED,
