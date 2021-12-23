@@ -449,8 +449,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
             Class<? extends MediaSourceFactory> factoryClazz =
                 Class.forName("com.google.android.exoplayer2.source.dash.DashMediaSource$Factory")
                     .asSubclass(MediaSourceFactory.class);
-            factories.put(
-                C.TYPE_DASH,
+            factories.put(C.TYPE_DASH,
                 factoryClazz.getConstructor(DataSource.Factory.class).newInstance(dataSourceFactory));
         } catch (Exception e) {
             // Expected if the app was built without the dash module.
@@ -459,8 +458,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
             Class<? extends MediaSourceFactory> factoryClazz =
                 Class.forName("com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource$Factory")
                     .asSubclass(MediaSourceFactory.class);
-            factories.put(
-                C.TYPE_SS,
+            factories.put(C.TYPE_SS,
                 factoryClazz.getConstructor(DataSource.Factory.class).newInstance(dataSourceFactory));
         } catch (Exception e) {
             // Expected if the app was built without the smoothstreaming module.
@@ -469,8 +467,7 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
             Class<? extends MediaSourceFactory> factoryClazz =
                 Class.forName("com.google.android.exoplayer2.source.hls.HlsMediaSource$Factory")
                     .asSubclass(MediaSourceFactory.class);
-            factories.put(
-                C.TYPE_HLS,
+            factories.put(C.TYPE_HLS,
                 factoryClazz.getConstructor(DataSource.Factory.class).newInstance(dataSourceFactory));
         } catch (Exception e) {
             // Expected if the app was built without the hls module.

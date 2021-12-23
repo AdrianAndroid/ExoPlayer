@@ -286,8 +286,8 @@ public class PlayerActivity extends AppCompatActivity
             // 处理音视频的播放, 俗称渲染
             RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders);
             // DefaultRednderersFactory， 加载的源文件， 加载文件
-            MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory) //
-                // DefaultMediaSourceFacotry
+            MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory)
+                //CacheDataSource$Factory // DefaultMediaSourceFacotry
                 .setAdsLoaderProvider(this::getAdsLoader)
                 .setAdViewProvider(playerView);
             // 初始化轨道选择器
