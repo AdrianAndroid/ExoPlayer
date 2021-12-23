@@ -492,7 +492,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                     log("handleMessage MSG_SET_SHUFFLE_ENABLED");
                     setShuffleModeEnabledInternal(msg.arg1 != 0);
                     break;
-                case MSG_DO_SOME_WORK:
+                case MSG_DO_SOME_WORK: // 每次渲染，播放声音在这里做
                     log("handleMessage MSG_DO_SOME_WORK currentThread -> " + Thread.currentThread().getName());
                     doSomeWork();
                     break;
@@ -725,18 +725,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
         throws ExoPlaybackException {
         playbackInfoUpdate.incrementPendingOperationAcks(/* operationAcks= */ 1);
         if (mediaSourceListUpdateMessage.windowIndex != C.INDEX_UNSET) {
-            pendingInitialSeekPosition =
-                new SeekPosition(
-                    new PlaylistTimeline(
-                        mediaSourceListUpdateMessage.mediaSourceHolders,
-                        mediaSourceListUpdateMessage.shuffleOrder),
-                    mediaSourceListUpdateMessage.windowIndex,
-                    mediaSourceListUpdateMessage.positionUs);
+            pendingInitialSeekPosition = new SeekPosition(
+                new PlaylistTimeline(mediaSourceListUpdateMessage.mediaSourceHolders,
+                    mediaSourceListUpdateMessage.shuffleOrder), // ShuffleOrder$DefaultShuffleOrder
+                mediaSourceListUpdateMessage.windowIndex,
+                mediaSourceListUpdateMessage.positionUs);
         }
-        Timeline timeline =
-            mediaSourceList.setMediaSources(
-                mediaSourceListUpdateMessage.mediaSourceHolders,
-                mediaSourceListUpdateMessage.shuffleOrder);
+        Timeline timeline = mediaSourceList.setMediaSources(mediaSourceListUpdateMessage.mediaSourceHolders,
+            mediaSourceListUpdateMessage.shuffleOrder); // Playlisttimeline
         handleMediaSourceListInfoRefreshed(timeline, /* isSourceRefresh= */ false);
     }
 
@@ -1875,29 +1871,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 /* positionForTargetOffsetOverrideUs */ positionUpdate.setTargetLiveOffset
                     ? newPositionUs
                     : C.TIME_UNSET);
-            if (periodPositionChanged
-                || newRequestedContentPositionUs != playbackInfo.requestedContentPositionUs) {
+            if (periodPositionChanged || newRequestedContentPositionUs != playbackInfo.requestedContentPositionUs) {
                 Object oldPeriodUid = playbackInfo.periodId.periodUid;
                 Timeline oldTimeline = playbackInfo.timeline;
-                boolean reportDiscontinuity =
-                    periodPositionChanged
-                        && isSourceRefresh
-                        && !oldTimeline.isEmpty()
-                        && !oldTimeline.getPeriodByUid(oldPeriodUid, period).isPlaceholder;
-                playbackInfo =
-                    handlePositionDiscontinuity(
-                        newPeriodId,
-                        newPositionUs,
-                        newRequestedContentPositionUs,
-                        playbackInfo.discontinuityStartPositionUs,
-                        reportDiscontinuity,
-                        timeline.getIndexOfPeriod(oldPeriodUid) == C.INDEX_UNSET
-                            ? Player.DISCONTINUITY_REASON_REMOVE
-                            : Player.DISCONTINUITY_REASON_SKIP);
+                boolean reportDiscontinuity = periodPositionChanged
+                    && isSourceRefresh
+                    && !oldTimeline.isEmpty()
+                    && !oldTimeline.getPeriodByUid(oldPeriodUid, period).isPlaceholder;
+                playbackInfo = handlePositionDiscontinuity(
+                    newPeriodId,
+                    newPositionUs,
+                    newRequestedContentPositionUs,
+                    playbackInfo.discontinuityStartPositionUs,
+                    reportDiscontinuity,
+                    timeline.getIndexOfPeriod(oldPeriodUid) == C.INDEX_UNSET
+                        ? Player.DISCONTINUITY_REASON_REMOVE
+                        : Player.DISCONTINUITY_REASON_SKIP);
             }
             resetPendingPauseAtEndOfPeriod();
-            resolvePendingMessagePositions(
-                /* newTimeline= */ timeline, /* previousTimeline= */ playbackInfo.timeline);
+            resolvePendingMessagePositions(/* newTimeline= */ timeline, /* previousTimeline= */ playbackInfo.timeline);
             playbackInfo = playbackInfo.copyWithTimeline(timeline);
             if (!timeline.isEmpty()) {
                 // Retain pending seek position only while the timeline is still empty.
@@ -3013,10 +3005,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
     private static final class MediaSourceListUpdateMessage {
 
-        private final List<MediaSourceList.MediaSourceHolder> mediaSourceHolders;
-        private final ShuffleOrder shuffleOrder;
-        private final int windowIndex;
-        private final long positionUs;
+        private final List<MediaSourceList.MediaSourceHolder> mediaSourceHolders; // 多个资源
+        private final ShuffleOrder shuffleOrder; // 随机顺序
+        private final int windowIndex; // windows的索引
+        private final long positionUs; //
 
         private MediaSourceListUpdateMessage(
             List<MediaSourceList.MediaSourceHolder> mediaSourceHolders,

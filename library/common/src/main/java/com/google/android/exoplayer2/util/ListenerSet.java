@@ -177,7 +177,7 @@ public final class ListenerSet<T> {
     if (queuedEvents.isEmpty()) {
       return;
     }
-    if (!handler.hasMessages(MSG_ITERATION_FINISHED)) {
+    if (!handler.hasMessages(MSG_ITERATION_FINISHED)) { // SystemHandlerWrapper
       handler.sendMessageAtFrontOfQueue(handler.obtainMessage(MSG_ITERATION_FINISHED));
     }
     boolean recursiveFlushInProgress = !flushingEvents.isEmpty();

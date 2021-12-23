@@ -1228,9 +1228,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
     private List<MediaSource> createMediaSources(List<MediaItem> mediaItems) {
         List<MediaSource> mediaSources = new ArrayList<>();
         for (int i = 0; i < mediaItems.size(); i++) {
+            //DefaultMediaSourceFactory -》 DashMediaSource createMediaSource
             mediaSources.add(mediaSourceFactory.createMediaSource(mediaItems.get(i)));
         }
-        return mediaSources;
+        return mediaSources; // 创建list of MediaSource's
     }
 
     private void handlePlaybackInfo(ExoPlayerImplInternal.PlaybackInfoUpdate playbackInfoUpdate) {
@@ -1306,13 +1307,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
         PlaybackInfo newPlaybackInfo = playbackInfo;
         this.playbackInfo = playbackInfo;
 
-        Pair<Boolean, Integer> mediaItemTransitionInfo =
-            evaluateMediaItemTransitionReason(
-                newPlaybackInfo,
-                previousPlaybackInfo,
-                positionDiscontinuity,
-                positionDiscontinuityReason,
-                !previousPlaybackInfo.timeline.equals(newPlaybackInfo.timeline));
+        Pair<Boolean, Integer> mediaItemTransitionInfo = evaluateMediaItemTransitionReason(
+            newPlaybackInfo,
+            previousPlaybackInfo,
+            positionDiscontinuity,
+            positionDiscontinuityReason,
+            !previousPlaybackInfo.timeline.equals(newPlaybackInfo.timeline));
         boolean mediaItemTransitioned = mediaItemTransitionInfo.first;
         int mediaItemTransitionReason = mediaItemTransitionInfo.second;
         MediaMetadata newMediaMetadata = mediaMetadata;
@@ -1320,8 +1320,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
         if (mediaItemTransitioned) {
             if (!newPlaybackInfo.timeline.isEmpty()) {
                 int windowIndex =
-                    newPlaybackInfo.timeline.getPeriodByUid(newPlaybackInfo.periodId.periodUid, period)
-                        .windowIndex;
+                    newPlaybackInfo.timeline.getPeriodByUid(newPlaybackInfo.periodId.periodUid, period).windowIndex;
                 mediaItem = newPlaybackInfo.timeline.getWindow(windowIndex, window).mediaItem;
             }
             newMediaMetadata = mediaItem != null ? mediaItem.mediaMetadata : MediaMetadata.EMPTY;
@@ -1334,61 +1333,50 @@ import java.util.concurrent.CopyOnWriteArraySet;
         mediaMetadata = newMediaMetadata;
 
         if (!previousPlaybackInfo.timeline.equals(newPlaybackInfo.timeline)) {
-            listeners.queueEvent(
-                Player.EVENT_TIMELINE_CHANGED,
+            listeners.queueEvent(Player.EVENT_TIMELINE_CHANGED,
                 listener -> listener.onTimelineChanged(newPlaybackInfo.timeline, timelineChangeReason));
         }
         if (positionDiscontinuity) {
             PositionInfo previousPositionInfo =
-                getPreviousPositionInfo(
-                    positionDiscontinuityReason, previousPlaybackInfo, oldMaskingWindowIndex);
+                getPreviousPositionInfo(positionDiscontinuityReason, previousPlaybackInfo, oldMaskingWindowIndex);
             PositionInfo positionInfo = getPositionInfo(discontinuityWindowStartPositionUs);
             listeners.queueEvent(
                 Player.EVENT_POSITION_DISCONTINUITY,
                 listener -> {
                     listener.onPositionDiscontinuity(positionDiscontinuityReason);
-                    listener.onPositionDiscontinuity(
-                        previousPositionInfo, positionInfo, positionDiscontinuityReason);
+                    listener.onPositionDiscontinuity(previousPositionInfo, positionInfo, positionDiscontinuityReason);
                 });
         }
         if (mediaItemTransitioned) {
             @Nullable final MediaItem finalMediaItem = mediaItem;
-            listeners.queueEvent(
-                Player.EVENT_MEDIA_ITEM_TRANSITION,
+            listeners.queueEvent(Player.EVENT_MEDIA_ITEM_TRANSITION,
                 listener -> listener.onMediaItemTransition(finalMediaItem, mediaItemTransitionReason));
         }
         if (previousPlaybackInfo.playbackError != newPlaybackInfo.playbackError) {
-            listeners.queueEvent(
-                Player.EVENT_PLAYER_ERROR,
+            listeners.queueEvent(Player.EVENT_PLAYER_ERROR,
                 listener -> listener.onPlayerErrorChanged(newPlaybackInfo.playbackError));
             if (newPlaybackInfo.playbackError != null) {
-                listeners.queueEvent(
-                    Player.EVENT_PLAYER_ERROR,
+                listeners.queueEvent(Player.EVENT_PLAYER_ERROR,
                     listener -> listener.onPlayerError(newPlaybackInfo.playbackError));
             }
         }
         if (previousPlaybackInfo.trackSelectorResult != newPlaybackInfo.trackSelectorResult) {
             trackSelector.onSelectionActivated(newPlaybackInfo.trackSelectorResult.info);
-            TrackSelectionArray newSelection =
-                new TrackSelectionArray(newPlaybackInfo.trackSelectorResult.selections);
-            listeners.queueEvent(
-                Player.EVENT_TRACKS_CHANGED,
+            TrackSelectionArray newSelection = new TrackSelectionArray(newPlaybackInfo.trackSelectorResult.selections);
+            listeners.queueEvent(Player.EVENT_TRACKS_CHANGED,
                 listener -> listener.onTracksChanged(newPlaybackInfo.trackGroups, newSelection));
         }
         if (!previousPlaybackInfo.staticMetadata.equals(newPlaybackInfo.staticMetadata)) {
-            listeners.queueEvent(
-                Player.EVENT_STATIC_METADATA_CHANGED,
+            listeners.queueEvent(Player.EVENT_STATIC_METADATA_CHANGED,
                 listener -> listener.onStaticMetadataChanged(newPlaybackInfo.staticMetadata));
         }
         if (metadataChanged) {
             final MediaMetadata finalMediaMetadata = mediaMetadata;
-            listeners.queueEvent(
-                Player.EVENT_MEDIA_METADATA_CHANGED,
+            listeners.queueEvent(Player.EVENT_MEDIA_METADATA_CHANGED,
                 listener -> listener.onMediaMetadataChanged(finalMediaMetadata));
         }
         if (previousPlaybackInfo.isLoading != newPlaybackInfo.isLoading) {
-            listeners.queueEvent(
-                Player.EVENT_IS_LOADING_CHANGED,
+            listeners.queueEvent(Player.EVENT_IS_LOADING_CHANGED,
                 listener -> {
                     listener.onLoadingChanged(newPlaybackInfo.isLoading);
                     listener.onIsLoadingChanged(newPlaybackInfo.isLoading);
@@ -1396,40 +1384,29 @@ import java.util.concurrent.CopyOnWriteArraySet;
         }
         if (previousPlaybackInfo.playbackState != newPlaybackInfo.playbackState
             || previousPlaybackInfo.playWhenReady != newPlaybackInfo.playWhenReady) {
-            listeners.queueEvent(
-                /* eventFlag= */ C.INDEX_UNSET,
-                listener ->
-                    listener.onPlayerStateChanged(
-                        newPlaybackInfo.playWhenReady, newPlaybackInfo.playbackState));
+            listeners.queueEvent(/* eventFlag= */ C.INDEX_UNSET,
+                listener -> listener
+                    .onPlayerStateChanged(newPlaybackInfo.playWhenReady, newPlaybackInfo.playbackState));
         }
         if (previousPlaybackInfo.playbackState != newPlaybackInfo.playbackState) {
-            listeners.queueEvent(
-                Player.EVENT_PLAYBACK_STATE_CHANGED,
+            listeners.queueEvent(Player.EVENT_PLAYBACK_STATE_CHANGED,
                 listener -> listener.onPlaybackStateChanged(newPlaybackInfo.playbackState));
         }
         if (previousPlaybackInfo.playWhenReady != newPlaybackInfo.playWhenReady) {
-            listeners.queueEvent(
-                Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                listener ->
-                    listener.onPlayWhenReadyChanged(
-                        newPlaybackInfo.playWhenReady, playWhenReadyChangeReason));
+            listeners.queueEvent(Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                listener -> listener.onPlayWhenReadyChanged(newPlaybackInfo.playWhenReady, playWhenReadyChangeReason));
         }
         if (previousPlaybackInfo.playbackSuppressionReason
             != newPlaybackInfo.playbackSuppressionReason) {
-            listeners.queueEvent(
-                Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED,
-                listener ->
-                    listener.onPlaybackSuppressionReasonChanged(
-                        newPlaybackInfo.playbackSuppressionReason));
+            listeners.queueEvent(Player.EVENT_PLAYBACK_SUPPRESSION_REASON_CHANGED,
+                listener -> listener.onPlaybackSuppressionReasonChanged(newPlaybackInfo.playbackSuppressionReason));
         }
         if (isPlaying(previousPlaybackInfo) != isPlaying(newPlaybackInfo)) {
-            listeners.queueEvent(
-                Player.EVENT_IS_PLAYING_CHANGED,
+            listeners.queueEvent(Player.EVENT_IS_PLAYING_CHANGED,
                 listener -> listener.onIsPlayingChanged(isPlaying(newPlaybackInfo)));
         }
         if (!previousPlaybackInfo.playbackParameters.equals(newPlaybackInfo.playbackParameters)) {
-            listeners.queueEvent(
-                Player.EVENT_PLAYBACK_PARAMETERS_CHANGED,
+            listeners.queueEvent(Player.EVENT_PLAYBACK_PARAMETERS_CHANGED,
                 listener -> listener.onPlaybackParametersChanged(newPlaybackInfo.playbackParameters));
         }
         if (seekProcessed) {
@@ -1440,8 +1417,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
         if (previousPlaybackInfo.offloadSchedulingEnabled != newPlaybackInfo.offloadSchedulingEnabled) {
             for (AudioOffloadListener listener : audioOffloadListeners) {
-                listener.onExperimentalOffloadSchedulingEnabledChanged(
-                    newPlaybackInfo.offloadSchedulingEnabled);
+                listener.onExperimentalOffloadSchedulingEnabledChanged(newPlaybackInfo.offloadSchedulingEnabled);
             }
         }
         if (previousPlaybackInfo.sleepingForOffload != newPlaybackInfo.sleepingForOffload) {
@@ -1553,19 +1529,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
             return new Pair<>(/* isTransitioning */ true, MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED);
         }
 
-        int oldWindowIndex =
-            oldTimeline.getPeriodByUid(oldPlaybackInfo.periodId.periodUid, period).windowIndex;
+        int oldWindowIndex = oldTimeline.getPeriodByUid(oldPlaybackInfo.periodId.periodUid, period).windowIndex;
         Object oldWindowUid = oldTimeline.getWindow(oldWindowIndex, window).uid;
-        int newWindowIndex =
-            newTimeline.getPeriodByUid(playbackInfo.periodId.periodUid, period).windowIndex;
+        int newWindowIndex = newTimeline.getPeriodByUid(playbackInfo.periodId.periodUid, period).windowIndex;
         Object newWindowUid = newTimeline.getWindow(newWindowIndex, window).uid;
         if (!oldWindowUid.equals(newWindowUid)) {
             @Player.MediaItemTransitionReason int transitionReason;
-            if (positionDiscontinuity
-                && positionDiscontinuityReason == DISCONTINUITY_REASON_AUTO_TRANSITION) {
+            if (positionDiscontinuity && positionDiscontinuityReason == DISCONTINUITY_REASON_AUTO_TRANSITION) {
                 transitionReason = MEDIA_ITEM_TRANSITION_REASON_AUTO;
-            } else if (positionDiscontinuity
-                && positionDiscontinuityReason == DISCONTINUITY_REASON_SEEK) {
+            } else if (positionDiscontinuity && positionDiscontinuityReason == DISCONTINUITY_REASON_SEEK) {
                 transitionReason = MEDIA_ITEM_TRANSITION_REASON_SEEK;
             } else if (timelineChanged) {
                 transitionReason = MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED;
@@ -1598,17 +1570,17 @@ import java.util.concurrent.CopyOnWriteArraySet;
         int currentWindowIndex = getCurrentWindowIndexInternal();
         long currentPositionMs = getCurrentPosition();
         pendingOperationAcks++;
-        if (!mediaSourceHolderSnapshots.isEmpty()) {
+        if (!mediaSourceHolderSnapshots.isEmpty()) { // 之前没有清空的，清空掉
             removeMediaSourceHolders(/* fromIndex= */ 0, /* toIndexExclusive= */ mediaSourceHolderSnapshots.size());
         }
         List<MediaSourceList.MediaSourceHolder> holders = addMediaSourceHolders(/* index= */ 0, mediaSources);
-        Timeline timeline = createMaskingTimeline();
+        Timeline timeline = createMaskingTimeline(); // PlaylistTimeline：保存了两个变量
         if (!timeline.isEmpty() && startWindowIndex >= timeline.getWindowCount()) {
             throw new IllegalSeekPositionException(timeline, startWindowIndex, startPositionMs);
         }
         // Evaluate the actual start position.
         if (resetToDefaultPosition) {
-            startWindowIndex = timeline.getFirstWindowIndex(shuffleModeEnabled);
+            startWindowIndex = timeline.getFirstWindowIndex(shuffleModeEnabled); // startWindowIndex == 0
             startPositionMs = C.TIME_UNSET;
         } else if (startWindowIndex == C.INDEX_UNSET) {
             startWindowIndex = currentWindowIndex;
@@ -1643,19 +1615,16 @@ import java.util.concurrent.CopyOnWriteArraySet;
             /* ignored */ C.INDEX_UNSET);
     }
 
-    private List<MediaSourceList.MediaSourceHolder> addMediaSourceHolders(
-        int index, List<MediaSource> mediaSources) {
+    private List<MediaSourceList.MediaSourceHolder> addMediaSourceHolders(int index, List<MediaSource> mediaSources) {
         List<MediaSourceList.MediaSourceHolder> holders = new ArrayList<>();
         for (int i = 0; i < mediaSources.size(); i++) {
             MediaSourceList.MediaSourceHolder holder =
                 new MediaSourceList.MediaSourceHolder(mediaSources.get(i), useLazyPreparation);
             holders.add(holder);
-            mediaSourceHolderSnapshots.add(
-                i + index, new MediaSourceHolderSnapshot(holder.uid, holder.mediaSource.getTimeline()));
+            mediaSourceHolderSnapshots
+                .add(i + index, new MediaSourceHolderSnapshot(holder.uid, holder.mediaSource.getTimeline()));
         }
-        shuffleOrder =
-            shuffleOrder.cloneAndInsert(
-                /* insertionIndex= */ index, /* insertionCount= */ holders.size());
+        shuffleOrder = shuffleOrder.cloneAndInsert(/* insertionIndex= */ index, /* insertionCount= */ holders.size());
         return holders;
     }
 

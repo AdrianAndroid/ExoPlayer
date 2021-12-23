@@ -1471,8 +1471,8 @@ public class SimpleExoPlayer extends BasePlayer
 
     @Override
     public void setMediaItems(List<MediaItem> mediaItems, boolean resetPosition) {
-        verifyApplicationThread();
-        player.setMediaItems(mediaItems, resetPosition);
+        verifyApplicationThread(); // 一定要等到所有的都创建出来
+        player.setMediaItems(mediaItems, resetPosition); // ExoPlayerImpl
     }
 
     @Override
@@ -2132,7 +2132,7 @@ public class SimpleExoPlayer extends BasePlayer
         // The constructor may be executed on a background thread. Wait with accessing the player from
         // the app thread until the constructor finished executing.
         constructorFinished.blockUninterruptible(); // 阻塞当前线程？
-        if (Thread.currentThread() != getApplicationLooper().getThread()) {
+        if (Thread.currentThread() != getApplicationLooper().getThread()) { // 判断是否main
             String message =
                 Util.formatInvariant(
                     "Player is accessed on the wrong thread.\n"

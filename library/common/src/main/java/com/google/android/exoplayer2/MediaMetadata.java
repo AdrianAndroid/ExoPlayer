@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.util.Util;
@@ -915,5 +916,43 @@ public final class MediaMetadata implements Bundleable {
 
   private static String keyForField(@FieldNumber int field) {
     return Integer.toString(field, Character.MAX_RADIX);
+  }
+
+  @Override
+  public String toString() {
+    return "MediaMetadata{" +
+        "title=" + title +
+        ", artist=" + artist +
+        ", albumTitle=" + albumTitle +
+        ", albumArtist=" + albumArtist +
+        ", displayTitle=" + displayTitle +
+        ", subtitle=" + subtitle +
+        ", description=" + description +
+        ", mediaUri=" + mediaUri +
+        ", userRating=" + userRating +
+        ", overallRating=" + overallRating +
+        ", artworkData=" + Arrays.toString(artworkData) +
+        ", artworkDataType=" + artworkDataType +
+        ", artworkUri=" + artworkUri +
+        ", trackNumber=" + trackNumber +
+        ", totalTrackCount=" + totalTrackCount +
+        ", folderType=" + folderType +
+        ", isPlayable=" + isPlayable +
+        ", year=" + year +
+        ", recordingYear=" + recordingYear +
+        ", recordingMonth=" + recordingMonth +
+        ", recordingDay=" + recordingDay +
+        ", releaseYear=" + releaseYear +
+        ", releaseMonth=" + releaseMonth +
+        ", releaseDay=" + releaseDay +
+        ", writer=" + writer +
+        ", composer=" + composer +
+        ", conductor=" + conductor +
+        ", discNumber=" + discNumber +
+        ", totalDiscCount=" + totalDiscCount +
+        ", genre=" + genre +
+        ", compilation=" + compilation +
+        ", extras=" + extras +
+        '}';
   }
 }

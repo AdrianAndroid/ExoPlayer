@@ -278,7 +278,7 @@ public class PlayerActivity extends AppCompatActivity
         if (player == null) {
             Intent intent = getIntent();
             // 得到传递过来的值
-            mediaItems = createMediaItems(intent);
+            mediaItems = createMediaItems(intent); // 从SimepleChooseActivity那边传递过来的
             if (mediaItems.isEmpty()) {
                 return false;
             }
@@ -286,7 +286,7 @@ public class PlayerActivity extends AppCompatActivity
             // 处理音视频的播放, 俗称渲染
             RenderersFactory renderersFactory = DemoUtil.buildRenderersFactory(this, preferExtensionDecoders);
             // DefaultRednderersFactory， 加载的源文件， 加载文件
-            MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory)
+            MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(dataSourceFactory) // 这里面用来解析
                 //CacheDataSource$Factory // DefaultMediaSourceFacotry
                 .setAdsLoaderProvider(this::getAdsLoader)
                 .setAdViewProvider(playerView);

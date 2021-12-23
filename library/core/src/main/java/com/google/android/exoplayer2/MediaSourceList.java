@@ -121,6 +121,7 @@ import java.util.Set;
 
     /**
      * Sets the media sources replacing any sources previously contained in the playlist.
+     * 设置媒体源替换以前包含在播放列表中的任何源
      *
      * @param holders      The list of {@link MediaSourceHolder}s to set.
      * @param shuffleOrder The new shuffle order.
@@ -412,8 +413,7 @@ import java.util.Set;
             MediaSourceHolder holder = mediaSourceHolders.remove(index);
             mediaSourceByUid.remove(holder.uid);
             Timeline oldTimeline = holder.mediaSource.getTimeline();
-            correctOffsets(
-                /* startIndex= */ index, /* windowOffsetUpdate= */ -oldTimeline.getWindowCount());
+            correctOffsets(/* startIndex= */ index, /* windowOffsetUpdate= */ -oldTimeline.getWindowCount());
             holder.isRemoved = true;
             if (isPrepared) {
                 maybeReleaseChildSource(holder);
