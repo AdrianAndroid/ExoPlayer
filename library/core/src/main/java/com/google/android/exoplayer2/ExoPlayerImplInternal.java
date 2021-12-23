@@ -387,7 +387,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
             message.markAsProcessed(/* isDelivered= */ false);
             return;
         }
-        handler.obtainMessage(MSG_SEND_MESSAGE, message).sendToTarget();
+        handler.obtainMessage(MSG_SEND_MESSAGE, message).sendToTarget(); // SystemHandlerWrapper
     }
 
     /**
@@ -510,8 +510,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
                     break;
                 case MSG_SET_FOREGROUND_MODE:
                     log("handleMessage MSG_SET_FOREGROUND_MODE");
-                    setForegroundModeInternal(/* foregroundMode= */ msg.arg1 != 0
-                        , /* processedFlag= */ (AtomicBoolean) msg.obj);
+                    setForegroundModeInternal(/* foregroundMode= */ msg.arg1 != 0, /* processedFlag= */
+                        (AtomicBoolean) msg.obj);
                     break;
                 case MSG_STOP:
                     log("handleMessage MSG_STOP");
@@ -1523,8 +1523,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
     private void sendMessageToTarget(PlayerMessage message) throws ExoPlaybackException {
         if (message.getLooper() == playbackLooper) {
             deliverMessage(message);
-            if (playbackInfo.playbackState == Player.STATE_READY
-                || playbackInfo.playbackState == Player.STATE_BUFFERING) {
+            if (playbackInfo.playbackState == Player.STATE_READY ||
+                playbackInfo.playbackState == Player.STATE_BUFFERING) {
                 // The message may have caused something to change that now requires us to do work.
                 handler.sendEmptyMessage(MSG_DO_SOME_WORK);
             }

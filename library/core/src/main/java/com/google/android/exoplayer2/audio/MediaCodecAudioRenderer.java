@@ -693,7 +693,7 @@ public class MediaCodecAudioRenderer extends MediaCodecRenderer implements Media
                 audioSink.setSkipSilenceEnabled((Boolean) message);
                 break;
             case MSG_SET_AUDIO_SESSION_ID:
-                audioSink.setAudioSessionId((Integer) message);
+                audioSink.setAudioSessionId((Integer) message); // DefaultAudioSink
                 break;
             case MSG_SET_WAKEUP_LISTENER:
                 this.wakeupListener = (WakeupListener) message;

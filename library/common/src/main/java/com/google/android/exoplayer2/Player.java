@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.text.TextOutput;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.util.FlagSet;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.google.android.exoplayer2.video.VideoSize;
@@ -940,137 +941,166 @@ public interface Player {
      *
      * <p>All methods have no-op default implementations to allow selective overrides.
      */
-    interface Listener
-        extends VideoListener,
-        AudioListener,
-        TextOutput,
-        MetadataOutput,
-        DeviceListener,
-        EventListener {
+    interface Listener extends VideoListener, AudioListener, TextOutput, MetadataOutput, DeviceListener, EventListener {
 
         @Override
         default void onTimelineChanged(Timeline timeline, @TimelineChangeReason int reason) {
+            Log.i("Player#Listener", "onTimelineChanged(Timeline timeline, @TimelineChangeReason int reason)");
         }
 
         @Override
         default void onMediaItemTransition(@Nullable MediaItem mediaItem, @MediaItemTransitionReason int reason) {
+            Log.i("Player#Listener",
+                "onMediaItemTransition(@Nullable MediaItem mediaItem, @MediaItemTransitionReason int reason)");
         }
 
         @Override
         default void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+            Log.i("Player#Listener",
+                "onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections)");
         }
 
         @Override
         default void onIsLoadingChanged(boolean isLoading) {
+            Log.i("Player#Listener", "onIsLoadingChanged(boolean isLoading)");
         }
 
         @Override
         default void onAvailableCommandsChanged(Commands availableCommands) {
+            Log.i("Player#Listener", "onAvailableCommandsChanged(Commands availableCommands)");
         }
 
         @Override
         default void onPlaybackStateChanged(@State int playbackState) {
+            Log.i("Player#Listener", "onPlaybackStateChanged(@State int playbackState)");
         }
 
         @Override
         default void onPlayWhenReadyChanged(boolean playWhenReady, @PlayWhenReadyChangeReason int reason) {
+            Log.i("Player#Listener",
+                "onPlayWhenReadyChanged(boolean playWhenReady, @PlayWhenReadyChangeReason int reason)");
         }
 
         @Override
         default void onPlaybackSuppressionReasonChanged(@PlaybackSuppressionReason int playbackSuppressionReason) {
+            Log.i("Player#Listener",
+                "onPlaybackSuppressionReasonChanged(@PlaybackSuppressionReason int playbackSuppressionReason)");
         }
 
         @Override
         default void onIsPlayingChanged(boolean isPlaying) {
+            Log.i("Player#Listener", "onIsPlayingChanged(boolean isPlaying)");
         }
 
         @Override
         default void onRepeatModeChanged(@RepeatMode int repeatMode) {
+            Log.i("Player#Listener", "onRepeatModeChanged(@RepeatMode int repeatMode)");
         }
 
         @Override
         default void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+            Log.i("Player#Listener", "onShuffleModeEnabledChanged(boolean shuffleModeEnabled)");
         }
 
         @Override
         default void onPlayerError(PlaybackException error) {
+            Log.i("Player#Listener", "onPlayerError(PlaybackException error) ");
         }
 
         @Override
         default void onPlayerErrorChanged(@Nullable PlaybackException error) {
+            Log.i("Player#Listener", "onPlayerErrorChanged(@Nullable PlaybackException error)");
         }
 
         @Override
         default void onPositionDiscontinuity(PositionInfo oldPosition, PositionInfo newPosition,
                                              @DiscontinuityReason int reason) {
+            Log.i("Player#Listener", "onPositionDiscontinuity(PositionInfo oldPosition, PositionInfo newPosition,");
         }
 
         @Override
         default void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+            Log.i("Player#Listener", "void onPlaybackParametersChanged(PlaybackParameters playbackParameters)");
         }
 
         @Override
         default void onSeekForwardIncrementChanged(long seekForwardIncrementMs) {
+            Log.i("Player#Listener", "void onSeekForwardIncrementChanged(long seekForwardIncrementMs)");
         }
 
         @Override
         default void onSeekBackIncrementChanged(long seekBackIncrementMs) {
+            Log.i("Player#Listener", "void onSeekBackIncrementChanged(long seekBackIncrementMs)");
         }
 
         @Override
         default void onAudioSessionIdChanged(int audioSessionId) {
+            Log.i("Player#Listener", "void onAudioSessionIdChanged(int audioSessionId)");
         }
 
         @Override
         default void onAudioAttributesChanged(AudioAttributes audioAttributes) {
+            Log.i("Player#Listener", "void onAudioAttributesChanged(AudioAttributes audioAttributes)");
         }
 
         @Override
         default void onVolumeChanged(float volume) {
+            Log.i("Player#Listener", "void onVolumeChanged(float volume)");
         }
 
         @Override
         default void onSkipSilenceEnabledChanged(boolean skipSilenceEnabled) {
+            Log.i("Player#Listener", "void onSkipSilenceEnabledChanged(boolean skipSilenceEnabled)");
         }
 
         @Override
         default void onDeviceInfoChanged(DeviceInfo deviceInfo) {
+            Log.i("Player#Listener", "void onDeviceInfoChanged(DeviceInfo deviceInfo)");
         }
 
         @Override
         default void onDeviceVolumeChanged(int volume, boolean muted) {
+            Log.i("Player#Listener", "onDeviceVolumeChanged(int volume, boolean muted)");
         }
 
         @Override
         default void onEvents(Player player, Events events) {
+            Log.i("Player#Listener", "onEvents(Player player, Events events)");
         }
 
         @Override
         default void onVideoSizeChanged(VideoSize videoSize) {
+            Log.i("Player#Listener", "onVideoSizeChanged(VideoSize videoSize)");
         }
 
         @Override
         default void onSurfaceSizeChanged(int width, int height) {
+            Log.i("Player#Listener", "onSurfaceSizeChanged(int width, int height)");
         }
 
         @Override
         default void onRenderedFirstFrame() {
+            Log.i("Player#Listener", "onRenderedFirstFrame()");
         }
 
         @Override
         default void onCues(List<Cue> cues) {
+            Log.i("Player#Listener", "onCues(List<Cue> cues)");
         }
 
         @Override
         default void onMetadata(Metadata metadata) {
+            Log.i("Player#Listener", "onMetadata(Metadata metadata)");
         }
 
         @Override
         default void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+            Log.i("Player#Listener", "onMediaMetadataChanged(MediaMetadata mediaMetadata)");
         }
 
         @Override
         default void onPlaylistMetadataChanged(MediaMetadata mediaMetadata) {
+            Log.i("Player#Listener", "onPlaylistMetadataChanged(MediaMetadata mediaMetadata)");
         }
     }
 

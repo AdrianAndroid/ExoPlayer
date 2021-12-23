@@ -18,130 +18,151 @@ package com.google.android.exoplayer2.audio;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.util.Util;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
  * Interface for audio processors, which take audio data as input and transform it, potentially
- * modifying its channel count, encoding and/or sample rate.
+ * modifying its channel count, encoding and/or sample rate. 音频处理的接口，将音频数据作为输入并对其进行转换，
+ * 可能会修改其通道数，编码或采样
  *
  * <p>In addition to being able to modify the format of audio, implementations may allow parameters
- * to be set that affect the output audio and whether the processor is active/inactive.
+ * to be set that affect the output audio and whether the processor is active/inactive. 除了能够修改音频格式之外，
+ * 实现还可以允许设置影响输出音频的参数以及处理器是否处于活动/非活动状态。
  */
 public interface AudioProcessor {
 
-  /** PCM audio format that may be handled by an audio processor. */
-  final class AudioFormat {
-    public static final AudioFormat NOT_SET =
-        new AudioFormat(
-            /* sampleRate= */ Format.NO_VALUE,
-            /* channelCount= */ Format.NO_VALUE,
-            /* encoding= */ Format.NO_VALUE);
+    /**
+     * PCM audio format that may be handled by an audio processor.
+     */
+    final class AudioFormat {
+        public static final AudioFormat NOT_SET =
+            new AudioFormat(
+                /* sampleRate= */ Format.NO_VALUE,
+                /* channelCount= */ Format.NO_VALUE,
+                /* encoding= */ Format.NO_VALUE);
 
-    /** The sample rate in Hertz. */
-    public final int sampleRate;
-    /** The number of interleaved channels. */
-    public final int channelCount;
-    /** The type of linear PCM encoding. */
-    @C.PcmEncoding public final int encoding;
-    /** The number of bytes used to represent one audio frame. */
-    public final int bytesPerFrame;
+        /**
+         * The sample rate in Hertz.
+         */
+        public final int sampleRate;
+        /**
+         * The number of interleaved channels.
+         */
+        public final int channelCount;
+        /**
+         * The type of linear PCM encoding.
+         */
+        @C.PcmEncoding
+        public final int encoding;
+        /**
+         * The number of bytes used to represent one audio frame.
+         */
+        public final int bytesPerFrame;
 
-    public AudioFormat(int sampleRate, int channelCount, @C.PcmEncoding int encoding) {
-      this.sampleRate = sampleRate;
-      this.channelCount = channelCount;
-      this.encoding = encoding;
-      bytesPerFrame =
-          Util.isEncodingLinearPcm(encoding)
-              ? Util.getPcmFrameSize(encoding, channelCount)
-              : Format.NO_VALUE;
+        public AudioFormat(int sampleRate, int channelCount, @C.PcmEncoding int encoding) {
+            this.sampleRate = sampleRate;
+            this.channelCount = channelCount;
+            this.encoding = encoding;
+            bytesPerFrame = Util.isEncodingLinearPcm(encoding)
+                ? Util.getPcmFrameSize(encoding, channelCount)
+                : Format.NO_VALUE;
+        }
+
+        @Override
+        public String toString() {
+            return "AudioFormat["
+                + "sampleRate="
+                + sampleRate
+                + ", channelCount="
+                + channelCount
+                + ", encoding="
+                + encoding
+                + ']';
+        }
     }
 
-    @Override
-    public String toString() {
-      return "AudioFormat["
-          + "sampleRate="
-          + sampleRate
-          + ", channelCount="
-          + channelCount
-          + ", encoding="
-          + encoding
-          + ']';
+    /**
+     * Exception thrown when a processor can't be configured for a given input audio format.
+     */
+    final class UnhandledAudioFormatException extends Exception {
+
+        public UnhandledAudioFormatException(AudioFormat inputAudioFormat) {
+            super("Unhandled format: " + inputAudioFormat);
+        }
     }
-  }
 
-  /** Exception thrown when a processor can't be configured for a given input audio format. */
-  final class UnhandledAudioFormatException extends Exception {
+    /**
+     * An empty, direct {@link ByteBuffer}.
+     */
+    ByteBuffer EMPTY_BUFFER = ByteBuffer.allocateDirect(0).order(ByteOrder.nativeOrder());
 
-    public UnhandledAudioFormatException(AudioFormat inputAudioFormat) {
-      super("Unhandled format: " + inputAudioFormat);
-    }
-  }
+    /**
+     * Configures the processor to process input audio with the specified format. After calling this
+     * method, call {@link #isActive()} to determine whether the audio processor is active. Returns
+     * the configured output audio format if this instance is active.
+     *
+     * <p>After calling this method, it is necessary to {@link #flush()} the processor to apply the
+     * new configuration. Before applying the new configuration, it is safe to queue input and get
+     * output in the old input/output formats. Call {@link #queueEndOfStream()} when no more input
+     * will be supplied in the old input format.
+     *
+     * @param inputAudioFormat The format of audio that will be queued after the next call to {@link
+     *                         #flush()}.
+     * @return The configured output audio format if this instance is {@link #isActive() active}.
+     * @throws UnhandledAudioFormatException Thrown if the specified format can't be handled as input.
+     */
+    AudioFormat configure(AudioFormat inputAudioFormat) throws UnhandledAudioFormatException;
 
-  /** An empty, direct {@link ByteBuffer}. */
-  ByteBuffer EMPTY_BUFFER = ByteBuffer.allocateDirect(0).order(ByteOrder.nativeOrder());
+    /**
+     * Returns whether the processor is configured and will process input buffers.
+     */
+    boolean isActive();
 
-  /**
-   * Configures the processor to process input audio with the specified format. After calling this
-   * method, call {@link #isActive()} to determine whether the audio processor is active. Returns
-   * the configured output audio format if this instance is active.
-   *
-   * <p>After calling this method, it is necessary to {@link #flush()} the processor to apply the
-   * new configuration. Before applying the new configuration, it is safe to queue input and get
-   * output in the old input/output formats. Call {@link #queueEndOfStream()} when no more input
-   * will be supplied in the old input format.
-   *
-   * @param inputAudioFormat The format of audio that will be queued after the next call to {@link
-   *     #flush()}.
-   * @return The configured output audio format if this instance is {@link #isActive() active}.
-   * @throws UnhandledAudioFormatException Thrown if the specified format can't be handled as input.
-   */
-  AudioFormat configure(AudioFormat inputAudioFormat) throws UnhandledAudioFormatException;
+    /**
+     * Queues audio data between the position and limit of the input {@code buffer} for processing.
+     * {@code buffer} must be a direct byte buffer with native byte order. Its contents are treated as
+     * read-only. Its position will be advanced by the number of bytes consumed (which may be zero).
+     * The caller retains ownership of the provided buffer. Calling this method invalidates any
+     * previous buffer returned by {@link #getOutput()}.
+     *
+     * @param inputBuffer The input buffer to process.
+     */
+    void queueInput(ByteBuffer inputBuffer);
 
-  /** Returns whether the processor is configured and will process input buffers. */
-  boolean isActive();
+    /**
+     * Queues an end of stream signal. After this method has been called, {@link
+     * #queueInput(ByteBuffer)} may not be called until after the next call to {@link #flush()}.
+     * Calling {@link #getOutput()} will return any remaining output data. Multiple calls may be
+     * required to read all of the remaining output data. {@link #isEnded()} will return {@code true}
+     * once all remaining output data has been read.
+     */
+    void queueEndOfStream();
 
-  /**
-   * Queues audio data between the position and limit of the input {@code buffer} for processing.
-   * {@code buffer} must be a direct byte buffer with native byte order. Its contents are treated as
-   * read-only. Its position will be advanced by the number of bytes consumed (which may be zero).
-   * The caller retains ownership of the provided buffer. Calling this method invalidates any
-   * previous buffer returned by {@link #getOutput()}.
-   *
-   * @param inputBuffer The input buffer to process.
-   */
-  void queueInput(ByteBuffer inputBuffer);
+    /**
+     * Returns a buffer containing processed output data between its position and limit. The buffer
+     * will always be a direct byte buffer with native byte order. Calling this method invalidates any
+     * previously returned buffer. The buffer will be empty if no output is available.
+     *
+     * @return A buffer containing processed output data between its position and limit.
+     */
+    ByteBuffer getOutput();
 
-  /**
-   * Queues an end of stream signal. After this method has been called, {@link
-   * #queueInput(ByteBuffer)} may not be called until after the next call to {@link #flush()}.
-   * Calling {@link #getOutput()} will return any remaining output data. Multiple calls may be
-   * required to read all of the remaining output data. {@link #isEnded()} will return {@code true}
-   * once all remaining output data has been read.
-   */
-  void queueEndOfStream();
+    /**
+     * Returns whether this processor will return no more output from {@link #getOutput()} until it
+     * has been {@link #flush()}ed and more input has been queued.
+     */
+    boolean isEnded();
 
-  /**
-   * Returns a buffer containing processed output data between its position and limit. The buffer
-   * will always be a direct byte buffer with native byte order. Calling this method invalidates any
-   * previously returned buffer. The buffer will be empty if no output is available.
-   *
-   * @return A buffer containing processed output data between its position and limit.
-   */
-  ByteBuffer getOutput();
+    /**
+     * Clears any buffered data and pending output. If the audio processor is active, also prepares
+     * the audio processor to receive a new stream of input in the last configured (pending) format.
+     */
+    void flush();
 
-  /**
-   * Returns whether this processor will return no more output from {@link #getOutput()} until it
-   * has been {@link #flush()}ed and more input has been queued.
-   */
-  boolean isEnded();
-
-  /**
-   * Clears any buffered data and pending output. If the audio processor is active, also prepares
-   * the audio processor to receive a new stream of input in the last configured (pending) format.
-   */
-  void flush();
-
-  /** Resets the processor to its unconfigured state, releasing any resources. */
-  void reset();
+    /**
+     * Resets the processor to its unconfigured state, releasing any resources.
+     */
+    void reset();
 }
