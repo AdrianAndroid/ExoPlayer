@@ -392,7 +392,6 @@ public final class DefaultMediaSourceFactory implements MediaSourceFactory {
     }
 
     // internal methods
-
     private static MediaSource maybeClipMediaSource(MediaItem mediaItem, MediaSource mediaSource) {
         log("maybeClipMediaSource(MediaItem mediaItem, MediaSource mediaSource)");
         if (mediaItem.clippingProperties.startPositionMs == 0
