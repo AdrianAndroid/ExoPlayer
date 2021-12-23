@@ -163,14 +163,13 @@ public class DashManifestParser extends DefaultHandler implements ParsingLoadabl
             } else if (XmlPullParserUtil.isStartTag(xpp, "ServiceDescription")) {
                 serviceDescription = parseServiceDescription(xpp);
             } else if (XmlPullParserUtil.isStartTag(xpp, "Period") && !seenEarlyAccessPeriod) {
-                Pair<Period, Long> periodWithDurationMs =
-                    parsePeriod(
-                        xpp,
-                        !baseUrls.isEmpty() ? baseUrls : parentBaseUrls,
-                        nextPeriodStartMs,
-                        baseUrlAvailabilityTimeOffsetUs,
-                        availabilityStartTime,
-                        timeShiftBufferDepthMs);
+                Pair<Period, Long> periodWithDurationMs = parsePeriod(
+                    xpp,
+                    !baseUrls.isEmpty() ? baseUrls : parentBaseUrls,
+                    nextPeriodStartMs,
+                    baseUrlAvailabilityTimeOffsetUs,
+                    availabilityStartTime,
+                    timeShiftBufferDepthMs);
                 Period period = periodWithDurationMs.first;
                 if (period.startMs == C.TIME_UNSET) {
                     if (dynamic) {
@@ -450,28 +449,27 @@ public class DashManifestParser extends DefaultHandler implements ParsingLoadabl
             } else if (XmlPullParserUtil.isStartTag(xpp, "SupplementalProperty")) {
                 supplementalProperties.add(parseDescriptor(xpp, "SupplementalProperty"));
             } else if (XmlPullParserUtil.isStartTag(xpp, "Representation")) {
-                RepresentationInfo representationInfo =
-                    parseRepresentation(
-                        xpp,
-                        !baseUrls.isEmpty() ? baseUrls : parentBaseUrls,
-                        mimeType,
-                        codecs,
-                        width,
-                        height,
-                        frameRate,
-                        audioChannels,
-                        audioSamplingRate,
-                        language,
-                        roleDescriptors,
-                        accessibilityDescriptors,
-                        essentialProperties,
-                        supplementalProperties,
-                        segmentBase,
-                        periodStartUnixTimeMs,
-                        periodDurationMs,
-                        baseUrlAvailabilityTimeOffsetUs,
-                        segmentBaseAvailabilityTimeOffsetUs,
-                        timeShiftBufferDepthMs);
+                RepresentationInfo representationInfo = parseRepresentation(
+                    xpp,
+                    !baseUrls.isEmpty() ? baseUrls : parentBaseUrls,
+                    mimeType,
+                    codecs,
+                    width,
+                    height,
+                    frameRate,
+                    audioChannels,
+                    audioSamplingRate,
+                    language,
+                    roleDescriptors,
+                    accessibilityDescriptors,
+                    essentialProperties,
+                    supplementalProperties,
+                    segmentBase,
+                    periodStartUnixTimeMs,
+                    periodDurationMs,
+                    baseUrlAvailabilityTimeOffsetUs,
+                    segmentBaseAvailabilityTimeOffsetUs,
+                    timeShiftBufferDepthMs);
                 contentType = checkContentTypeConsistency(contentType,
                     MimeTypes.getTrackType(representationInfo.format.sampleMimeType));
                 representationInfos.add(representationInfo);
