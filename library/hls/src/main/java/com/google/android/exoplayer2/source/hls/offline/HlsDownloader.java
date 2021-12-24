@@ -88,8 +88,7 @@ public final class HlsDownloader extends SegmentDownloader<HlsPlaylist> {
      *                               Providing an {@link Executor} that uses multiple threads will speed up the download by
      *                               allowing parts of it to be executed in parallel.
      */
-    public HlsDownloader(
-        MediaItem mediaItem, CacheDataSource.Factory cacheDataSourceFactory, Executor executor) {
+    public HlsDownloader(MediaItem mediaItem, CacheDataSource.Factory cacheDataSourceFactory, Executor executor) {
         this(mediaItem, new HlsPlaylistParser(), cacheDataSourceFactory, executor);
     }
 
