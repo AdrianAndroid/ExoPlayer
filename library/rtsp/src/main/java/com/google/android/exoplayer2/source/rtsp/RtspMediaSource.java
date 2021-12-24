@@ -281,32 +281,30 @@ public final class RtspMediaSource extends BaseMediaSource {
     // Internal methods.
 
     private void notifySourceInfoRefreshed() {
-        Timeline timeline =
-            new SinglePeriodTimeline(
-                timelineDurationUs,
-                timelineIsSeekable,
-                /* isDynamic= */ false,
-                /* useLiveConfiguration= */ timelineIsLive,
-                /* manifest= */ null,
-                mediaItem);
+        Timeline timeline = new SinglePeriodTimeline(
+            timelineDurationUs,
+            timelineIsSeekable,
+            /* isDynamic= */ false,
+            /* useLiveConfiguration= */ timelineIsLive,
+            /* manifest= */ null,
+            mediaItem);
         if (timelineIsPlaceholder) {
-            timeline =
-                new ForwardingTimeline(timeline) {
-                    @Override
-                    public Window getWindow(
-                        int windowIndex, Window window, long defaultPositionProjectionUs) {
-                        super.getWindow(windowIndex, window, defaultPositionProjectionUs);
-                        window.isPlaceholder = true;
-                        return window;
-                    }
+            timeline = new ForwardingTimeline(timeline) {
+                @Override
+                public Window getWindow(
+                    int windowIndex, Window window, long defaultPositionProjectionUs) {
+                    super.getWindow(windowIndex, window, defaultPositionProjectionUs);
+                    window.isPlaceholder = true;
+                    return window;
+                }
 
-                    @Override
-                    public Period getPeriod(int periodIndex, Period period, boolean setIds) {
-                        super.getPeriod(periodIndex, period, setIds);
-                        period.isPlaceholder = true;
-                        return period;
-                    }
-                };
+                @Override
+                public Period getPeriod(int periodIndex, Period period, boolean setIds) {
+                    super.getPeriod(periodIndex, period, setIds);
+                    period.isPlaceholder = true;
+                    return period;
+                }
+            };
         }
         refreshSourceInfo(timeline);
     }
