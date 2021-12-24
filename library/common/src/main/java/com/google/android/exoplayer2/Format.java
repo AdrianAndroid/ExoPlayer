@@ -45,7 +45,7 @@ import java.util.UUID;
  * <p>When building formats, populate all fields whose values are known and relevant to the type of
  * format being constructed. For information about different types of format, see ExoPlayer's <a
  * href="https://exoplayer.dev/supported-formats.html">Supported formats page</a>.
- *  在构建表单时，填充其值已知且与正在构建的格式类型相关的所有字段。
+ * 在构建表单时，填充其值已知且与正在构建的格式类型相关的所有字段。
  * <h2>Fields commonly relevant to all formats</h2>
  *
  * <ul>
@@ -1266,8 +1266,7 @@ public final class Format implements Parcelable {
     /**
      * Returns a copy of this format with the specified {@link #exoMediaCryptoType}.
      */
-    public Format copyWithExoMediaCryptoType(
-        @Nullable Class<? extends ExoMediaCrypto> exoMediaCryptoType) {
+    public Format copyWithExoMediaCryptoType(@Nullable Class<? extends ExoMediaCrypto> exoMediaCryptoType) {
         return buildUpon().setExoMediaCryptoType(exoMediaCryptoType).build();
     }
 
@@ -1533,17 +1532,16 @@ public final class Format implements Parcelable {
         dest.writeInt(accessibilityChannel);
     }
 
-    public static final Creator<Format> CREATOR =
-        new Creator<Format>() {
+    public static final Creator<Format> CREATOR = new Creator<Format>() {
 
-            @Override
-            public Format createFromParcel(Parcel in) {
-                return new Format(in);
-            }
+        @Override
+        public Format createFromParcel(Parcel in) {
+            return new Format(in);
+        }
 
-            @Override
-            public Format[] newArray(int size) {
-                return new Format[size];
-            }
-        };
+        @Override
+        public Format[] newArray(int size) {
+            return new Format[size];
+        }
+    };
 }

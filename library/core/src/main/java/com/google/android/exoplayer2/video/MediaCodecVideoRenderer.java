@@ -317,20 +317,18 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         @Nullable DrmInitData drmInitData = format.drmInitData;
         // Assume encrypted content requires secure decoders.
         boolean requiresSecureDecryption = drmInitData != null;
-        List<MediaCodecInfo> decoderInfos =
-            getDecoderInfos(
-                mediaCodecSelector,
-                format,
-                requiresSecureDecryption,
-                /* requiresTunnelingDecoder= */ false);
+        List<MediaCodecInfo> decoderInfos = getDecoderInfos(
+            mediaCodecSelector,
+            format,
+            requiresSecureDecryption,
+            /* requiresTunnelingDecoder= */ false);
         if (requiresSecureDecryption && decoderInfos.isEmpty()) {
             // No secure decoders are available. Fall back to non-secure decoders.
-            decoderInfos =
-                getDecoderInfos(
-                    mediaCodecSelector,
-                    format,
-                    /* requiresSecureDecoder= */ false,
-                    /* requiresTunnelingDecoder= */ false);
+            decoderInfos = getDecoderInfos(
+                mediaCodecSelector,
+                format,
+                /* requiresSecureDecoder= */ false,
+                /* requiresTunnelingDecoder= */ false);
         }
         if (decoderInfos.isEmpty()) {
             return RendererCapabilities.create(C.FORMAT_UNSUPPORTED_SUBTYPE);
@@ -342,18 +340,16 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         MediaCodecInfo decoderInfo = decoderInfos.get(0);
         boolean isFormatSupported = decoderInfo.isFormatSupported(format);
         @AdaptiveSupport
-        int adaptiveSupport =
-            decoderInfo.isSeamlessAdaptationSupported(format)
-                ? ADAPTIVE_SEAMLESS
-                : ADAPTIVE_NOT_SEAMLESS;
+        int adaptiveSupport = decoderInfo.isSeamlessAdaptationSupported(format)
+            ? ADAPTIVE_SEAMLESS
+            : ADAPTIVE_NOT_SEAMLESS;
         @TunnelingSupport int tunnelingSupport = TUNNELING_NOT_SUPPORTED;
         if (isFormatSupported) {
-            List<MediaCodecInfo> tunnelingDecoderInfos =
-                getDecoderInfos(
-                    mediaCodecSelector,
-                    format,
-                    requiresSecureDecryption,
-                    /* requiresTunnelingDecoder= */ true);
+            List<MediaCodecInfo> tunnelingDecoderInfos = getDecoderInfos(
+                mediaCodecSelector,
+                format,
+                requiresSecureDecryption,
+                /* requiresTunnelingDecoder= */ true);
             if (!tunnelingDecoderInfos.isEmpty()) {
                 MediaCodecInfo tunnelingDecoderInfo = tunnelingDecoderInfos.get(0);
                 if (tunnelingDecoderInfo.isFormatSupported(format)
@@ -369,8 +365,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     protected List<MediaCodecInfo> getDecoderInfos(MediaCodecSelector mediaCodecSelector, Format format,
-                                                   boolean requiresSecureDecoder)
-        throws DecoderQueryException {
+                                                   boolean requiresSecureDecoder) throws DecoderQueryException {
         return getDecoderInfos(mediaCodecSelector, format, requiresSecureDecoder, tunneling);
     }
 
@@ -398,13 +393,11 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
                 int profile = codecProfileAndLevel.first;
                 if (profile == CodecProfileLevel.DolbyVisionProfileDvheDtr
                     || profile == CodecProfileLevel.DolbyVisionProfileDvheSt) {
-                    decoderInfos.addAll(
-                        mediaCodecSelector.getDecoderInfos(
-                            MimeTypes.VIDEO_H265, requiresSecureDecoder, requiresTunnelingDecoder));
+                    decoderInfos.addAll(mediaCodecSelector.getDecoderInfos(
+                        MimeTypes.VIDEO_H265, requiresSecureDecoder, requiresTunnelingDecoder));
                 } else if (profile == CodecProfileLevel.DolbyVisionProfileDvavSe) {
-                    decoderInfos.addAll(
-                        mediaCodecSelector.getDecoderInfos(
-                            MimeTypes.VIDEO_H264, requiresSecureDecoder, requiresTunnelingDecoder));
+                    decoderInfos.addAll(mediaCodecSelector.getDecoderInfos(
+                        MimeTypes.VIDEO_H264, requiresSecureDecoder, requiresTunnelingDecoder));
                 }
             }
         }
@@ -412,8 +405,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    protected void onEnabled(boolean joining, boolean mayRenderStartOfStream)
-        throws ExoPlaybackException {
+    protected void onEnabled(boolean joining, boolean mayRenderStartOfStream) throws ExoPlaybackException {
         super.onEnabled(joining, mayRenderStartOfStream);
         boolean tunneling = getConfiguration().tunneling;
         Assertions.checkState(!tunneling || tunnelingAudioSessionId != C.AUDIO_SESSION_ID_UNSET);
@@ -625,14 +617,13 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         }
         String codecMimeType = codecInfo.codecMimeType;
         codecMaxValues = getCodecMaxValues(codecInfo, format, getStreamFormats());
-        MediaFormat mediaFormat =
-            getMediaFormat(
-                format,
-                codecMimeType,
-                codecMaxValues,
-                codecOperatingRate,
-                deviceNeedsNoPostProcessWorkaround,
-                tunneling ? tunnelingAudioSessionId : C.AUDIO_SESSION_ID_UNSET);
+        MediaFormat mediaFormat = getMediaFormat(
+            format,
+            codecMimeType,
+            codecMaxValues,
+            codecOperatingRate,
+            deviceNeedsNoPostProcessWorkaround,
+            tunneling ? tunnelingAudioSessionId : C.AUDIO_SESSION_ID_UNSET);
         if (surface == null) {
             if (!shouldUseDummySurface(codecInfo)) {
                 throw new IllegalStateException();
@@ -642,8 +633,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             }
             surface = dummySurface;
         }
-        return new MediaCodecAdapter.Configuration(
-            codecInfo, mediaFormat, format, surface, crypto, /* flags= */ 0);
+        return new MediaCodecAdapter.Configuration(codecInfo, mediaFormat, format, surface, crypto, /* flags= */ 0);
     }
 
     @Override
@@ -674,8 +664,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed)
-        throws ExoPlaybackException {
+    public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed) throws ExoPlaybackException {
         super.setPlaybackSpeed(currentPlaybackSpeed, targetPlaybackSpeed);
         frameReleaseHelper.onPlaybackSpeed(currentPlaybackSpeed);
     }
@@ -701,8 +690,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         codecHandlesHdr10PlusOutOfBandMetadata =
             Assertions.checkNotNull(getCodecInfo()).isHdr10PlusOutOfBandMetadataSupported();
         if (Util.SDK_INT >= 23 && tunneling) {
-            tunnelingOnFrameRenderedListener =
-                new OnFrameRenderedListenerV23(Assertions.checkNotNull(getCodec()));
+            tunnelingOnFrameRenderedListener = new OnFrameRenderedListenerV23(Assertions.checkNotNull(getCodec()));
         }
     }
 
@@ -719,8 +707,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     @Nullable
-    protected DecoderReuseEvaluation onInputFormatChanged(FormatHolder formatHolder)
-        throws ExoPlaybackException {
+    protected DecoderReuseEvaluation onInputFormatChanged(FormatHolder formatHolder) throws ExoPlaybackException {
         @Nullable DecoderReuseEvaluation evaluation = super.onInputFormatChanged(formatHolder);
         eventDispatcher.inputFormatChanged(formatHolder.format, evaluation);
         return evaluation;
@@ -795,8 +782,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     @TargetApi(29) // codecHandlesHdr10PlusOutOfBandMetadata is false if Util.SDK_INT < 29
-    protected void handleInputBufferSupplementalData(DecoderInputBuffer buffer)
-        throws ExoPlaybackException {
+    protected void handleInputBufferSupplementalData(DecoderInputBuffer buffer) throws ExoPlaybackException {
         if (!codecHandlesHdr10PlusOutOfBandMetadata) {
             return;
         }
@@ -1179,10 +1165,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     private void setJoiningDeadlineMs() {
-        joiningDeadlineMs =
-            allowedJoiningTimeMs > 0
-                ? (SystemClock.elapsedRealtime() + allowedJoiningTimeMs)
-                : C.TIME_UNSET;
+        joiningDeadlineMs = allowedJoiningTimeMs > 0
+            ? (SystemClock.elapsedRealtime() + allowedJoiningTimeMs)
+            : C.TIME_UNSET;
     }
 
     private void clearRenderedFirstFrame() {
@@ -1863,12 +1848,11 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             //
             // The workaround queues the event for subsequent processing, where the lock will not be held.
             if (Util.SDK_INT < 30) {
-                Message message =
-                    Message.obtain(
-                        handler,
-                        /* what= */ HANDLE_FRAME_RENDERED,
-                        /* arg1= */ (int) (presentationTimeUs >> 32),
-                        /* arg2= */ (int) presentationTimeUs);
+                Message message = Message.obtain(
+                    handler,
+                    /* what= */ HANDLE_FRAME_RENDERED,
+                    /* arg1= */ (int) (presentationTimeUs >> 32),
+                    /* arg2= */ (int) presentationTimeUs);
                 handler.sendMessageAtFrontOfQueue(message);
             } else {
                 handleFrameRendered(presentationTimeUs);

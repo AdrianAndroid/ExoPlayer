@@ -625,8 +625,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                     try {
                         mediaCrypto = new MediaCrypto(sessionMediaCrypto.uuid, sessionMediaCrypto.sessionId);
                     } catch (MediaCryptoException e) {
-                        throw createRendererException(
-                            e, inputFormat, PlaybackException.ERROR_CODE_DRM_SYSTEM_ERROR);
+                        throw createRendererException(e, inputFormat, PlaybackException.ERROR_CODE_DRM_SYSTEM_ERROR);
                     }
                     mediaCryptoRequiresSecureDecoder =
                         !sessionMediaCrypto.forceAllowInsecureDecoderComponents
@@ -650,8 +649,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         try {
             maybeInitCodecWithFallback(mediaCrypto, mediaCryptoRequiresSecureDecoder);
         } catch (DecoderInitializationException e) {
-            throw createRendererException(
-                e, inputFormat, PlaybackException.ERROR_CODE_DECODER_INIT_FAILED);
+            throw createRendererException(e, inputFormat, PlaybackException.ERROR_CODE_DECODER_INIT_FAILED);
         }
     }
 
