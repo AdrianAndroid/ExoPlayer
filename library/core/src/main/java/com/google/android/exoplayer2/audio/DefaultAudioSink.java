@@ -169,8 +169,8 @@ public final class DefaultAudioSink implements AudioSink {
                 /* dest= */ this.audioProcessors,
                 /* destPos= */ 0,
                 /* length= */ audioProcessors.length);
-            this.silenceSkippingAudioProcessor = silenceSkippingAudioProcessor;
-            this.sonicAudioProcessor = sonicAudioProcessor;
+            this.silenceSkippingAudioProcessor = silenceSkippingAudioProcessor; // SilenceSkippingAudioProcessor
+            this.sonicAudioProcessor = sonicAudioProcessor; // SonicAudioProcessor
             this.audioProcessors[audioProcessors.length] = silenceSkippingAudioProcessor;
             this.audioProcessors[audioProcessors.length + 1] = sonicAudioProcessor;
         }
@@ -730,8 +730,8 @@ public final class DefaultAudioSink implements AudioSink {
     public void play() {
         playing = true;
         if (isAudioTrackInitialized()) {
-            audioTrackPositionTracker.start();
-            audioTrack.play();
+            audioTrackPositionTracker.start(); // AudioTrackPositionTracker
+            audioTrack.play(); // AudioTrack
         }
     }
 
@@ -1669,7 +1669,7 @@ public final class DefaultAudioSink implements AudioSink {
         }
         boolean isGapless = format.encoderDelay != 0 || format.encoderPadding != 0;
         boolean offloadRequiresGaplessSupport = offloadMode == OFFLOAD_MODE_ENABLED_GAPLESS_REQUIRED;
-      return !isGapless || !offloadRequiresGaplessSupport || isOffloadedGaplessPlaybackSupported();
+        return !isGapless || !offloadRequiresGaplessSupport || isOffloadedGaplessPlaybackSupported();
     }
 
     private static boolean isOffloadedPlayback(AudioTrack audioTrack) {
