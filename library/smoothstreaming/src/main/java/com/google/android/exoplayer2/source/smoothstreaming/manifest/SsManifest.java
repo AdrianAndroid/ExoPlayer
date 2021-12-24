@@ -225,12 +225,11 @@ public class SsManifest implements FilterableManifest<SsManifest> {
             Assertions.checkState(chunkIndex < chunkStartTimes.size());
             String bitrateString = Integer.toString(formats[track].bitrate);
             String startTimeString = chunkStartTimes.get(chunkIndex).toString();
-            String chunkUrl =
-                chunkTemplate
-                    .replace(URL_PLACEHOLDER_BITRATE_1, bitrateString)
-                    .replace(URL_PLACEHOLDER_BITRATE_2, bitrateString)
-                    .replace(URL_PLACEHOLDER_START_TIME_1, startTimeString)
-                    .replace(URL_PLACEHOLDER_START_TIME_2, startTimeString);
+            String chunkUrl = chunkTemplate
+                .replace(URL_PLACEHOLDER_BITRATE_1, bitrateString)
+                .replace(URL_PLACEHOLDER_BITRATE_2, bitrateString)
+                .replace(URL_PLACEHOLDER_START_TIME_1, startTimeString)
+                .replace(URL_PLACEHOLDER_START_TIME_2, startTimeString);
             return UriUtil.resolveToUri(baseUri, chunkUrl);
         }
     }
