@@ -74,21 +74,26 @@ import java.util.List;
 
 /**
  * Decodes and renders video using {@link MediaCodec}.
- *
+ * 使用MediaCodec解码和渲染视频
  * <p>This renderer accepts the following messages sent via {@link ExoPlayer#createMessage(Target)}
  * on the playback thread:
- *
+ * 此渲染在播放线程上接收通过createMessage发送的以下消息：
  * <ul>
  *   <li>Message with type {@link #MSG_SET_VIDEO_OUTPUT} to set the output. The message payload
  *       should be the target {@link Surface}, or null to clear the output. Other non-null payloads
  *       have the effect of clearing the output.
+ *       带有类型MSG_SET_VIDEO_OUTPUT的消息以设置输出。消息负载应该是目标Surface，或者为null以清除输出。其他非空负具有清除输出的效果
  *   <li>Message with type {@link #MSG_SET_SCALING_MODE} to set the video scaling mode. The message
  *       payload should be one of the integer scaling modes in {@link C.VideoScalingMode}. Note that
  *       the scaling mode only applies if the {@link Surface} targeted by this renderer is owned by
  *       a {@link android.view.SurfaceView}.
+ *      带有类型MSG_SET_SCALLING_MODE的消息，用于设置视频缩放模式。消息负载应该是C.VideoScallingMode中的整数缩放模式之一。
+ *      请注意，缩放模式仅适用于此渲染器所针对的Surface归SurfaceView所有。
  *   <li>Message with type {@link #MSG_SET_VIDEO_FRAME_METADATA_LISTENER} to set a listener for
  *       metadata associated with frames being rendered. The message payload should be the {@link
  *       VideoFrameMetadataListener}, or null.
+ *      类型为MSG_SET_VIDEO_FRAME_METADATA_LISTENER的消息，用于为正在渲染的帧关联的元数据设置侦听器。
+ *      消息负载应该是VideoFrameMetadataListener或null。
  * </ul>
  */
 public class MediaCodecVideoRenderer extends MediaCodecRenderer {

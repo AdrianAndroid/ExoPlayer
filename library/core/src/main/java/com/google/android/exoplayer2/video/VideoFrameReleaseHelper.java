@@ -41,12 +41,14 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 /**
  * Helps a video {@link Renderer} release frames to a {@link Surface}. The helper:
- *
+ * 帮助视频渲染器将帧释放到Surface。
  * <ul>
  *   <li>Adjusts frame release timestamps to achieve a smoother visual result. The release
  *       timestamps are smoothed, and aligned with the default display's vsync signal.
+ *       调整帧释放时间戳以获得更流畅的视觉效果。发布标记经过平滑处理，并与默认显示器的vsync信号对齐
  *   <li>Adjusts the {@link Surface} frame rate to inform the underlying platform of a fixed frame
  *       rate, when there is one.
+ *       调整Surface帧率，通知底层平台固定帧率，当有帧率时。
  * </ul>
  */
 public final class VideoFrameReleaseHelper {

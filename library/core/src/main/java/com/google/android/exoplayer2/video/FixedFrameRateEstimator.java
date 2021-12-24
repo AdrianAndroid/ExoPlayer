@@ -143,6 +143,7 @@ import java.util.Arrays;
 
     /**
      * Tries to match frame durations against the duration of the first frame it receives.
+     * 尝试将帧持续时间与其接收的第一帧的持续时间进行匹配。
      */
     private static final class Matcher {
 
@@ -182,8 +183,7 @@ import java.util.Arrays;
         }
 
         public boolean isSynced() {
-            return frameCount > CONSECUTIVE_MATCHING_FRAME_DURATIONS_FOR_SYNC
-                && recentFrameOutlierCount == 0;
+            return frameCount > CONSECUTIVE_MATCHING_FRAME_DURATIONS_FOR_SYNC && recentFrameOutlierCount == 0;
         }
 
         public boolean isLastFrameOutlier() {
@@ -212,8 +212,7 @@ import java.util.Arrays;
             } else {
                 long lastFrameDurationNs = framePresentationTimeNs - lastFramePresentationTimeNs;
                 int recentFrameOutlierIndex = getRecentFrameOutlierIndex(frameCount);
-                if (Math.abs(lastFrameDurationNs - firstFrameDurationNs)
-                    <= MAX_MATCHING_FRAME_DIFFERENCE_NS) {
+                if (Math.abs(lastFrameDurationNs - firstFrameDurationNs) <= MAX_MATCHING_FRAME_DIFFERENCE_NS) {
                     matchingFrameCount++;
                     matchingFrameDurationSumNs += lastFrameDurationNs;
                     if (recentFrameOutlierFlags[recentFrameOutlierIndex]) {
