@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.util.Assertions;
 /**
  * Listener of audio {@link Renderer} events. All methods have no-op default implementations to
  * allow selective overrides.
+ * 音频渲染器事件的监听器。所有方法都有无操作默认实现以允许选择性覆盖。
  */
 public interface AudioRendererEventListener {
 
