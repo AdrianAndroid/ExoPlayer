@@ -93,7 +93,6 @@ import java.util.UUID;
  * </ul>
  *
  *
- *
  * <h2 id="video-formats">Fields relevant to video formats</h2>
  * 与视频格式相关的字段
  * <ul>

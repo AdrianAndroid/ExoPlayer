@@ -324,25 +324,24 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * sequence/picture parameter sets and a 32 * 32 pixel IDR slice. This stream can be queued to
      * force a resolution change when adapting to a new format.
      */
-    private static final byte[] ADAPTATION_WORKAROUND_BUFFER =
-        new byte[]{
-            0, 0, 1, 103, 66, -64, 11, -38, 37, -112, 0, 0, 1, 104, -50, 15, 19, 32, 0, 0, 1, 101, -120,
-            -124, 13, -50, 113, 24, -96, 0, 47, -65, 28, 49, -61, 39, 93, 120
-        };
+    private static final byte[] ADAPTATION_WORKAROUND_BUFFER = new byte[]{
+        0, 0, 1, 103, 66, -64, 11, -38, 37, -112, 0, 0, 1, 104, -50, 15, 19, 32, 0, 0, 1, 101, -120,
+        -124, 13, -50, 113, 24, -96, 0, 47, -65, 28, 49, -61, 39, 93, 120
+    };
 
     private static final int ADAPTATION_WORKAROUND_SLICE_WIDTH_HEIGHT = 32;
 
-    private final MediaCodecAdapter.Factory codecAdapterFactory;
-    private final MediaCodecSelector mediaCodecSelector;
+    private final MediaCodecAdapter.Factory codecAdapterFactory; // SynchronousMediaCodecAdapter
+    private final MediaCodecSelector mediaCodecSelector; // lambda
     private final boolean enableDecoderFallback;
     private final float assumedMinimumCodecOperatingRate;
-    private final DecoderInputBuffer noDataBuffer;
-    private final DecoderInputBuffer buffer;
-    private final DecoderInputBuffer bypassSampleBuffer;
-    private final BatchBuffer bypassBatchBuffer;
-    private final TimedValueQueue<Format> formatQueue;
+    private final DecoderInputBuffer noDataBuffer; // DecoderInputBuffer
+    private final DecoderInputBuffer buffer; // DecoderInputBuffer
+    private final DecoderInputBuffer bypassSampleBuffer; // DecoderInputBuffer
+    private final BatchBuffer bypassBatchBuffer; // BatchBuffer
+    private final TimedValueQueue<Format> formatQueue; // TimeValueQueue
     private final ArrayList<Long> decodeOnlyPresentationTimestamps;
-    private final MediaCodec.BufferInfo outputBufferInfo;
+    private final MediaCodec.BufferInfo outputBufferInfo; //MediaCodec.BufferInfo
     private final long[] pendingOutputStreamStartPositionsUs;
     private final long[] pendingOutputStreamOffsetsUs;
     private final long[] pendingOutputStreamSwitchTimesUs;
@@ -420,7 +419,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     private boolean enableSynchronizeCodecInteractionsWithQueueing;
     @Nullable
     private ExoPlaybackException pendingPlaybackException;
-    protected DecoderCounters decoderCounters;
+    protected DecoderCounters decoderCounters; // DecoderCounter
     private long outputStreamStartPositionUs;
     private long outputStreamOffsetUs;
     private int pendingOutputStreamOffsetCount;

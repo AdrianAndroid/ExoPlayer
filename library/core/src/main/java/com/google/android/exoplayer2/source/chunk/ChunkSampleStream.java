@@ -396,9 +396,8 @@ public class ChunkSampleStream<T extends ChunkSource>
         if (isPendingReset()) {
             return C.RESULT_NOTHING_READ;
         }
-        if (canceledMediaChunk != null
-            && canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 0)
-            <= primarySampleQueue.getReadIndex()) {
+        if (canceledMediaChunk != null &&
+            canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 0) <= primarySampleQueue.getReadIndex()) {
             // Don't read into chunk that's going to be discarded.
             // TODO: Support splicing to allow this. See [internal b/161130873].
             return C.RESULT_NOTHING_READ;
@@ -755,9 +754,8 @@ public class ChunkSampleStream<T extends ChunkSource>
 
     private void maybeNotifyPrimaryTrackFormatChanged() {
         int readSampleIndex = primarySampleQueue.getReadIndex();
-        int notifyToMediaChunkIndex =
-            primarySampleIndexToMediaChunkIndex(
-                readSampleIndex, /* minChunkIndex= */ nextNotifyPrimaryFormatMediaChunkIndex - 1);
+        int notifyToMediaChunkIndex = primarySampleIndexToMediaChunkIndex(
+            readSampleIndex, /* minChunkIndex= */ nextNotifyPrimaryFormatMediaChunkIndex - 1);
         while (nextNotifyPrimaryFormatMediaChunkIndex <= notifyToMediaChunkIndex) {
             maybeNotifyPrimaryTrackFormatChanged(nextNotifyPrimaryFormatMediaChunkIndex++);
         }

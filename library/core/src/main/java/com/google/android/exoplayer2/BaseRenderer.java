@@ -121,8 +121,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
     }
 
     @Override
-    public final void replaceStream(
-        Format[] formats, SampleStream stream, long startPositionUs, long offsetUs)
+    public final void replaceStream(Format[] formats, SampleStream stream, long startPositionUs, long offsetUs)
         throws ExoPlaybackException {
         Assertions.checkState(!streamIsFinal);
         this.stream = stream;
@@ -230,8 +229,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
      *                               stream even if the state is not {@link #STATE_STARTED} yet.
      * @throws ExoPlaybackException If an error occurs.
      */
-    protected void onEnabled(boolean joining, boolean mayRenderStartOfStream)
-        throws ExoPlaybackException {
+    protected void onEnabled(boolean joining, boolean mayRenderStartOfStream) throws ExoPlaybackException {
         // Do nothing.
     }
 
@@ -249,8 +247,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
      *                        onotonically increasing timestamps.
      * @throws ExoPlaybackException If an error occurs.
      */
-    protected void onStreamChanged(Format[] formats, long startPositionUs, long offsetUs)
-        throws ExoPlaybackException {
+    protected void onStreamChanged(Format[] formats, long startPositionUs, long offsetUs) throws ExoPlaybackException {
         // Do nothing.
     }
 
