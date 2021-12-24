@@ -77,8 +77,7 @@ public interface AudioRendererEventListener {
      *                               decoder instance can be reused for the new format, or {@code null} if the renderer did not
      *                               have a decoder.
      */
-    default void onAudioInputFormatChanged(
-        Format format, @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
+    default void onAudioInputFormatChanged(Format format, @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
     }
 
     /**
