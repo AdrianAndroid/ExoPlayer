@@ -56,8 +56,8 @@ public interface VideoRendererEventListener {
      *                                 finished.
      * @param initializationDurationMs The time taken to initialize the decoder in milliseconds.
      */
-    default void onVideoDecoderInitialized(
-        String decoderName, long initializedTimestampMs, long initializationDurationMs) {
+    default void onVideoDecoderInitialized(String decoderName, long initializedTimestampMs,
+                                           long initializationDurationMs) {
     }
 
     /**
@@ -75,8 +75,7 @@ public interface VideoRendererEventListener {
      *                               decoder instance can be reused for the new format, or {@code null} if the renderer did not
      *                               have a decoder.
      */
-    default void onVideoInputFormatChanged(
-        Format format, @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
+    default void onVideoInputFormatChanged(Format format, @Nullable DecoderReuseEvaluation decoderReuseEvaluation) {
     }
 
     /**

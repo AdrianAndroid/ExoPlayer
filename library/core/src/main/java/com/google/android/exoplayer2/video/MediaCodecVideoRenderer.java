@@ -304,8 +304,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     @Capabilities
-    protected int supportsFormat(MediaCodecSelector mediaCodecSelector, Format format)
-        throws DecoderQueryException {
+    protected int supportsFormat(MediaCodecSelector mediaCodecSelector, Format format) throws DecoderQueryException {
         String mimeType = format.sampleMimeType;
         if (!MimeTypes.isVideo(mimeType)) {
             return RendererCapabilities.create(C.FORMAT_UNSUPPORTED_TYPE);
@@ -643,8 +642,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    protected DecoderReuseEvaluation canReuseCodec(
-        MediaCodecInfo codecInfo, Format oldFormat, Format newFormat) {
+    protected DecoderReuseEvaluation canReuseCodec(MediaCodecInfo codecInfo, Format oldFormat, Format newFormat) {
         DecoderReuseEvaluation evaluation = codecInfo.canReuseCodec(oldFormat, newFormat);
 
         @DecoderDiscardReasons int discardReasons = evaluation.discardReasons;
@@ -678,8 +676,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    protected float getCodecOperatingRateV23(
-        float targetPlaybackSpeed, Format format, Format[] streamFormats) {
+    protected float getCodecOperatingRateV23(float targetPlaybackSpeed, Format format, Format[] streamFormats) {
         // Use the highest known stream frame-rate up front, to avoid having to reconfigure the codec
         // should an adaptive switch to that stream occur.
         float maxFrameRate = -1;
@@ -693,8 +690,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    protected void onCodecInitialized(
-        String name, long initializedTimestampMs, long initializationDurationMs) {
+    protected void onCodecInitialized(String name, long initializedTimestampMs, long initializationDurationMs) {
         eventDispatcher.decoderInitialized(name, initializedTimestampMs, initializationDurationMs);
         codecNeedsSetOutputSurfaceWorkaround = codecNeedsSetOutputSurfaceWorkaround(name);
         codecHandlesHdr10PlusOutOfBandMetadata =
@@ -962,8 +958,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         return false;
     }
 
-    private void notifyFrameMetadataListener(
-        long presentationTimeUs, long releaseTimeNs, Format format) {
+    private void notifyFrameMetadataListener(long presentationTimeUs, long releaseTimeNs, Format format) {
         if (frameMetadataListener != null) {
             frameMetadataListener.onVideoFrameAboutToBeRendered(
                 presentationTimeUs, releaseTimeNs, format, getCodecOutputMediaFormat());
@@ -1012,8 +1007,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      *                          measured at the start of the current iteration of the rendering loop.
      * @param isLastBuffer      Whether the buffer is the last buffer in the current stream.
      */
-    protected boolean shouldDropOutputBuffer(
-        long earlyUs, long elapsedRealtimeUs, boolean isLastBuffer) {
+    protected boolean shouldDropOutputBuffer(long earlyUs, long elapsedRealtimeUs, boolean isLastBuffer) {
         return isBufferLate(earlyUs) && !isLastBuffer;
     }
 
@@ -1027,8 +1021,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      *                          measured at the start of the current iteration of the rendering loop.
      * @param isLastBuffer      Whether the buffer is the last buffer in the current stream.
      */
-    protected boolean shouldDropBuffersToKeyframe(
-        long earlyUs, long elapsedRealtimeUs, boolean isLastBuffer) {
+    protected boolean shouldDropBuffersToKeyframe(long earlyUs, long elapsedRealtimeUs, boolean isLastBuffer) {
         return isBufferVeryLate(earlyUs) && !isLastBuffer;
     }
 
@@ -1085,8 +1078,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @return Whether any buffers were dropped.
      * @throws ExoPlaybackException If an error occurs flushing the codec.
      */
-    protected boolean maybeDropBuffersToKeyframe(
-        long positionUs, boolean treatDroppedBuffersAsSkipped) throws ExoPlaybackException {
+    protected boolean maybeDropBuffersToKeyframe(long positionUs, boolean treatDroppedBuffersAsSkipped)
+        throws ExoPlaybackException {
         int droppedSourceBufferCount = skipSource(positionUs);
         if (droppedSourceBufferCount == 0) {
             return false;
@@ -1161,8 +1154,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @param releaseTimeNs      The wallclock time at which the frame should be displayed, in nanoseconds.
      */
     @RequiresApi(21)
-    protected void renderOutputBufferV21(
-        MediaCodecAdapter codec, int index, long presentationTimeUs, long releaseTimeNs) {
+    protected void renderOutputBufferV21(MediaCodecAdapter codec, int index, long presentationTimeUs,
+                                         long releaseTimeNs) {
         maybeNotifyVideoSizeChanged();
         TraceUtil.beginSection("releaseOutputBuffer");
         codec.releaseOutputBuffer(index, releaseTimeNs);
@@ -1364,8 +1357,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @param streamFormats The possible stream formats.
      * @return Suitable {@link CodecMaxValues}.
      */
-    protected CodecMaxValues getCodecMaxValues(
-        MediaCodecInfo codecInfo, Format format, Format[] streamFormats) {
+    protected CodecMaxValues getCodecMaxValues(MediaCodecInfo codecInfo, Format format, Format[] streamFormats) {
         int maxWidth = format.width;
         int maxHeight = format.height;
         int maxInputSize = getMaxInputSize(codecInfo, format);
@@ -1419,8 +1411,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    protected MediaCodecDecoderException createDecoderException(
-        Throwable cause, @Nullable MediaCodecInfo codecInfo) {
+    protected MediaCodecDecoderException createDecoderException(Throwable cause, @Nullable MediaCodecInfo codecInfo) {
         return new MediaCodecVideoDecoderException(cause, codecInfo, surface);
     }
 
