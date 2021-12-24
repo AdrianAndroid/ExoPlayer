@@ -1041,8 +1041,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      *                  added internally, and so does not need to be passed.
      * @return Whether a format was read and processed.
      */
-    private boolean readSourceOmittingSampleData(@SampleStream.ReadFlags int readFlags)
-        throws ExoPlaybackException {
+    private boolean readSourceOmittingSampleData(@SampleStream.ReadFlags int readFlags) throws ExoPlaybackException {
         FormatHolder formatHolder = getFormatHolder();
         noDataBuffer.clear();
         @ReadDataResult

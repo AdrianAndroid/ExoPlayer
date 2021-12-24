@@ -60,21 +60,26 @@ import java.util.UUID;
  *   <li>{@link #metadata}
  * </ul>
  *
- * <h2 id="container-formats">Fields relevant to container formats</h2>
  *
+ * <h2 id="container-formats">Fields relevant to container formats</h2>
+ *  与容器格式相关的字段
  * <ul>
  *   <li>{@link #containerMimeType}
  *   <li>If the container only contains a single media track, <a href="#sample-formats">fields
  *       relevant to sample formats</a> can are also be relevant and can be set to describe the
  *       sample format of that track.
+ *       如果容器仅包含单个媒体轨道，则与样本格式相关的字段也可以是相关的，并且可以设置为描述该轨道的样本格式。
  *   <li>If the container only contains one track of a given type (possibly alongside tracks of
  *       other types), then fields relevant to that track type can be set to describe the properties
  *       of the track. See the sections below for <a href="#video-formats">video</a>, <a
  *       href="#audio-formats">audio</a> and <a href="#text-formats">text</a> formats.
+ *        如果容器仅包含给定类型的轨道（可能与其他类型的轨道一起），则可以设置与该轨道类型相关的字段来描述轨道的属性。
+ *        有关视频、音频和文本格式，请参阅以下部分。
  * </ul>
  *
- * <h2 id="sample-formats">Fields relevant to sample formats</h2>
  *
+ * <h2 id="sample-formats">Fields relevant to sample formats</h2>
+ *  非样本格式相关的字段
  * <ul>
  *   <li>{@link #sampleMimeType}
  *   <li>{@link #maxInputSize}
@@ -84,10 +89,13 @@ import java.util.UUID;
  *   <li>Fields relevant to the sample format's track type are also relevant. See the sections below
  *       for <a href="#video-formats">video</a>, <a href="#audio-formats">audio</a> and <a
  *       href="#text-formats">text</a> formats.
+ *        与样本格式的轨道类型相关的字段也是相关的。有关视频呢，请参阅以下部分。音频和文本格式。
  * </ul>
  *
- * <h2 id="video-formats">Fields relevant to video formats</h2>
  *
+ *
+ * <h2 id="video-formats">Fields relevant to video formats</h2>
+ * 与视频格式相关的字段
  * <ul>
  *   <li>{@link #width}
  *   <li>{@link #height}
@@ -99,8 +107,9 @@ import java.util.UUID;
  *   <li>{@link #colorInfo}
  * </ul>
  *
- * <h2 id="audio-formats">Fields relevant to audio formats</h2>
  *
+ * <h2 id="audio-formats">Fields relevant to audio formats</h2>
+ *  与音频格式相关的字段
  * <ul>
  *   <li>{@link #channelCount}
  *   <li>{@link #sampleRate}
@@ -109,8 +118,9 @@ import java.util.UUID;
  *   <li>{@link #encoderPadding}
  * </ul>
  *
- * <h2 id="text-formats">Fields relevant to text formats</h2>
  *
+ * <h2 id="text-formats">Fields relevant to text formats</h2>
+ *  与文本格式相关的字段
  * <ul>
  *   <li>{@link #accessibilityChannel}
  * </ul>
