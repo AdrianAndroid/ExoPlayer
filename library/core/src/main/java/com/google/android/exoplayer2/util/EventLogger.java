@@ -116,19 +116,13 @@ public class EventLogger implements AnalyticsListener {
     @Override
     public void onPlayWhenReadyChanged(EventTime eventTime, boolean playWhenReady,
                                        @Player.PlayWhenReadyChangeReason int reason) {
-        logd(
-            eventTime,
-            "playWhenReady",
-            playWhenReady + ", " + getPlayWhenReadyChangeReasonString(reason));
+        logd(eventTime, "playWhenReady", playWhenReady + ", " + getPlayWhenReadyChangeReasonString(reason));
     }
 
     @Override
     public void onPlaybackSuppressionReasonChanged(EventTime eventTime,
                                                    @PlaybackSuppressionReason int playbackSuppressionReason) {
-        logd(
-            eventTime,
-            "playbackSuppressionReason",
-            getPlaybackSuppressionReasonString(playbackSuppressionReason));
+        logd(eventTime, "playbackSuppressionReason", getPlaybackSuppressionReasonString(playbackSuppressionReason));
     }
 
     @Override
@@ -153,8 +147,7 @@ public class EventLogger implements AnalyticsListener {
         Player.PositionInfo newPosition,
         @Player.DiscontinuityReason int reason) {
         StringBuilder builder = new StringBuilder();
-        builder
-            .append("reason=")
+        builder.append("reason=")
             .append(getDiscontinuityReasonString(reason))
             .append(", PositionInfo:old [")
             .append("window=")
@@ -164,8 +157,7 @@ public class EventLogger implements AnalyticsListener {
             .append(", pos=")
             .append(oldPosition.positionMs);
         if (oldPosition.adGroupIndex != C.INDEX_UNSET) {
-            builder
-                .append(", contentPos=")
+            builder.append(", contentPos=")
                 .append(oldPosition.contentPositionMs)
                 .append(", adGroup=")
                 .append(oldPosition.adGroupIndex)
