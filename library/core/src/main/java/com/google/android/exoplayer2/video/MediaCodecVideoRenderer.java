@@ -1520,7 +1520,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @return The maximum video size to use, or null if the size of {@code format} should be used.
      */
     private static Point getCodecMaxSize(MediaCodecInfo codecInfo, Format format) {
-        log("getCodecMaxSize");
+//        log("getCodecMaxSize");
         boolean isVerticalVideo = format.height > format.width;
         int formatLongEdgePx = isVerticalVideo ? format.height : format.width;
         int formatShortEdgePx = isVerticalVideo ? format.width : format.height;
@@ -1562,7 +1562,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * be determined.
      */
     protected static int getMaxInputSize(MediaCodecInfo codecInfo, Format format) {
-        log("getMaxInputSize");
+        //log("getMaxInputSize");
         if (format.maxInputSize != Format.NO_VALUE) {
             // The format defines an explicit maximum input size. Add the total size of initialization
             // data buffers, as they may need to be queued in the same input buffer as the largest sample.
@@ -1586,7 +1586,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * determined.
      */
     private static int getCodecMaxInputSize(MediaCodecInfo codecInfo, Format format) {
-        log("getCodecMaxInptSize(");
+        //log("getCodecMaxInptSize(");
         int width = format.width;
         int height = format.height;
         if (width == Format.NO_VALUE || height == Format.NO_VALUE) {

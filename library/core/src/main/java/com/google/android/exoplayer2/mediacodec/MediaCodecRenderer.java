@@ -319,15 +319,14 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     private static final int ADAPTATION_WORKAROUND_MODE_ALWAYS = 2;
 
     /**
-     * H.264/AVC buffer to queue when using the adaptation workaround (see {@link
-     * #codecAdaptationWorkaroundMode(String)}. Consists of three NAL units with start codes: Baseline
-     * sequence/picture parameter sets and a 32 * 32 pixel IDR slice. This stream can be queued to
-     * force a resolution change when adapting to a new format.
+     * H.264/AVC buffer to queue when using the adaptation workaround (see {@link #codecAdaptationWorkaroundMode(String)}.
+     * H.264/AVC缓冲区在使用适配解决方法时排队。
+     * Consists of three NAL units with start codes: Baseline sequence/picture parameter sets and a 32 * 32 pixel IDR slice.
+     * 由三个带有起始码的NAL单元组成：基线序列/图片参数集和一个32*32像素的IDR切片.
+     * This stream can be queued to force a resolution change when adapting to a new format.
+     * 在适应新格式时，可以将此流排队以强制更改分辨率。
      */
-    private static final byte[] ADAPTATION_WORKAROUND_BUFFER = new byte[]{
-            0, 0, 1, 103, 66, -64, 11, -38, 37, -112, 0, 0, 1, 104, -50, 15, 19, 32, 0, 0, 1, 101, -120,
-            -124, 13, -50, 113, 24, -96, 0, 47, -65, 28, 49, -61, 39, 93, 120
-    };
+    private static final byte[] ADAPTATION_WORKAROUND_BUFFER = new byte[]{0, 0, 1, 103, 66, -64, 11, -38, 37, -112, 0, 0, 1, 104, -50, 15, 19, 32, 0, 0, 1, 101, -120, -124, 13, -50, 113, 24, -96, 0, 47, -65, 28, 49, -61, 39, 93, 120};
 
     private static final int ADAPTATION_WORKAROUND_SLICE_WIDTH_HEIGHT = 32;
 
@@ -691,8 +690,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      *
      * @throws ExoPlaybackException Thrown if an error occurs as a result of the output format change.
      */
-    protected final void updateOutputFormatForTime(long presentationTimeUs)
-            throws ExoPlaybackException {
+    protected final void updateOutputFormatForTime(long presentationTimeUs) throws ExoPlaybackException {
         boolean outputFormatChanged = false;
         @Nullable Format format = formatQueue.pollFloor(presentationTimeUs);
         if (format == null && codecOutputMediaFormatChanged) {
@@ -875,22 +873,26 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             }
             // We have a format.
             maybeInitCodecOrBypass();
-            if (bypassEnabled) {
+            if (bypassEnabled) { // 旁路渲染
                 log("bypassEnabled == true");
                 TraceUtil.beginSection("bypassRender");
                 while (bypassRender(positionUs, elapsedRealtimeUs)) {
                 }
                 TraceUtil.endSection();
-            } else if (codec != null) {
+            } else if (codec != null) { // codec不为空
                 log("codec != null codec=" + codec);
                 long renderStartTimeMs = SystemClock.elapsedRealtime();
                 TraceUtil.beginSection("drainAndFeed");
+                // 输出缓冲区
                 while (drainOutputBuffer(positionUs, elapsedRealtimeUs) && shouldContinueRendering(renderStartTimeMs)) {
+                    log("while drainOutputBuffer(positionUs, elapsedRealtimeUs) positionUs=" + positionUs + " , elapsedRealtimeUs=" + elapsedRealtimeUs);
                 }
+                // 输入缓冲区
                 while (feedInputBuffer() && shouldContinueRendering(renderStartTimeMs)) {
+                    log("while feedInputBuffer()");
                 }
                 TraceUtil.endSection();
-            } else {
+            } else { // 其他
                 log("} else {");
                 decoderCounters.skippedInputBufferCount += skipSource(positionUs);
                 // We need to read any format changes despite not having a codec so that drmSession can be
@@ -1032,7 +1034,8 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
 
     /**
      * Reads from the source when sample data is not required. If a format or an end of stream buffer
-     * is read, it will be handled before the call returns.
+     * is read, it will be handled before the call returns. 当不需要样本数据时从源读取。如果读取了格式或流缓冲区的结尾，
+     * 则将在调用返回之前对其进行处理。
      *
      * @param readFlags Additional {@link ReadFlags}. {@link SampleStream#FLAG_OMIT_SAMPLE_DATA} is
      *                  added internally, and so does not need to be passed.
@@ -1148,24 +1151,16 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         long codecInitializedTimestamp;
         @Nullable MediaCodecAdapter codecAdapter = null;
         String codecName = codecInfo.name;
-        float codecOperatingRate =
-                Util.SDK_INT < 23
-                        ? CODEC_OPERATING_RATE_UNSET
-                        : getCodecOperatingRateV23(targetPlaybackSpeed, inputFormat, getStreamFormats());
+        float codecOperatingRate = Util.SDK_INT < 23 ? CODEC_OPERATING_RATE_UNSET : getCodecOperatingRateV23(targetPlaybackSpeed, inputFormat, getStreamFormats());
         if (codecOperatingRate <= assumedMinimumCodecOperatingRate) {
             codecOperatingRate = CODEC_OPERATING_RATE_UNSET;
         }
         codecInitializingTimestamp = SystemClock.elapsedRealtime();
         TraceUtil.beginSection("createCodec:" + codecName);
-        MediaCodecAdapter.Configuration configuration =
-                getMediaCodecConfiguration(codecInfo, inputFormat, crypto, codecOperatingRate);
+        MediaCodecAdapter.Configuration configuration = getMediaCodecConfiguration(codecInfo, inputFormat, crypto, codecOperatingRate);
         if (enableAsynchronousBufferQueueing && Util.SDK_INT >= 23) {
-            codecAdapter =
-                    new AsynchronousMediaCodecAdapter.Factory(
-                            getTrackType(),
-                            forceAsyncQueueingSynchronizationWorkaround,
-                            enableSynchronizeCodecInteractionsWithQueueing)
-                            .createAdapter(configuration);
+            codecAdapter = new AsynchronousMediaCodecAdapter.Factory(getTrackType(), forceAsyncQueueingSynchronizationWorkaround, enableSynchronizeCodecInteractionsWithQueueing)
+                    .createAdapter(configuration);
         } else {
             codecAdapter = codecAdapterFactory.createAdapter(configuration);
         }
@@ -1176,22 +1171,18 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         this.codecOperatingRate = codecOperatingRate;
         codecInputFormat = inputFormat;
         codecAdaptationWorkaroundMode = codecAdaptationWorkaroundMode(codecName);
-        codecNeedsDiscardToSpsWorkaround =
-                codecNeedsDiscardToSpsWorkaround(codecName, codecInputFormat);
+        codecNeedsDiscardToSpsWorkaround = codecNeedsDiscardToSpsWorkaround(codecName, codecInputFormat);
         codecNeedsFlushWorkaround = codecNeedsFlushWorkaround(codecName);
         codecNeedsSosFlushWorkaround = codecNeedsSosFlushWorkaround(codecName);
         codecNeedsEosFlushWorkaround = codecNeedsEosFlushWorkaround(codecName);
         codecNeedsEosOutputExceptionWorkaround = codecNeedsEosOutputExceptionWorkaround(codecName);
         codecNeedsEosBufferTimestampWorkaround = codecNeedsEosBufferTimestampWorkaround(codecName);
-        codecNeedsMonoChannelCountWorkaround =
-                codecNeedsMonoChannelCountWorkaround(codecName, codecInputFormat);
-        codecNeedsEosPropagation =
-                codecNeedsEosPropagationWorkaround(codecInfo) || getCodecNeedsEosPropagation();
+        codecNeedsMonoChannelCountWorkaround = codecNeedsMonoChannelCountWorkaround(codecName, codecInputFormat);
+        codecNeedsEosPropagation = codecNeedsEosPropagationWorkaround(codecInfo) || getCodecNeedsEosPropagation();
         if (codecAdapter.needsReconfiguration()) {
             this.codecReconfigured = true;
             this.codecReconfigurationState = RECONFIGURATION_STATE_WRITE_PENDING;
-            this.codecNeedsAdaptationWorkaroundBuffer =
-                    codecAdaptationWorkaroundMode != ADAPTATION_WORKAROUND_MODE_NEVER;
+            this.codecNeedsAdaptationWorkaroundBuffer = codecAdaptationWorkaroundMode != ADAPTATION_WORKAROUND_MODE_NEVER;
         }
         if ("c2.android.mp3.decoder".equals(codecInfo.name)) {
             c2Mp3TimestampTracker = new C2Mp3TimestampTracker();
@@ -1235,6 +1226,8 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     /**
+     * 输入缓冲区
+     *
      * @return Whether it may be possible to feed more input data.
      * @throws ExoPlaybackException If an error occurs feeding the input buffer.
      */
@@ -1248,7 +1241,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             if (inputIndex < 0) {
                 return false;
             }
-            buffer.data = codec.getInputBuffer(inputIndex);
+            buffer.data = codec.getInputBuffer(inputIndex); // Returns a writable ByteBuffer object for a dequeued input buffer index.
             buffer.clear();
         }
 
@@ -1338,8 +1331,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                     // Do nothing.
                 } else {
                     codecReceivedEos = true;
-                    codec.queueInputBuffer(
-                            inputIndex,
+                    codec.queueInputBuffer(inputIndex,
                             /* offset= */ 0,
                             /* size= */ 0,
                             /* presentationTimeUs= */ 0,
@@ -1384,16 +1376,12 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         long presentationTimeUs = buffer.timeUs;
 
         if (c2Mp3TimestampTracker != null) {
-            presentationTimeUs =
-                    c2Mp3TimestampTracker.updateAndGetPresentationTimeUs(inputFormat, buffer);
+            presentationTimeUs = c2Mp3TimestampTracker.updateAndGetPresentationTimeUs(inputFormat, buffer);
             // When draining the C2 MP3 decoder it produces an extra non-empty buffer with a timestamp
             // after all queued input buffer timestamps (unlike other decoders, which generally propagate
             // the input timestamps to output buffers 1:1). To detect the end of the stream when this
             // buffer is dequeued we override the largest queued timestamp accordingly.
-            largestQueuedPresentationTimeUs =
-                    max(
-                            largestQueuedPresentationTimeUs,
-                            c2Mp3TimestampTracker.getLastOutputBufferPresentationTimeUs(inputFormat));
+            largestQueuedPresentationTimeUs = max(largestQueuedPresentationTimeUs, c2Mp3TimestampTracker.getLastOutputBufferPresentationTimeUs(inputFormat));
         }
 
         if (buffer.isDecodeOnly()) {
@@ -1404,7 +1392,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             waitingForFirstSampleInFormat = false;
         }
         largestQueuedPresentationTimeUs = max(largestQueuedPresentationTimeUs, presentationTimeUs);
-        buffer.flip();
+        buffer.flip(); // 我的理解是归零
         if (buffer.hasSupplementalData()) {
             handleInputBufferSupplementalData(buffer);
         }
@@ -1412,15 +1400,12 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         onQueueInputBuffer(buffer);
         try {
             if (bufferEncrypted) {
-                codec.queueSecureInputBuffer(
-                        inputIndex, /* offset= */ 0, buffer.cryptoInfo, presentationTimeUs, /* flags= */ 0);
+                codec.queueSecureInputBuffer(inputIndex, /* offset= */ 0, buffer.cryptoInfo, presentationTimeUs, /* flags= */ 0);
             } else {
-                codec.queueInputBuffer(
-                        inputIndex, /* offset= */ 0, buffer.data.limit(), presentationTimeUs, /* flags= */ 0);
+                codec.queueInputBuffer(inputIndex, /* offset= */ 0, buffer.data.limit(), presentationTimeUs, /* flags= */ 0);
             }
         } catch (CryptoException e) {
-            throw createRendererException(
-                    e, inputFormat, C.getErrorCodeForMediaDrmErrorCode(e.getErrorCode()));
+            throw createRendererException(e, inputFormat, C.getErrorCodeForMediaDrmErrorCode(e.getErrorCode()));
         }
 
         resetInputBuffer();
@@ -1440,8 +1425,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      *                                 finished.
      * @param initializationDurationMs The time taken to initialize the codec in milliseconds.
      */
-    protected void onCodecInitialized(
-            String name, long initializedTimestampMs, long initializationDurationMs) {
+    protected void onCodecInitialized(String name, long initializedTimestampMs, long initializationDurationMs) {
         // Do nothing.
     }
 
@@ -1599,8 +1583,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      *                    bypass mode.
      * @throws ExoPlaybackException Thrown if an error occurs configuring the output.
      */
-    protected void onOutputFormatChanged(Format format, @Nullable MediaFormat mediaFormat)
-            throws ExoPlaybackException {
+    protected void onOutputFormatChanged(Format format, @Nullable MediaFormat mediaFormat) throws ExoPlaybackException {
         // Do nothing.
     }
 
@@ -1612,8 +1595,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * @param buffer The input buffer that is about to be queued.
      * @throws ExoPlaybackException Thrown if an error occurs handling supplemental data.
      */
-    protected void handleInputBufferSupplementalData(DecoderInputBuffer buffer)
-            throws ExoPlaybackException {
+    protected void handleInputBufferSupplementalData(DecoderInputBuffer buffer) throws ExoPlaybackException {
         // Do nothing.
     }
 
@@ -1856,6 +1838,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
 
     /**
      * 排空输出缓冲区
+     * 解码
      *
      * @return Whether it may be possible to drain more output data. 是否有可能排出更多的输出数据。
      * @throws ExoPlaybackException If an error occurs draining the output buffer. 如果发生错误，则排空输出缓冲区。
@@ -1866,6 +1849,8 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             if (codecNeedsEosOutputExceptionWorkaround && codecReceivedEos) {
                 try {
                     outputIndex = codec.dequeueOutputBufferIndex(outputBufferInfo);
+                    // 从底层MediaCodec返回下一个可用的输出缓冲区索引。如果下一个可用输出是MediaFomat更改，它将返回Media#INFO_OUTPUT_FORMAT_CHANGED,
+                    // 您应该调用getoutputFormat()来获取格式。如果没有可用的输出，此方法将返回MediaCodec#INFO_TRY_LATER.
                 } catch (IllegalStateException e) {
                     processEndOfStream();
                     if (outputStreamEnded) {
@@ -1880,6 +1865,9 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
 
             if (outputIndex < 0) {
                 if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED /* (-2) */) {
+                    // The output format has changed, subsequent data will follow the new format.
+                    // getOutputFormat() returns the new format. Note, that you can also use the new getOutputFormat(int)
+                    // method to get the format for a specific output buffer. This frees you from having to track output format changes.
                     processOutputMediaFormatChanged();
                     return true;
                 }
@@ -1901,8 +1889,8 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                 return false;
             }
 
-            this.outputIndex = outputIndex;
-            outputBuffer = codec.getOutputBuffer(outputIndex);
+            this.outputIndex = outputIndex; // 把当前工作的缓冲区索引保存起来
+            outputBuffer = codec.getOutputBuffer(outputIndex); // ByteBuffer Returns a read-only ByteBuffer for a dequeued output buffer index.
 
             // The dequeued buffer is a media buffer. Do some initial setup.
             // It will be processed by calling processOutputBuffer (possibly multiple times).
@@ -1911,8 +1899,10 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                 outputBuffer.limit(outputBufferInfo.offset + outputBufferInfo.size);
             }
             if (codecNeedsEosBufferTimestampWorkaround
-                    && outputBufferInfo.presentationTimeUs == 0
+                    && outputBufferInfo.presentationTimeUs == 0 //The presentation timestamp in microseconds for the buffer. This is derived from the presentation timestamp passed in with the corresponding input buffer. This should be ignored for a 0-sized buffer.
                     && (outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0
+                    // Buffer flags associated with the buffer. A combination of BUFFER_FLAG_KEY_FRAME and BUFFER_FLAG_END_OF_STREAM.Encoded buffers that are key frames are marked with BUFFER_FLAG_KEY_FRAME.
+                    // The last output buffer corresponding to the input buffer marked with BUFFER_FLAG_END_OF_STREAM will also be marked with BUFFER_FLAG_END_OF_STREAM. In some cases this could be an empty buffer, whose sole purpose is to carry the end-of-stream marker.
                     && largestQueuedPresentationTimeUs != C.TIME_UNSET) {
                 outputBufferInfo.presentationTimeUs = largestQueuedPresentationTimeUs;
             }

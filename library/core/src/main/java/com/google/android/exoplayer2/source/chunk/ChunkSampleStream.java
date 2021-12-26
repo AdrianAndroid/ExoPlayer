@@ -153,12 +153,7 @@ public class ChunkSampleStream<T extends ChunkSource>
         int[] trackTypes = new int[1 + embeddedTrackCount];
         SampleQueue[] sampleQueues = new SampleQueue[1 + embeddedTrackCount];
 
-        primarySampleQueue =
-            SampleQueue.createWithDrm(
-                allocator,
-                /* playbackLooper= */ checkNotNull(Looper.myLooper()),
-                drmSessionManager,
-                drmEventDispatcher);
+        primarySampleQueue = SampleQueue.createWithDrm(allocator,/* playbackLooper= */ checkNotNull(Looper.myLooper()), drmSessionManager, drmEventDispatcher);
         trackTypes[0] = primaryTrackType;
         sampleQueues[0] = primarySampleQueue;
 
@@ -242,10 +237,7 @@ public class ChunkSampleStream<T extends ChunkSource>
         } else {
             long bufferedPositionUs = lastSeekPositionUs;
             BaseMediaChunk lastMediaChunk = getLastMediaChunk();
-            BaseMediaChunk lastCompletedMediaChunk =
-                lastMediaChunk.isLoadCompleted()
-                    ? lastMediaChunk
-                    : mediaChunks.size() > 1 ? mediaChunks.get(mediaChunks.size() - 2) : null;
+            BaseMediaChunk lastCompletedMediaChunk = lastMediaChunk.isLoadCompleted() ? lastMediaChunk : mediaChunks.size() > 1 ? mediaChunks.get(mediaChunks.size() - 2) : null;
             if (lastCompletedMediaChunk != null) {
                 bufferedPositionUs = max(bufferedPositionUs, lastCompletedMediaChunk.endTimeUs);
             }
@@ -300,16 +292,12 @@ public class ChunkSampleStream<T extends ChunkSource>
             // chunk even if its timestamp is slightly earlier than the advertised chunk start time.
             seekInsideBuffer = primarySampleQueue.seekTo(seekToMediaChunk.getFirstSampleIndex(0));
         } else {
-            seekInsideBuffer =
-                primarySampleQueue.seekTo(
-                    positionUs, /* allowTimeBeyondBuffer= */ positionUs < getNextLoadPositionUs());
+            seekInsideBuffer = primarySampleQueue.seekTo(positionUs, /* allowTimeBeyondBuffer= */ positionUs < getNextLoadPositionUs());
         }
 
         if (seekInsideBuffer) {
             // We can seek inside the buffer.
-            nextNotifyPrimaryFormatMediaChunkIndex =
-                primarySampleIndexToMediaChunkIndex(
-                    primarySampleQueue.getReadIndex(), /* minChunkIndex= */ 0);
+            nextNotifyPrimaryFormatMediaChunkIndex = primarySampleIndexToMediaChunkIndex(primarySampleQueue.getReadIndex(), /* minChunkIndex= */ 0);
             // Seek the embedded sample queues.
             for (SampleQueue embeddedSampleQueue : embeddedSampleQueues) {
                 embeddedSampleQueue.seekTo(positionUs, /* allowTimeBeyondBuffer= */ true);
@@ -416,9 +404,7 @@ public class ChunkSampleStream<T extends ChunkSource>
         if (canceledMediaChunk != null) {
             // Don't skip into chunk that's going to be discarded.
             // TODO: Support splicing to allow this. See [internal b/161130873].
-            int maxSkipCount =
-                canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 0)
-                    - primarySampleQueue.getReadIndex();
+            int maxSkipCount = canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 0) - primarySampleQueue.getReadIndex();
             skipCount = min(skipCount, maxSkipCount);
         }
         primarySampleQueue.skip(skipCount);
@@ -432,52 +418,19 @@ public class ChunkSampleStream<T extends ChunkSource>
     public void onLoadCompleted(Chunk loadable, long elapsedRealtimeMs, long loadDurationMs) {
         loadingChunk = null;
         chunkSource.onChunkLoadCompleted(loadable);
-        LoadEventInfo loadEventInfo =
-            new LoadEventInfo(
-                loadable.loadTaskId,
-                loadable.dataSpec,
-                loadable.getUri(),
-                loadable.getResponseHeaders(),
-                elapsedRealtimeMs,
-                loadDurationMs,
-                loadable.bytesLoaded());
+        LoadEventInfo loadEventInfo = new LoadEventInfo(loadable.loadTaskId, loadable.dataSpec, loadable.getUri(), loadable.getResponseHeaders(), elapsedRealtimeMs, loadDurationMs, loadable.bytesLoaded());
         loadErrorHandlingPolicy.onLoadTaskConcluded(loadable.loadTaskId);
-        mediaSourceEventDispatcher.loadCompleted(
-            loadEventInfo,
-            loadable.type,
-            primaryTrackType,
-            loadable.trackFormat,
-            loadable.trackSelectionReason,
-            loadable.trackSelectionData,
-            loadable.startTimeUs,
-            loadable.endTimeUs);
+        mediaSourceEventDispatcher.loadCompleted(loadEventInfo, loadable.type, primaryTrackType, loadable.trackFormat, loadable.trackSelectionReason, loadable.trackSelectionData, loadable.startTimeUs, loadable.endTimeUs);
         callback.onContinueLoadingRequested(this);
     }
 
     @Override
-    public void onLoadCanceled(
-        Chunk loadable, long elapsedRealtimeMs, long loadDurationMs, boolean released) {
+    public void onLoadCanceled(Chunk loadable, long elapsedRealtimeMs, long loadDurationMs, boolean released) {
         loadingChunk = null;
         canceledMediaChunk = null;
-        LoadEventInfo loadEventInfo =
-            new LoadEventInfo(
-                loadable.loadTaskId,
-                loadable.dataSpec,
-                loadable.getUri(),
-                loadable.getResponseHeaders(),
-                elapsedRealtimeMs,
-                loadDurationMs,
-                loadable.bytesLoaded());
+        LoadEventInfo loadEventInfo = new LoadEventInfo(loadable.loadTaskId, loadable.dataSpec, loadable.getUri(), loadable.getResponseHeaders(), elapsedRealtimeMs, loadDurationMs, loadable.bytesLoaded());
         loadErrorHandlingPolicy.onLoadTaskConcluded(loadable.loadTaskId);
-        mediaSourceEventDispatcher.loadCanceled(
-            loadEventInfo,
-            loadable.type,
-            primaryTrackType,
-            loadable.trackFormat,
-            loadable.trackSelectionReason,
-            loadable.trackSelectionData,
-            loadable.startTimeUs,
-            loadable.endTimeUs);
+        mediaSourceEventDispatcher.loadCanceled(loadEventInfo, loadable.type, primaryTrackType, loadable.trackFormat, loadable.trackSelectionReason, loadable.trackSelectionData, loadable.startTimeUs, loadable.endTimeUs);
         if (!released) {
             if (isPendingReset()) {
                 resetSampleQueues();
@@ -493,41 +446,17 @@ public class ChunkSampleStream<T extends ChunkSource>
     }
 
     @Override
-    public LoadErrorAction onLoadError(
-        Chunk loadable,
-        long elapsedRealtimeMs,
-        long loadDurationMs,
-        IOException error,
-        int errorCount) {
+    public LoadErrorAction onLoadError(Chunk loadable, long elapsedRealtimeMs, long loadDurationMs, IOException error, int errorCount) {
         long bytesLoaded = loadable.bytesLoaded();
         boolean isMediaChunk = isMediaChunk(loadable);
         int lastChunkIndex = mediaChunks.size() - 1;
-        boolean cancelable =
-            bytesLoaded == 0 || !isMediaChunk || !haveReadFromMediaChunk(lastChunkIndex);
-        LoadEventInfo loadEventInfo =
-            new LoadEventInfo(
-                loadable.loadTaskId,
-                loadable.dataSpec,
-                loadable.getUri(),
-                loadable.getResponseHeaders(),
-                elapsedRealtimeMs,
-                loadDurationMs,
-                bytesLoaded);
-        MediaLoadData mediaLoadData =
-            new MediaLoadData(
-                loadable.type,
-                primaryTrackType,
-                loadable.trackFormat,
-                loadable.trackSelectionReason,
-                loadable.trackSelectionData,
-                C.usToMs(loadable.startTimeUs),
-                C.usToMs(loadable.endTimeUs));
-        LoadErrorInfo loadErrorInfo =
-            new LoadErrorInfo(loadEventInfo, mediaLoadData, error, errorCount);
+        boolean cancelable = bytesLoaded == 0 || !isMediaChunk || !haveReadFromMediaChunk(lastChunkIndex);
+        LoadEventInfo loadEventInfo = new LoadEventInfo(loadable.loadTaskId, loadable.dataSpec, loadable.getUri(), loadable.getResponseHeaders(), elapsedRealtimeMs, loadDurationMs, bytesLoaded);
+        MediaLoadData mediaLoadData = new MediaLoadData(loadable.type, primaryTrackType, loadable.trackFormat, loadable.trackSelectionReason, loadable.trackSelectionData, C.usToMs(loadable.startTimeUs), C.usToMs(loadable.endTimeUs));
+        LoadErrorInfo loadErrorInfo = new LoadErrorInfo(loadEventInfo, mediaLoadData, error, errorCount);
 
         @Nullable LoadErrorAction loadErrorAction = null;
-        if (chunkSource.onChunkLoadError(
-            loadable, cancelable, loadErrorInfo, loadErrorHandlingPolicy)) {
+        if (chunkSource.onChunkLoadError(loadable, cancelable, loadErrorInfo, loadErrorHandlingPolicy)) {
             if (cancelable) {
                 loadErrorAction = Loader.DONT_RETRY;
                 if (isMediaChunk) {
@@ -545,10 +474,7 @@ public class ChunkSampleStream<T extends ChunkSource>
         if (loadErrorAction == null) {
             // The load was not cancelled. Either the load must be retried or the error propagated.
             long retryDelayMs = loadErrorHandlingPolicy.getRetryDelayMsFor(loadErrorInfo);
-            loadErrorAction =
-                retryDelayMs != C.TIME_UNSET
-                    ? Loader.createRetryAction(/* resetErrorCount= */ false, retryDelayMs)
-                    : Loader.DONT_RETRY_FATAL;
+            loadErrorAction = retryDelayMs != C.TIME_UNSET ? Loader.createRetryAction(/* resetErrorCount= */ false, retryDelayMs) : Loader.DONT_RETRY_FATAL;
         }
 
         boolean canceled = !loadErrorAction.isRetry();
@@ -625,9 +551,7 @@ public class ChunkSampleStream<T extends ChunkSource>
         } else if (loadable instanceof InitializationChunk) {
             ((InitializationChunk) loadable).init(chunkOutput);
         }
-        long elapsedRealtimeMs =
-            loader.startLoading(
-                loadable, this, loadErrorHandlingPolicy.getMinimumLoadableRetryCount(loadable.type));
+        long elapsedRealtimeMs = loader.startLoading(loadable, this, loadErrorHandlingPolicy.getMinimumLoadableRetryCount(loadable.type));
         mediaSourceEventDispatcher.loadStarted(
             new LoadEventInfo(loadable.loadTaskId, loadable.dataSpec, elapsedRealtimeMs),
             loadable.type,
@@ -662,8 +586,7 @@ public class ChunkSampleStream<T extends ChunkSource>
 
         if (loader.isLoading()) {
             Chunk loadingChunk = checkNotNull(this.loadingChunk);
-            if (isMediaChunk(loadingChunk)
-                && haveReadFromMediaChunk(/* mediaChunkIndex= */ mediaChunks.size() - 1)) {
+            if (isMediaChunk(loadingChunk) && haveReadFromMediaChunk(/* mediaChunkIndex= */ mediaChunks.size() - 1)) {
                 // Can't cancel anymore because the renderers have read from this chunk.
                 return;
             }
@@ -705,8 +628,7 @@ public class ChunkSampleStream<T extends ChunkSource>
             pendingResetPositionUs = lastSeekPositionUs;
         }
         loadingFinished = false;
-        mediaSourceEventDispatcher.upstreamDiscarded(
-            primaryTrackType, firstRemovedChunk.startTimeUs, endTimeUs);
+        mediaSourceEventDispatcher.upstreamDiscarded(primaryTrackType, firstRemovedChunk.startTimeUs, endTimeUs);
     }
 
     private boolean isMediaChunk(Chunk chunk) {
@@ -741,11 +663,9 @@ public class ChunkSampleStream<T extends ChunkSource>
     }
 
     private void discardDownstreamMediaChunks(int discardToSampleIndex) {
-        int discardToMediaChunkIndex =
-            primarySampleIndexToMediaChunkIndex(discardToSampleIndex, /* minChunkIndex= */ 0);
+        int discardToMediaChunkIndex = primarySampleIndexToMediaChunkIndex(discardToSampleIndex, /* minChunkIndex= */ 0);
         // Don't discard any chunks that we haven't reported the primary format change for yet.
-        discardToMediaChunkIndex =
-            min(discardToMediaChunkIndex, nextNotifyPrimaryFormatMediaChunkIndex);
+        discardToMediaChunkIndex = min(discardToMediaChunkIndex, nextNotifyPrimaryFormatMediaChunkIndex);
         if (discardToMediaChunkIndex > 0) {
             Util.removeRange(mediaChunks, /* fromIndex= */ 0, /* toIndex= */ discardToMediaChunkIndex);
             nextNotifyPrimaryFormatMediaChunkIndex -= discardToMediaChunkIndex;
@@ -754,8 +674,7 @@ public class ChunkSampleStream<T extends ChunkSource>
 
     private void maybeNotifyPrimaryTrackFormatChanged() {
         int readSampleIndex = primarySampleQueue.getReadIndex();
-        int notifyToMediaChunkIndex = primarySampleIndexToMediaChunkIndex(
-            readSampleIndex, /* minChunkIndex= */ nextNotifyPrimaryFormatMediaChunkIndex - 1);
+        int notifyToMediaChunkIndex = primarySampleIndexToMediaChunkIndex(readSampleIndex, /* minChunkIndex= */ nextNotifyPrimaryFormatMediaChunkIndex - 1);
         while (nextNotifyPrimaryFormatMediaChunkIndex <= notifyToMediaChunkIndex) {
             maybeNotifyPrimaryTrackFormatChanged(nextNotifyPrimaryFormatMediaChunkIndex++);
         }
@@ -765,12 +684,7 @@ public class ChunkSampleStream<T extends ChunkSource>
         BaseMediaChunk currentChunk = mediaChunks.get(mediaChunkReadIndex);
         Format trackFormat = currentChunk.trackFormat;
         if (!trackFormat.equals(primaryDownstreamTrackFormat)) {
-            mediaSourceEventDispatcher.downstreamFormatChanged(
-                primaryTrackType,
-                trackFormat,
-                currentChunk.trackSelectionReason,
-                currentChunk.trackSelectionData,
-                currentChunk.startTimeUs);
+            mediaSourceEventDispatcher.downstreamFormatChanged(primaryTrackType, trackFormat, currentChunk.trackSelectionReason, currentChunk.trackSelectionData, currentChunk.startTimeUs);
         }
         primaryDownstreamTrackFormat = trackFormat;
     }
@@ -810,8 +724,7 @@ public class ChunkSampleStream<T extends ChunkSource>
     private BaseMediaChunk discardUpstreamMediaChunksFromIndex(int chunkIndex) {
         BaseMediaChunk firstRemovedChunk = mediaChunks.get(chunkIndex);
         Util.removeRange(mediaChunks, /* fromIndex= */ chunkIndex, /* toIndex= */ mediaChunks.size());
-        nextNotifyPrimaryFormatMediaChunkIndex =
-            max(nextNotifyPrimaryFormatMediaChunkIndex, mediaChunks.size());
+        nextNotifyPrimaryFormatMediaChunkIndex = max(nextNotifyPrimaryFormatMediaChunkIndex, mediaChunks.size());
         primarySampleQueue.discardUpstreamSamples(firstRemovedChunk.getFirstSampleIndex(0));
         for (int i = 0; i < embeddedSampleQueues.length; i++) {
             embeddedSampleQueues[i].discardUpstreamSamples(firstRemovedChunk.getFirstSampleIndex(i + 1));
@@ -851,9 +764,7 @@ public class ChunkSampleStream<T extends ChunkSource>
             if (canceledMediaChunk != null) {
                 // Don't skip into chunk that's going to be discarded.
                 // TODO: Support splicing to allow this. See [internal b/161130873].
-                int maxSkipCount =
-                    canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 1 + index)
-                        - sampleQueue.getReadIndex();
+                int maxSkipCount = canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 1 + index) - sampleQueue.getReadIndex();
                 skipCount = min(skipCount, maxSkipCount);
             }
             sampleQueue.skip(skipCount);
@@ -892,12 +803,7 @@ public class ChunkSampleStream<T extends ChunkSource>
 
         private void maybeNotifyDownstreamFormat() {
             if (!notifiedDownstreamFormat) {
-                mediaSourceEventDispatcher.downstreamFormatChanged(
-                    embeddedTrackTypes[index],
-                    embeddedTrackFormats[index],
-                    C.SELECTION_REASON_UNKNOWN,
-                    /* trackSelectionData= */ null,
-                    lastSeekPositionUs);
+                mediaSourceEventDispatcher.downstreamFormatChanged(embeddedTrackTypes[index], embeddedTrackFormats[index], C.SELECTION_REASON_UNKNOWN,/* trackSelectionData= */ null, lastSeekPositionUs);
                 notifiedDownstreamFormat = true;
             }
         }

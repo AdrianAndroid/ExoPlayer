@@ -38,164 +38,162 @@ import java.nio.ByteBuffer;
  */
 public class SynchronousMediaCodecAdapter implements MediaCodecAdapter {
 
-  /** A factory for {@link SynchronousMediaCodecAdapter} instances. */
-  public static class Factory implements MediaCodecAdapter.Factory {
+    /**
+     * A factory for {@link SynchronousMediaCodecAdapter} instances.
+     */
+    public static class Factory implements MediaCodecAdapter.Factory {
+
+        @Override
+        public MediaCodecAdapter createAdapter(Configuration configuration) throws IOException {
+            @Nullable MediaCodec codec = null;
+            try {
+                codec = createCodec(configuration);
+                TraceUtil.beginSection("configureCodec");
+                codec.configure(configuration.mediaFormat, configuration.surface, configuration.crypto, configuration.flags);
+                TraceUtil.endSection();
+                TraceUtil.beginSection("startCodec");
+                codec.start();
+                TraceUtil.endSection();
+                return new SynchronousMediaCodecAdapter(codec);
+            } catch (IOException | RuntimeException e) {
+                if (codec != null) {
+                    codec.release();
+                }
+                throw e;
+            }
+        }
+
+        /**
+         * Creates a new {@link MediaCodec} instance.
+         */
+        protected MediaCodec createCodec(Configuration configuration) throws IOException {
+            checkNotNull(configuration.codecInfo);
+            String codecName = configuration.codecInfo.name;
+            TraceUtil.beginSection("createCodec:" + codecName);
+            MediaCodec mediaCodec = MediaCodec.createByCodecName(codecName);
+            TraceUtil.endSection();
+            return mediaCodec;
+        }
+    }
+
+    private final MediaCodec codec;
+    @Nullable
+    private ByteBuffer[] inputByteBuffers;
+    @Nullable
+    private ByteBuffer[] outputByteBuffers;
+
+    private SynchronousMediaCodecAdapter(MediaCodec mediaCodec) {
+        this.codec = mediaCodec;
+        if (Util.SDK_INT < 21) {
+            inputByteBuffers = codec.getInputBuffers();
+            outputByteBuffers = codec.getOutputBuffers();
+        }
+    }
 
     @Override
-    public MediaCodecAdapter createAdapter(Configuration configuration) throws IOException {
-      @Nullable MediaCodec codec = null;
-      try {
-        codec = createCodec(configuration);
-        TraceUtil.beginSection("configureCodec");
-        codec.configure(
-            configuration.mediaFormat,
-            configuration.surface,
-            configuration.crypto,
-            configuration.flags);
-        TraceUtil.endSection();
-        TraceUtil.beginSection("startCodec");
-        codec.start();
-        TraceUtil.endSection();
-        return new SynchronousMediaCodecAdapter(codec);
-      } catch (IOException | RuntimeException e) {
-        if (codec != null) {
-          codec.release();
+    public boolean needsReconfiguration() {
+        return false;
+    }
+
+    @Override
+    public int dequeueInputBufferIndex() {
+        return codec.dequeueInputBuffer(0);
+    }
+
+    @Override
+    public int dequeueOutputBufferIndex(MediaCodec.BufferInfo bufferInfo) {
+        int index;
+        do {
+            index = codec.dequeueOutputBuffer(bufferInfo, 0);
+            if (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED && Util.SDK_INT < 21) {
+                outputByteBuffers = codec.getOutputBuffers();
+            }
+        } while (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED);
+
+        return index;
+    }
+
+    @Override
+    public MediaFormat getOutputFormat() {
+        return codec.getOutputFormat();
+    }
+
+    @Override
+    @Nullable
+    public ByteBuffer getInputBuffer(int index) {
+        if (Util.SDK_INT >= 21) {
+            return codec.getInputBuffer(index);
+        } else {
+            return castNonNull(inputByteBuffers)[index];
         }
-        throw e;
-      }
     }
 
-    /** Creates a new {@link MediaCodec} instance. */
-    protected MediaCodec createCodec(Configuration configuration) throws IOException {
-      checkNotNull(configuration.codecInfo);
-      String codecName = configuration.codecInfo.name;
-      TraceUtil.beginSection("createCodec:" + codecName);
-      MediaCodec mediaCodec = MediaCodec.createByCodecName(codecName);
-      TraceUtil.endSection();
-      return mediaCodec;
+    @Override
+    @Nullable
+    public ByteBuffer getOutputBuffer(int index) {
+        if (Util.SDK_INT >= 21) {
+            return codec.getOutputBuffer(index);
+        } else {
+            return castNonNull(outputByteBuffers)[index];
+        }
     }
-  }
 
-  private final MediaCodec codec;
-  @Nullable private ByteBuffer[] inputByteBuffers;
-  @Nullable private ByteBuffer[] outputByteBuffers;
-
-  private SynchronousMediaCodecAdapter(MediaCodec mediaCodec) {
-    this.codec = mediaCodec;
-    if (Util.SDK_INT < 21) {
-      inputByteBuffers = codec.getInputBuffers();
-      outputByteBuffers = codec.getOutputBuffers();
+    @Override
+    public void queueInputBuffer(int index, int offset, int size, long presentationTimeUs, int flags) {
+        codec.queueInputBuffer(index, offset, size, presentationTimeUs, flags);
     }
-  }
 
-  @Override
-  public boolean needsReconfiguration() {
-    return false;
-  }
-
-  @Override
-  public int dequeueInputBufferIndex() {
-    return codec.dequeueInputBuffer(0);
-  }
-
-  @Override
-  public int dequeueOutputBufferIndex(MediaCodec.BufferInfo bufferInfo) {
-    int index;
-    do {
-      index = codec.dequeueOutputBuffer(bufferInfo, 0);
-      if (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED && Util.SDK_INT < 21) {
-        outputByteBuffers = codec.getOutputBuffers();
-      }
-    } while (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED);
-
-    return index;
-  }
-
-  @Override
-  public MediaFormat getOutputFormat() {
-    return codec.getOutputFormat();
-  }
-
-  @Override
-  @Nullable
-  public ByteBuffer getInputBuffer(int index) {
-    if (Util.SDK_INT >= 21) {
-      return codec.getInputBuffer(index);
-    } else {
-      return castNonNull(inputByteBuffers)[index];
+    @Override
+    public void queueSecureInputBuffer(int index, int offset, CryptoInfo info, long presentationTimeUs, int flags) {
+        codec.queueSecureInputBuffer(index, offset, info.getFrameworkCryptoInfo(), presentationTimeUs, flags);
     }
-  }
 
-  @Override
-  @Nullable
-  public ByteBuffer getOutputBuffer(int index) {
-    if (Util.SDK_INT >= 21) {
-      return codec.getOutputBuffer(index);
-    } else {
-      return castNonNull(outputByteBuffers)[index];
+    @Override
+    public void releaseOutputBuffer(int index, boolean render) {
+        codec.releaseOutputBuffer(index, render);
     }
-  }
 
-  @Override
-  public void queueInputBuffer(
-      int index, int offset, int size, long presentationTimeUs, int flags) {
-    codec.queueInputBuffer(index, offset, size, presentationTimeUs, flags);
-  }
+    @Override
+    @RequiresApi(21)
+    public void releaseOutputBuffer(int index, long renderTimeStampNs) {
+        codec.releaseOutputBuffer(index, renderTimeStampNs);
+    }
 
-  @Override
-  public void queueSecureInputBuffer(
-      int index, int offset, CryptoInfo info, long presentationTimeUs, int flags) {
-    codec.queueSecureInputBuffer(
-        index, offset, info.getFrameworkCryptoInfo(), presentationTimeUs, flags);
-  }
+    @Override
+    public void flush() {
+        codec.flush();
+    }
 
-  @Override
-  public void releaseOutputBuffer(int index, boolean render) {
-    codec.releaseOutputBuffer(index, render);
-  }
+    @Override
+    public void release() {
+        inputByteBuffers = null;
+        outputByteBuffers = null;
+        codec.release();
+    }
 
-  @Override
-  @RequiresApi(21)
-  public void releaseOutputBuffer(int index, long renderTimeStampNs) {
-    codec.releaseOutputBuffer(index, renderTimeStampNs);
-  }
+    @Override
+    @RequiresApi(23)
+    public void setOnFrameRenderedListener(OnFrameRenderedListener listener, Handler handler) {
+        codec.setOnFrameRenderedListener(
+                (codec, presentationTimeUs, nanoTime) ->
+                        listener.onFrameRendered(SynchronousMediaCodecAdapter.this, presentationTimeUs, nanoTime),
+                handler);
+    }
 
-  @Override
-  public void flush() {
-    codec.flush();
-  }
+    @Override
+    @RequiresApi(23)
+    public void setOutputSurface(Surface surface) {
+        codec.setOutputSurface(surface);
+    }
 
-  @Override
-  public void release() {
-    inputByteBuffers = null;
-    outputByteBuffers = null;
-    codec.release();
-  }
+    @Override
+    @RequiresApi(19)
+    public void setParameters(Bundle params) {
+        codec.setParameters(params);
+    }
 
-  @Override
-  @RequiresApi(23)
-  public void setOnFrameRenderedListener(OnFrameRenderedListener listener, Handler handler) {
-    codec.setOnFrameRenderedListener(
-        (codec, presentationTimeUs, nanoTime) ->
-            listener.onFrameRendered(
-                SynchronousMediaCodecAdapter.this, presentationTimeUs, nanoTime),
-        handler);
-  }
-
-  @Override
-  @RequiresApi(23)
-  public void setOutputSurface(Surface surface) {
-    codec.setOutputSurface(surface);
-  }
-
-  @Override
-  @RequiresApi(19)
-  public void setParameters(Bundle params) {
-    codec.setParameters(params);
-  }
-
-  @Override
-  public void setVideoScalingMode(@C.VideoScalingMode int scalingMode) {
-    codec.setVideoScalingMode(scalingMode);
-  }
+    @Override
+    public void setVideoScalingMode(@C.VideoScalingMode int scalingMode) {
+        codec.setVideoScalingMode(scalingMode);
+    }
 }
