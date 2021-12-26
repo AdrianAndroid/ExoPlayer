@@ -104,6 +104,20 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     private static final String KEY_CROP_BOTTOM = "crop-bottom";
     private static final String KEY_CROP_TOP = "crop-top";
 
+    private static void log(Object... msg) {
+        String message = null;
+        if (msg.length == 1) {
+            message = msg[0].toString();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Object s : msg) {
+                sb.append(s).append(" ");
+            }
+            message = sb.toString();
+        }
+        Log.i(TAG, message);
+    }
+
     // Long edge length in pixels for standard video formats, in decreasing in order.
     private static final int[] STANDARD_LONG_EDGE_VIDEO_PX = new int[]{1920, 1600, 1440, 1280, 960, 854, 640, 540, 480};
 
@@ -174,6 +188,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      */
     public MediaCodecVideoRenderer(Context context, MediaCodecSelector mediaCodecSelector) {
         this(context, mediaCodecSelector, 0);
+        log("MediaCodecVideoRenderer(Context, MediaCodecSelector)");
     }
 
     /**
@@ -190,6 +205,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             /* eventHandler= */ null,
             /* eventListener= */ null,
             /* maxDroppedFramesToNotify= */ 0);
+        log("MediaCodecVideoRenderer(Context, MediaCodecSelector, allowedJoiningTimeMs)");
     }
 
     /**
@@ -219,6 +235,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             eventHandler,
             eventListener,
             maxDroppedFramesToNotify);
+        log("MediaCodecVideoRenderer(Context,MediaCodecSelector,long,Handler,VideoRendererEventListener,int)");
     }
 
     /**
@@ -252,6 +269,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             eventHandler,
             eventListener,
             maxDroppedFramesToNotify);
+        log("MediaCodecVideoRenderer 11111");
     }
 
     /**
@@ -287,6 +305,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             mediaCodecSelector,
             enableDecoderFallback,
             /* assumedMinimumCodecOperatingRate= */ 30);
+        log("MediaCodecVideoRenderer", "codecAdapterFactory", codecAdapterFactory, "mediaCodecSelector",
+            mediaCodecSelector, "enableDecoderFallback", enableDecoderFallback, "eventHandler=", eventHandler,
+            "eventListener", eventListener);
         this.allowedJoiningTimeMs = allowedJoiningTimeMs;
         this.maxDroppedFramesToNotify = maxDroppedFramesToNotify;
         this.context = context.getApplicationContext();
@@ -304,12 +325,14 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     public String getName() {
+        log("getName = " + TAG);
         return TAG;
     }
 
     @Override
     @Capabilities
     protected int supportsFormat(MediaCodecSelector mediaCodecSelector, Format format) throws DecoderQueryException {
+        log("supportsFormat", "mediaCodecSelector", mediaCodecSelector, "format=", format);
         String mimeType = format.sampleMimeType;
         if (!MimeTypes.isVideo(mimeType)) {
             return RendererCapabilities.create(C.FORMAT_UNSUPPORTED_TYPE);
@@ -364,8 +387,11 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     @Override
-    protected List<MediaCodecInfo> getDecoderInfos(MediaCodecSelector mediaCodecSelector, Format format,
-                                                   boolean requiresSecureDecoder) throws DecoderQueryException {
+    protected List<MediaCodecInfo> getDecoderInfos(
+        MediaCodecSelector mediaCodecSelector, Format format, boolean requiresSecureDecoder)
+        throws DecoderQueryException {
+        log("getDecoderInfos", "mediaCodecSelector", mediaCodecSelector, "format", format, "requiresSecureDecoder",
+            requiresSecureDecoder);
         return getDecoderInfos(mediaCodecSelector, format, requiresSecureDecoder, tunneling);
     }
 
@@ -375,6 +401,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         boolean requiresSecureDecoder,
         boolean requiresTunnelingDecoder)
         throws DecoderQueryException {
+
+        log("getDecoderInfos", "mediaCodecSelector", mediaCodecSelector, "format=", format);
+
         @Nullable String mimeType = format.sampleMimeType;
         if (mimeType == null) {
             return Collections.emptyList();
@@ -406,6 +435,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     protected void onEnabled(boolean joining, boolean mayRenderStartOfStream) throws ExoPlaybackException {
+        log("onEnabled");
         super.onEnabled(joining, mayRenderStartOfStream);
         boolean tunneling = getConfiguration().tunneling;
         Assertions.checkState(!tunneling || tunnelingAudioSessionId != C.AUDIO_SESSION_ID_UNSET);
@@ -422,6 +452,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     @Override
     protected void onPositionReset(long positionUs, boolean joining) throws ExoPlaybackException {
         super.onPositionReset(positionUs, joining);
+        log("onPositionReset");
         clearRenderedFirstFrame();
         frameReleaseHelper.onPositionReset();
         lastBufferPresentationTimeUs = C.TIME_UNSET;
@@ -436,8 +467,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     public boolean isReady() {
-        if (super.isReady()
-            && (renderedFirstFrameAfterReset
+        log("isReady");
+        if (super.isReady() && (renderedFirstFrameAfterReset
             || (dummySurface != null && surface == dummySurface)
             || getCodec() == null
             || tunneling)) {
@@ -461,6 +492,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     @Override
     protected void onStarted() {
         super.onStarted();
+        log("onStarted()");
         droppedFrames = 0;
         droppedFrameAccumulationStartTimeMs = SystemClock.elapsedRealtime();
         lastRenderRealtimeUs = SystemClock.elapsedRealtime() * 1000;
@@ -471,6 +503,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     protected void onStopped() {
+        log("onStopped()");
         joiningDeadlineMs = C.TIME_UNSET;
         maybeNotifyDroppedFrames();
         maybeNotifyVideoFrameProcessingOffset();
@@ -480,6 +513,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     protected void onDisabled() {
+        log("onDisabled()");
         clearReportedVideoSize();
         clearRenderedFirstFrame();
         haveReportedFirstFrameRenderedForCurrentSurface = false;
@@ -495,6 +529,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     @TargetApi(17) // Needed for dummySurface usage. dummySurface is always null on API level 16.
     @Override
     protected void onReset() {
+        log("onReset()");
         try {
             super.onReset();
         } finally {
@@ -510,6 +545,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     public void handleMessage(int messageType, @Nullable Object message) throws ExoPlaybackException {
+        log("handleMessage", "messageType=", messageType, "message=", message);
         switch (messageType) {
             case MSG_SET_VIDEO_OUTPUT:
                 setOutput(message);
@@ -539,6 +575,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     private void setOutput(@Nullable Object output) throws ExoPlaybackException {
+        log("seetOutput", "output=", output);
+
         // Handle unsupported (i.e., non-Surface) outputs by clearing the surface.
         @Nullable Surface surface = output instanceof Surface ? (Surface) output : null;
 

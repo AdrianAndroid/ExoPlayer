@@ -111,9 +111,7 @@ public final class Util {
      * overridden for local testing.
      */
     public static final int SDK_INT =
-        "S".equals(Build.VERSION.CODENAME)
-            ? 31
-            : "R".equals(Build.VERSION.CODENAME) ? 30 : Build.VERSION.SDK_INT;
+        "S".equals(Build.VERSION.CODENAME) ? 31 : "R".equals(Build.VERSION.CODENAME) ? 30 : Build.VERSION.SDK_INT;
 
     /**
      * Like {@link Build#DEVICE}, but in a place where it can be conveniently overridden for local
@@ -145,15 +143,10 @@ public final class Util {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     private static final String TAG = "Util";
-    private static final Pattern XS_DATE_TIME_PATTERN =
-        Pattern.compile(
-            "(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)[Tt]"
-                + "(\\d\\d):(\\d\\d):(\\d\\d)([\\.,](\\d+))?"
-                + "([Zz]|((\\+|\\-)(\\d?\\d):?(\\d\\d)))?");
+    private static final Pattern XS_DATE_TIME_PATTERN = Pattern.compile("(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)[Tt]"
+        + "(\\d\\d):(\\d\\d):(\\d\\d)([\\.,](\\d+))?" + "([Zz]|((\\+|\\-)(\\d?\\d):?(\\d\\d)))?");
     private static final Pattern XS_DURATION_PATTERN =
-        Pattern.compile(
-            "^(-)?P(([0-9]*)Y)?(([0-9]*)M)?(([0-9]*)D)?"
-                + "(T(([0-9]*)H)?(([0-9]*)M)?(([0-9.]*)S)?)?$");
+        Pattern.compile("^(-)?P(([0-9]*)Y)?(([0-9]*)M)?(([0-9]*)D)?" + "(T(([0-9]*)H)?(([0-9]*)M)?(([0-9.]*)S)?)?$");
     private static final Pattern ESCAPED_CHARACTER_PATTERN = Pattern.compile("%([A-Fa-f0-9]{2})");
 
     // https://docs.microsoft.com/en-us/azure/media-services/previous/media-services-deliver-content-overview#URLs.
