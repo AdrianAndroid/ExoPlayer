@@ -39,8 +39,7 @@ import java.util.List;
     /**
      * Creates an instance.
      */
-    public PlaylistTimeline(Collection<? extends MediaSourceInfoHolder> mediaSourceInfoHolders,
-                            ShuffleOrder shuffleOrder) {
+    public PlaylistTimeline(Collection<? extends MediaSourceInfoHolder> mediaSourceInfoHolders, ShuffleOrder shuffleOrder) {
         super(/* isAtomic= */ false, shuffleOrder);
         int childCount = mediaSourceInfoHolders.size();
         firstPeriodInChildIndices = new int[childCount];

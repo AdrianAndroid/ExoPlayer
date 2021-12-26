@@ -600,8 +600,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 pendingRecoverableRendererError = e;
                 // Given that the player is now in an unhandled exception state, the error needs to be
                 // recovered or the player stopped before any other message is handled.
-                handler.sendMessageAtFrontOfQueue(
-                        handler.obtainMessage(MSG_ATTEMPT_RENDERER_ERROR_RECOVERY, e));
+                handler.sendMessageAtFrontOfQueue(handler.obtainMessage(MSG_ATTEMPT_RENDERER_ERROR_RECOVERY, e));
             } else {
                 if (pendingRecoverableRendererError != null) {
                     pendingRecoverableRendererError.addSuppressed(e);
@@ -616,13 +615,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
         } catch (ParserException e) {
             @ErrorCode int errorCode;
             if (e.dataType == C.DATA_TYPE_MEDIA) {
-                errorCode =
-                        e.contentIsMalformed
+                errorCode = e.contentIsMalformed
                                 ? PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED
                                 : PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED;
             } else if (e.dataType == C.DATA_TYPE_MANIFEST) {
-                errorCode =
-                        e.contentIsMalformed
+                errorCode = e.contentIsMalformed
                                 ? PlaybackException.ERROR_CODE_PARSING_MANIFEST_MALFORMED
                                 : PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED;
             } else {
@@ -1003,8 +1000,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 // TODO: Each renderer should return the maximum delay before which it wishes to be called
                 // again. The minimum of these values should then be used as the delay before the next
                 // invocation of this method.
-                log("rendererPositionUs = " + rendererPositionUs + " , rendererPositionElapsedRealtimeUs = " +
-                        rendererPositionElapsedRealtimeUs); // 不断累加
+                log("rendererPositionUs = " + rendererPositionUs + " , rendererPositionElapsedRealtimeUs = " + rendererPositionElapsedRealtimeUs); // 不断累加
                 renderer.render(rendererPositionUs, rendererPositionElapsedRealtimeUs);
                 renderersEnded = renderersEnded && renderer.isEnded();
                 // Determine whether the renderer allows playback to continue. Playback can continue if the
@@ -1019,8 +1015,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
                 // 渲染器。请参阅：https://github.com/google/ExoPlayer/issues/1874
                 boolean isReadingAhead = playingPeriodHolder.sampleStreams[i] != renderer.getStream();
                 boolean isWaitingForNextStream = !isReadingAhead && renderer.hasReadStreamToEnd();
-                boolean allowsPlayback =
-                        isReadingAhead || isWaitingForNextStream || renderer.isReady() || renderer.isEnded();
+                boolean allowsPlayback = isReadingAhead || isWaitingForNextStream || renderer.isReady() || renderer.isEnded();
                 renderersAllowPlayback = renderersAllowPlayback && allowsPlayback;
                 if (!allowsPlayback) {
                     renderer.maybeThrowStreamError();
