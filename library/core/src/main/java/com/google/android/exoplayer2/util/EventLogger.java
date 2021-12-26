@@ -548,11 +548,7 @@ public class EventLogger implements AnalyticsListener {
         loge(getEventString(eventTime, eventName, /* eventDescription= */ null, throwable));
     }
 
-    private void loge(
-        EventTime eventTime,
-        String eventName,
-        String eventDescription,
-        @Nullable Throwable throwable) {
+    private void loge(EventTime eventTime, String eventName, String eventDescription, @Nullable Throwable throwable) {
         loge(getEventString(eventTime, eventName, eventDescription, throwable));
     }
 
@@ -566,11 +562,8 @@ public class EventLogger implements AnalyticsListener {
         }
     }
 
-    private String getEventString(
-        EventTime eventTime,
-        String eventName,
-        @Nullable String eventDescription,
-        @Nullable Throwable throwable) {
+    private String getEventString(EventTime eventTime, String eventName, @Nullable String eventDescription,
+                                  @Nullable Throwable throwable) {
         String eventString = eventName + " [" + getEventTimeString(eventTime);
         if (throwable instanceof PlaybackException) {
             eventString += ", errorCode=" + ((PlaybackException) throwable).getErrorCodeName();
