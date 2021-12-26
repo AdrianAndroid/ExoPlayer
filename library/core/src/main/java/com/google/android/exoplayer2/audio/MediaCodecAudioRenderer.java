@@ -435,17 +435,17 @@ public class MediaCodecAudioRenderer extends MediaCodecRenderer implements Media
                 // If the format is anything other than PCM then we assume that the audio decoder will
                 // output 16-bit PCM.
                 pcmEncoding = MimeTypes.AUDIO_RAW.equals(format.sampleMimeType)
-                                ? format.pcmEncoding
-                                : C.ENCODING_PCM_16BIT;
+                        ? format.pcmEncoding
+                        : C.ENCODING_PCM_16BIT;
             }
             audioSinkInputFormat = new Format.Builder()
-                            .setSampleMimeType(MimeTypes.AUDIO_RAW)
-                            .setPcmEncoding(pcmEncoding)
-                            .setEncoderDelay(format.encoderDelay)
-                            .setEncoderPadding(format.encoderPadding)
-                            .setChannelCount(mediaFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT))
-                            .setSampleRate(mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE))
-                            .build();
+                    .setSampleMimeType(MimeTypes.AUDIO_RAW)
+                    .setPcmEncoding(pcmEncoding)
+                    .setEncoderDelay(format.encoderDelay)
+                    .setEncoderPadding(format.encoderPadding)
+                    .setChannelCount(mediaFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT))
+                    .setSampleRate(mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE))
+                    .build();
             if (codecNeedsDiscardChannelsWorkaround && audioSinkInputFormat.channelCount == 6 && format.channelCount < 6) {
                 channelMap = new int[format.channelCount];
                 for (int i = 0; i < format.channelCount; i++) {
@@ -593,8 +593,7 @@ public class MediaCodecAudioRenderer extends MediaCodecRenderer implements Media
             long bufferPresentationTimeUs,
             boolean isDecodeOnlyBuffer,
             boolean isLastBuffer,
-            Format format)
-            throws ExoPlaybackException {
+            Format format) throws ExoPlaybackException {
         checkNotNull(buffer);
 
         if (decryptOnlyCodecFormat != null

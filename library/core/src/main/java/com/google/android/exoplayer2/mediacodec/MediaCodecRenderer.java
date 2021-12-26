@@ -882,7 +882,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                 }
                 TraceUtil.endSection();
             } else if (codec != null) {
-                log("codec != null");
+                log("codec != null codec=" + codec);
                 long renderStartTimeMs = SystemClock.elapsedRealtime();
                 TraceUtil.beginSection("drainAndFeed");
                 while (drainOutputBuffer(positionUs, elapsedRealtimeUs) && shouldContinueRendering(renderStartTimeMs)) {
