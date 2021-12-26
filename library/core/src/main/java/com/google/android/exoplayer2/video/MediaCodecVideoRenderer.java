@@ -778,19 +778,17 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     /**
-     * Called immediately before an input buffer is queued into the codec.
+     * Called immediately before an input buffer is queued into the codec. 在输入缓冲区排队进入编解码器之前立即调用
      *
-     * <p>In tunneling mode for pre Marshmallow, the buffer is treated as if immediately output.
+     * <p>In tunneling mode for pre Marshmallow, the buffer is treated as if immediately output. 在Marshmallow前的隧道模式下，缓冲区被视为立即输出。
      *
-     * @param buffer The buffer to be queued.
-     * @throws ExoPlaybackException Thrown if an error occurs handling the input buffer.
+     * @param buffer The buffer to be queued. 要排队的缓冲区。
+     * @throws ExoPlaybackException Thrown if an error occurs handling the input buffer.  如果在处理输入缓冲区时发生错误，则抛出.
      */
     @CallSuper
     @Override
     protected void onQueueInputBuffer(DecoderInputBuffer buffer) throws ExoPlaybackException {
-
         log("onQueueInputBuffer buffer=", buffer);
-
         // In tunneling mode the device may do frame rate conversion, so in general we can't keep track
         // of the number of buffers in the codec.
         if (!tunneling) {
@@ -805,9 +803,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @Override
     protected void onOutputFormatChanged(Format format, @Nullable MediaFormat mediaFormat) {
-
         log("onOutputFormatChanged format=", format, "mediaFormat=", mediaFormat);
-
         @Nullable MediaCodecAdapter codec = getCodec();
         if (codec != null) {
             // Must be applied each time the output format changes.
@@ -944,11 +940,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
                 ? (isStarted || mayRenderFirstFrameAfterEnableIfNotStarted)
                 : !renderedFirstFrameAfterReset;
         // Don't force output until we joined and the position reached the current stream.
-        boolean forceRenderOutputBuffer =
-                joiningDeadlineMs == C.TIME_UNSET
-                        && positionUs >= outputStreamOffsetUs
-                        && (shouldRenderFirstFrame
-                        || (isStarted && shouldForceRenderOutputBuffer(earlyUs, elapsedSinceLastRenderUs)));
+        boolean forceRenderOutputBuffer = joiningDeadlineMs == C.TIME_UNSET
+                && positionUs >= outputStreamOffsetUs
+                && (shouldRenderFirstFrame || (isStarted && shouldForceRenderOutputBuffer(earlyUs, elapsedSinceLastRenderUs)));
         if (forceRenderOutputBuffer) {
             long releaseTimeNs = System.nanoTime();
             notifyFrameMetadataListener(presentationTimeUs, releaseTimeNs, format);
@@ -1021,11 +1015,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     private void notifyFrameMetadataListener(long presentationTimeUs, long releaseTimeNs, Format format) {
-        log("notifyFrameMetadataListener presentationTimeUs=", presentationTimeUs, "releaseTimeNs=", releaseTimeNs,
-                "format=", format);
+        log("notifyFrameMetadataListener presentationTimeUs=", presentationTimeUs, "releaseTimeNs=", releaseTimeNs, "format=", format);
         if (frameMetadataListener != null) {
-            frameMetadataListener.onVideoFrameAboutToBeRendered(
-                    presentationTimeUs, releaseTimeNs, format, getCodecOutputMediaFormat());
+            frameMetadataListener.onVideoFrameAboutToBeRendered(presentationTimeUs, releaseTimeNs, format, getCodecOutputMediaFormat());
         }
     }
 
@@ -1076,8 +1068,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @param isLastBuffer      Whether the buffer is the last buffer in the current stream.
      */
     protected boolean shouldDropOutputBuffer(long earlyUs, long elapsedRealtimeUs, boolean isLastBuffer) {
-        log("shouldDropOutputBuffer earlyUs=", earlyUs, "elapsedRealtiimeUs=", elapsedRealtimeUs, "isLastBuffer=",
-                isLastBuffer);
+        log("shouldDropOutputBuffer earlyUs=", earlyUs, "elapsedRealtiimeUs=", elapsedRealtimeUs, "isLastBuffer=", isLastBuffer);
         return isBufferLate(earlyUs) && !isLastBuffer;
     }
 
@@ -1092,8 +1083,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @param isLastBuffer      Whether the buffer is the last buffer in the current stream.
      */
     protected boolean shouldDropBuffersToKeyframe(long earlyUs, long elapsedRealtimeUs, boolean isLastBuffer) {
-        log("shouldDropBuffersToKeframe earlyUs=", earlyUs, "elapsedRealtimeUs=", elapsedRealtimeUs, "isLastBuffer",
-                isLastBuffer);
+        log("shouldDropBuffersToKeframe earlyUs=", earlyUs, "elapsedRealtimeUs=", elapsedRealtimeUs, "isLastBuffer", isLastBuffer);
         return isBufferVeryLate(earlyUs) && !isLastBuffer;
     }
 
@@ -1153,12 +1143,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @return Whether any buffers were dropped.
      * @throws ExoPlaybackException If an error occurs flushing the codec.
      */
-    protected boolean maybeDropBuffersToKeyframe(long positionUs, boolean treatDroppedBuffersAsSkipped)
-            throws ExoPlaybackException {
-
-        log("maybeDropBuffersToKeyframe positionUs=", positionUs, "treatDroppeduffersAsSkipped=",
-                treatDroppedBuffersAsSkipped);
-
+    protected boolean maybeDropBuffersToKeyframe(long positionUs, boolean treatDroppedBuffersAsSkipped) throws ExoPlaybackException {
+        log("maybeDropBuffersToKeyframe positionUs=", positionUs, "treatDroppeduffersAsSkipped=", treatDroppedBuffersAsSkipped);
         int droppedSourceBufferCount = skipSource(positionUs);
         if (droppedSourceBufferCount == 0) {
             return false;
@@ -1183,14 +1169,11 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      * @param droppedBufferCount The number of additional dropped buffers.
      */
     protected void updateDroppedBufferCounters(int droppedBufferCount) {
-
         log("updateDroppedBufferCounter droppedBufferCount=", droppedBufferCount);
-
         decoderCounters.droppedBufferCount += droppedBufferCount;
         droppedFrames += droppedBufferCount;
         consecutiveDroppedFrameCount += droppedBufferCount;
-        decoderCounters.maxConsecutiveDroppedBufferCount =
-                max(consecutiveDroppedFrameCount, decoderCounters.maxConsecutiveDroppedBufferCount);
+        decoderCounters.maxConsecutiveDroppedBufferCount = max(consecutiveDroppedFrameCount, decoderCounters.maxConsecutiveDroppedBufferCount);
         if (maxDroppedFramesToNotify > 0 && droppedFrames >= maxDroppedFramesToNotify) {
             maybeNotifyDroppedFrames();
         }
@@ -1239,8 +1222,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      */
     @RequiresApi(21)
     protected void renderOutputBufferV21(MediaCodecAdapter codec, int index, long presentationTimeUs, long releaseTimeNs) {
-        log("renderOutputBufferV21 codec=", codec, "index=", index, "presentationTimeUs=", presentationTimeUs,
-                "releaseTimeNs=", releaseTimeNs);
+        log("renderOutputBufferV21 codec=", codec, "index=", index, "presentationTimeUs=", presentationTimeUs, "releaseTimeNs=", releaseTimeNs);
         maybeNotifyVideoSizeChanged();
         TraceUtil.beginSection("releaseOutputBuffer");
         codec.releaseOutputBuffer(index, releaseTimeNs);
@@ -1306,16 +1288,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     private void maybeNotifyVideoSizeChanged() {
         log("maybeNotifyVideoSizeChanged()");
-        if ((currentWidth != Format.NO_VALUE || currentHeight != Format.NO_VALUE) && (reportedVideoSize == null
-                || reportedVideoSize.width != currentWidth
-                || reportedVideoSize.height != currentHeight
-                || reportedVideoSize.unappliedRotationDegrees != currentUnappliedRotationDegrees
-                || reportedVideoSize.pixelWidthHeightRatio != currentPixelWidthHeightRatio)) {
-            reportedVideoSize = new VideoSize(
-                    currentWidth,
-                    currentHeight,
-                    currentUnappliedRotationDegrees,
-                    currentPixelWidthHeightRatio);
+        if ((currentWidth != Format.NO_VALUE || currentHeight != Format.NO_VALUE)
+                && (reportedVideoSize == null || reportedVideoSize.width != currentWidth || reportedVideoSize.height != currentHeight || reportedVideoSize.unappliedRotationDegrees != currentUnappliedRotationDegrees || reportedVideoSize.pixelWidthHeightRatio != currentPixelWidthHeightRatio)) {
+            reportedVideoSize = new VideoSize(currentWidth, currentHeight, currentUnappliedRotationDegrees, currentPixelWidthHeightRatio);
             eventDispatcher.videoSizeChanged(reportedVideoSize);
         }
     }
@@ -1396,18 +1371,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      */
     @SuppressLint("InlinedApi")
     @TargetApi(21) // tunnelingAudioSessionId is unset if Util.SDK_INT < 21
-    protected MediaFormat getMediaFormat(
-            Format format,
-            String codecMimeType,
-            CodecMaxValues codecMaxValues,
-            float codecOperatingRate,
-            boolean deviceNeedsNoPostProcessWorkaround,
-            int tunnelingAudioSessionId) {
-        log("getMediaFormat format=", format, "codecMimeType="
-                , codecMimeType, "codecMaxValues="
-                , codecMaxValues, "codecOpeartionRate=", codecOperatingRate
-                , "deviceNeedsNoPostProcessWorkaround=", deviceNeedsNoPostProcessWorkaround
-                , "tunnelingAudioSessionId=", tunnelingAudioSessionId);
+    protected MediaFormat getMediaFormat(Format format, String codecMimeType, CodecMaxValues codecMaxValues, float codecOperatingRate, boolean deviceNeedsNoPostProcessWorkaround, int tunnelingAudioSessionId) {
+        log("getMediaFormat format=", format, "codecMimeType=", codecMimeType, "codecMaxValues=", codecMaxValues, "codecOpeartionRate=", codecOperatingRate, "deviceNeedsNoPostProcessWorkaround=", deviceNeedsNoPostProcessWorkaround, "tunnelingAudioSessionId=", tunnelingAudioSessionId);
         MediaFormat mediaFormat = new MediaFormat();
         // Set format parameters that should always be set.
         mediaFormat.setString(MediaFormat.KEY_MIME, codecMimeType);
@@ -1606,9 +1571,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             Pair<Integer, Integer> codecProfileAndLevel = MediaCodecUtil.getCodecProfileAndLevel(format);
             if (codecProfileAndLevel != null) {
                 int profile = codecProfileAndLevel.first;
-                if (profile == CodecProfileLevel.DolbyVisionProfileDvavSe
-                        || profile == CodecProfileLevel.DolbyVisionProfileDvavPer
-                        || profile == CodecProfileLevel.DolbyVisionProfileDvavPen) {
+                if (profile == CodecProfileLevel.DolbyVisionProfileDvavSe || profile == CodecProfileLevel.DolbyVisionProfileDvavPer || profile == CodecProfileLevel.DolbyVisionProfileDvavPen) {
                     sampleMimeType = MimeTypes.VIDEO_H264;
                 }
             }
@@ -1624,10 +1587,9 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
                 minCompressionRatio = 2;
                 break;
             case MimeTypes.VIDEO_H264:
-                if ("BRAVIA 4K 2015".equals(Util.MODEL) // Sony Bravia 4K
-                        || ("Amazon".equals(Util.MANUFACTURER)
-                        && ("KFSOWI".equals(Util.MODEL) // Kindle Soho
-                        || ("AFTS".equals(Util.MODEL) && codecInfo.secure)))) { // Fire TV Gen 2
+                if ("BRAVIA 4K 2015".equals(Util.MODEL) /* Sony Bravia 4K*/
+                        || ("Amazon".equals(Util.MANUFACTURER) && ("KFSOWI".equals(Util.MODEL) /*Kindle Soho*/ || ("AFTS".equals(Util.MODEL) && codecInfo.secure)))
+                ) { // Fire TV Gen 2
                     // Use the default value for cases where platform limitations may prevent buffers of the
                     // calculated maximum input size from being allocated.
                     return Format.NO_VALUE;
@@ -1953,10 +1915,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             //
             // The workaround queues the event for subsequent processing, where the lock will not be held.
             if (Util.SDK_INT < 30) {
-                Message message = Message.obtain(handler,
-                        /* what= */ HANDLE_FRAME_RENDERED,
-                        /* arg1= */ (int) (presentationTimeUs >> 32),
-                        /* arg2= */ (int) presentationTimeUs);
+                Message message = Message.obtain(handler,/* what= */ HANDLE_FRAME_RENDERED,/* arg1= */ (int) (presentationTimeUs >> 32),/* arg2= */ (int) presentationTimeUs);
                 handler.sendMessageAtFrontOfQueue(message);
             } else {
                 handleFrameRendered(presentationTimeUs);

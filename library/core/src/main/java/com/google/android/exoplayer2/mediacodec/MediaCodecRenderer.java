@@ -434,12 +434,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      *                                         this renderer are assumed to meet implicitly (i.e. without the operating rate being set
      *                                         explicitly using {@link MediaFormat#KEY_OPERATING_RATE}).
      */
-    public MediaCodecRenderer(
-            int trackType,
-            MediaCodecAdapter.Factory codecAdapterFactory,
-            MediaCodecSelector mediaCodecSelector,
-            boolean enableDecoderFallback,
-            float assumedMinimumCodecOperatingRate) {
+    public MediaCodecRenderer(int trackType, MediaCodecAdapter.Factory codecAdapterFactory, MediaCodecSelector mediaCodecSelector, boolean enableDecoderFallback, float assumedMinimumCodecOperatingRate) {
         super(trackType);
         this.codecAdapterFactory = codecAdapterFactory;
         this.mediaCodecSelector = checkNotNull(mediaCodecSelector);
@@ -558,8 +553,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * @throws DecoderQueryException If there was an error querying decoders.
      */
     @Capabilities
-    protected abstract int supportsFormat(MediaCodecSelector mediaCodecSelector, Format format)
-            throws DecoderQueryException;
+    protected abstract int supportsFormat(MediaCodecSelector mediaCodecSelector, Format format) throws DecoderQueryException;
 
     /**
      * Returns a list of decoders that can decode media in the specified format, in priority order.
@@ -570,9 +564,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * @return A list of {@link MediaCodecInfo}s corresponding to decoders. May be empty.
      * @throws DecoderQueryException Thrown if there was an error querying decoders.
      */
-    protected abstract List<MediaCodecInfo> getDecoderInfos(
-            MediaCodecSelector mediaCodecSelector, Format format, boolean requiresSecureDecoder)
-            throws DecoderQueryException;
+    protected abstract List<MediaCodecInfo> getDecoderInfos(MediaCodecSelector mediaCodecSelector, Format format, boolean requiresSecureDecoder) throws DecoderQueryException;
 
     /**
      * Returns the {@link MediaCodecAdapter.Configuration} that will be used to create and configure a
@@ -586,11 +578,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * @return The parameters needed to call {@link MediaCodec#configure}.
      */
     @Nullable
-    protected abstract MediaCodecAdapter.Configuration getMediaCodecConfiguration(
-            MediaCodecInfo codecInfo,
-            Format format,
-            @Nullable MediaCrypto crypto,
-            float codecOperatingRate);
+    protected abstract MediaCodecAdapter.Configuration getMediaCodecConfiguration(MediaCodecInfo codecInfo, Format format, @Nullable MediaCrypto crypto, float codecOperatingRate);
 
     protected final void maybeInitCodecOrBypass() throws ExoPlaybackException {
         //log(getClass(), "maybeInitCodecOrBypass");
@@ -726,14 +714,12 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     @Override
-    protected void onEnabled(boolean joining, boolean mayRenderStartOfStream)
-            throws ExoPlaybackException {
+    protected void onEnabled(boolean joining, boolean mayRenderStartOfStream) throws ExoPlaybackException {
         decoderCounters = new DecoderCounters();
     }
 
     @Override
-    protected void onStreamChanged(Format[] formats, long startPositionUs, long offsetUs)
-            throws ExoPlaybackException {
+    protected void onStreamChanged(Format[] formats, long startPositionUs, long offsetUs) throws ExoPlaybackException {
         if (this.outputStreamOffsetUs == C.TIME_UNSET) {
             checkState(this.outputStreamStartPositionUs == C.TIME_UNSET);
             this.outputStreamStartPositionUs = startPositionUs;
@@ -773,15 +759,13 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         formatQueue.clear();
         if (pendingOutputStreamOffsetCount != 0) {
             outputStreamOffsetUs = pendingOutputStreamOffsetsUs[pendingOutputStreamOffsetCount - 1];
-            outputStreamStartPositionUs =
-                    pendingOutputStreamStartPositionsUs[pendingOutputStreamOffsetCount - 1];
+            outputStreamStartPositionUs = pendingOutputStreamStartPositionsUs[pendingOutputStreamOffsetCount - 1];
             pendingOutputStreamOffsetCount = 0;
         }
     }
 
     @Override
-    public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed)
-            throws ExoPlaybackException {
+    public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed) throws ExoPlaybackException {
         this.currentPlaybackSpeed = currentPlaybackSpeed;
         this.targetPlaybackSpeed = targetPlaybackSpeed;
         updateCodecOperatingRate(codecInputFormat);
@@ -990,8 +974,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         // Reconfiguration data sent shortly before the flush may not have been processed by the
         // decoder. If the codec has been reconfigured we always send reconfiguration data again to
         // guarantee that it's processed.
-        codecReconfigurationState =
-                codecReconfigured ? RECONFIGURATION_STATE_WRITE_PENDING : RECONFIGURATION_STATE_NONE;
+        codecReconfigurationState = codecReconfigured ? RECONFIGURATION_STATE_WRITE_PENDING : RECONFIGURATION_STATE_NONE;
     }
 
     /**
@@ -1027,8 +1010,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         mediaCryptoRequiresSecureDecoder = false;
     }
 
-    protected MediaCodecDecoderException createDecoderException(
-            Throwable cause, @Nullable MediaCodecInfo codecInfo) {
+    protected MediaCodecDecoderException createDecoderException(Throwable cause, @Nullable MediaCodecInfo codecInfo) {
         return new MediaCodecDecoderException(cause, codecInfo);
     }
 
@@ -1105,25 +1087,16 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         availableCodecInfos = null;
     }
 
-    private List<MediaCodecInfo> getAvailableCodecInfos(boolean mediaCryptoRequiresSecureDecoder)
-            throws DecoderQueryException {
-        List<MediaCodecInfo> codecInfos =
-                getDecoderInfos(mediaCodecSelector, inputFormat, mediaCryptoRequiresSecureDecoder);
+    private List<MediaCodecInfo> getAvailableCodecInfos(boolean mediaCryptoRequiresSecureDecoder) throws DecoderQueryException {
+        List<MediaCodecInfo> codecInfos = getDecoderInfos(mediaCodecSelector, inputFormat, mediaCryptoRequiresSecureDecoder);
         if (codecInfos.isEmpty() && mediaCryptoRequiresSecureDecoder) {
             // The drm session indicates that a secure decoder is required, but the device does not
             // have one. Assuming that supportsFormat indicated support for the media being played, we
             // know that it does not require a secure output path. Most CDM implementations allow
             // playback to proceed with a non-secure decoder in this case, so we try our luck.
-            codecInfos =
-                    getDecoderInfos(mediaCodecSelector, inputFormat, /* requiresSecureDecoder= */ false);
+            codecInfos = getDecoderInfos(mediaCodecSelector, inputFormat, /* requiresSecureDecoder= */ false);
             if (!codecInfos.isEmpty()) {
-                Log.w(
-                        TAG,
-                        "Drm session requires secure decoder for "
-                                + inputFormat.sampleMimeType
-                                + ", but no secure decoder available. Trying to proceed with "
-                                + codecInfos
-                                + ".");
+                Log.w(TAG, "Drm session requires secure decoder for " + inputFormat.sampleMimeType + ", but no secure decoder available. Trying to proceed with " + codecInfos + ".");
             }
         }
         return codecInfos;
@@ -1331,16 +1304,11 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                     // Do nothing.
                 } else {
                     codecReceivedEos = true;
-                    codec.queueInputBuffer(inputIndex,
-                            /* offset= */ 0,
-                            /* size= */ 0,
-                            /* presentationTimeUs= */ 0,
-                            MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                    codec.queueInputBuffer(inputIndex,/* offset= */ 0,/* size= */ 0,/* presentationTimeUs= */ 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     resetInputBuffer();
                 }
             } catch (CryptoException e) {
-                throw createRendererException(
-                        e, inputFormat, C.getErrorCodeForMediaDrmErrorCode(e.getErrorCode()));
+                throw createRendererException(e, inputFormat, C.getErrorCodeForMediaDrmErrorCode(e.getErrorCode()));
             }
             return false;
         }
@@ -1914,9 +1882,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
         boolean processedOutputBuffer;
         if (codecNeedsEosOutputExceptionWorkaround && codecReceivedEos) {
             try {
-                processedOutputBuffer = processOutputBuffer(positionUs, elapsedRealtimeUs,
-                        codec, outputBuffer, outputIndex, outputBufferInfo.flags,/* sampleCount= */ 1,
-                        outputBufferInfo.presentationTimeUs, isDecodeOnlyOutputBuffer, isLastOutputBuffer, outputFormat);
+                processedOutputBuffer = processOutputBuffer(positionUs, elapsedRealtimeUs, codec, outputBuffer, outputIndex, outputBufferInfo.flags,/* sampleCount= */ 1, outputBufferInfo.presentationTimeUs, isDecodeOnlyOutputBuffer, isLastOutputBuffer, outputFormat);
             } catch (IllegalStateException e) {
                 processEndOfStream();
                 if (outputStreamEnded) {
@@ -1926,9 +1892,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                 return false;
             }
         } else {
-            processedOutputBuffer = processOutputBuffer(positionUs, elapsedRealtimeUs, codec, outputBuffer,
-                    outputIndex, outputBufferInfo.flags,/* sampleCount= */ 1, outputBufferInfo.presentationTimeUs,
-                    isDecodeOnlyOutputBuffer, isLastOutputBuffer, outputFormat);
+            processedOutputBuffer = processOutputBuffer(positionUs, elapsedRealtimeUs, codec, outputBuffer, outputIndex, outputBufferInfo.flags,/* sampleCount= */ 1, outputBufferInfo.presentationTimeUs, isDecodeOnlyOutputBuffer, isLastOutputBuffer, outputFormat);
         }
 
         if (processedOutputBuffer) {
