@@ -40,6 +40,10 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
         Log.i(clz.getSimpleName(), msg);
     }
 
+    public void log(String msg) {
+        Log.i(getClass().getSimpleName(), msg);
+    }
+
     private final int trackType;
     private final FormatHolder formatHolder;
 
@@ -95,15 +99,15 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
 
     @Override
     public final void enable(
-        RendererConfiguration configuration,
-        Format[] formats,
-        SampleStream stream,
-        long positionUs,
-        boolean joining,
-        boolean mayRenderStartOfStream,
-        long startPositionUs,
-        long offsetUs)
-        throws ExoPlaybackException {
+            RendererConfiguration configuration,
+            Format[] formats,
+            SampleStream stream,
+            long positionUs,
+            boolean joining,
+            boolean mayRenderStartOfStream,
+            long startPositionUs,
+            long offsetUs)
+            throws ExoPlaybackException {
         Assertions.checkState(state == STATE_DISABLED);
         this.configuration = configuration;
         state = STATE_ENABLED;
@@ -122,7 +126,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
 
     @Override
     public final void replaceStream(Format[] formats, SampleStream stream, long startPositionUs, long offsetUs)
-        throws ExoPlaybackException {
+            throws ExoPlaybackException {
         Assertions.checkState(!streamIsFinal);
         this.stream = stream;
         if (readingPositionUs == C.TIME_END_OF_SOURCE) {
@@ -201,7 +205,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
 
     @Override
     public void render(long positionUs, long elapsedRealtimeUs) throws ExoPlaybackException {
-        //log(getClass(), "render ... ");
+        log(getClass(), "render posintUs=" + positionUs + " , elapsedRealtimeUs=" + elapsedRealtimeUs);
     }
 
     @Override
@@ -364,7 +368,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
      * false}.
      */
     protected final ExoPlaybackException createRendererException(
-        Throwable cause, @Nullable Format format, @PlaybackException.ErrorCode int errorCode) {
+            Throwable cause, @Nullable Format format, @PlaybackException.ErrorCode int errorCode) {
         return createRendererException(cause, format, /* isRecoverable= */ false, errorCode);
     }
 
@@ -380,10 +384,10 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
      * @return The created instance.
      */
     protected final ExoPlaybackException createRendererException(
-        Throwable cause,
-        @Nullable Format format,
-        boolean isRecoverable,
-        @PlaybackException.ErrorCode int errorCode) {
+            Throwable cause,
+            @Nullable Format format,
+            boolean isRecoverable,
+            @PlaybackException.ErrorCode int errorCode) {
         @C.FormatSupport int formatSupport = C.FORMAT_HANDLED;
         if (format != null && !throwRendererExceptionIsExecuting) {
             // Prevent recursive re-entry from subclass supportsFormat implementations.
@@ -397,7 +401,7 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
             }
         }
         return ExoPlaybackException.createForRenderer(
-            cause, getName(), getIndex(), format, formatSupport, isRecoverable, errorCode);
+                cause, getName(), getIndex(), format, formatSupport, isRecoverable, errorCode);
     }
 
     /**
@@ -433,8 +437,8 @@ public abstract class BaseRenderer implements Renderer, RendererCapabilities {
             Format format = Assertions.checkNotNull(formatHolder.format);
             if (format.subsampleOffsetUs != Format.OFFSET_SAMPLE_RELATIVE) {
                 format = format.buildUpon()
-                    .setSubsampleOffsetUs(format.subsampleOffsetUs + streamOffsetUs)
-                    .build();
+                        .setSubsampleOffsetUs(format.subsampleOffsetUs + streamOffsetUs)
+                        .build();
                 formatHolder.format = format;
             }
         }
