@@ -24,6 +24,14 @@ import com.google.android.exoplayer2.drm.DrmSession;
  */
 public final class FormatHolder {
 
+    @Override
+    public String toString() {
+        return "FormatHolder{" +
+            "drmSession=" + drmSession +
+            ", format=" + format +
+            '}';
+    }
+
     /**
      * An accompanying context for decrypting samples in the format.
      */
