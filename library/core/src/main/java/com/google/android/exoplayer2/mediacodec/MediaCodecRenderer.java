@@ -883,8 +883,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             } else if (codec != null) {
                 long renderStartTimeMs = SystemClock.elapsedRealtime();
                 TraceUtil.beginSection("drainAndFeed");
-                while (drainOutputBuffer(positionUs, elapsedRealtimeUs)
-                    && shouldContinueRendering(renderStartTimeMs)) {
+                while (drainOutputBuffer(positionUs, elapsedRealtimeUs) && shouldContinueRendering(renderStartTimeMs)) {
                 }
                 while (feedInputBuffer() && shouldContinueRendering(renderStartTimeMs)) {
                 }
@@ -905,11 +904,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                 if (isRecoverable) {
                     releaseCodec();
                 }
-                throw createRendererException(
-                    createDecoderException(e, getCodecInfo()),
-                    inputFormat,
-                    isRecoverable,
-                    PlaybackException.ERROR_CODE_DECODING_FAILED);
+                throw createRendererException(createDecoderException(e, getCodecInfo()), inputFormat, isRecoverable, PlaybackException.ERROR_CODE_DECODING_FAILED);
             }
             throw e;
         }

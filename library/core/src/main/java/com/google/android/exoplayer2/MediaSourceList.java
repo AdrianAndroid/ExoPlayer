@@ -100,10 +100,7 @@ import java.util.Set;
      * @param analyticsCollectorHandler The {@link Handler} to call {@link AnalyticsCollector} methods
      *                                  on.
      */
-    public MediaSourceList(
-        MediaSourceListInfoRefreshListener listener,
-        @Nullable AnalyticsCollector analyticsCollector,
-        Handler analyticsCollectorHandler) {
+    public MediaSourceList(MediaSourceListInfoRefreshListener listener, @Nullable AnalyticsCollector analyticsCollector, Handler analyticsCollectorHandler) {
         mediaSourceListInfoListener = listener;
         shuffleOrder = new DefaultShuffleOrder(0);
         mediaSourceByMediaPeriod = new IdentityHashMap<>();
@@ -149,10 +146,7 @@ import java.util.Set;
                 if (insertionIndex > 0) {
                     MediaSourceHolder previousHolder = mediaSourceHolders.get(insertionIndex - 1);
                     Timeline previousTimeline = previousHolder.mediaSource.getTimeline();
-                    holder.reset(
-                        /* firstWindowIndexInChild= */ previousHolder.firstWindowIndexInChild
-                            + previousTimeline.getWindowCount()
-                    );
+                    holder.reset(/* firstWindowIndexInChild= */ previousHolder.firstWindowIndexInChild + previousTimeline.getWindowCount());
                 } else {
                     holder.reset(/* firstWindowIndexInChild= */ 0);
                 }
@@ -229,10 +223,8 @@ import java.util.Set;
      *                                  {@code toIndex} &lt; {@code fromIndex}, {@code fromIndex} &gt; {@code toIndex}, {@code
      *                                  newFromIndex} &lt; 0
      */
-    public Timeline moveMediaSourceRange(
-        int fromIndex, int toIndex, int newFromIndex, ShuffleOrder shuffleOrder) {
-        Assertions.checkArgument(
-            fromIndex >= 0 && fromIndex <= toIndex && toIndex <= getSize() && newFromIndex >= 0);
+    public Timeline moveMediaSourceRange(int fromIndex, int toIndex, int newFromIndex, ShuffleOrder shuffleOrder) {
+        Assertions.checkArgument(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= getSize() && newFromIndex >= 0);
         this.shuffleOrder = shuffleOrder;
         if (fromIndex == toIndex || fromIndex == newFromIndex) {
             return createTimeline();
@@ -281,9 +273,7 @@ import java.util.Set;
     public Timeline setShuffleOrder(ShuffleOrder shuffleOrder) {
         int size = getSize();
         if (shuffleOrder.getLength() != size) {
-            shuffleOrder =
-                shuffleOrder
-                    .cloneAndClear()
+            shuffleOrder = shuffleOrder.cloneAndClear()
                     .cloneAndInsert(/* insertionIndex= */ 0, /* insertionCount= */ size);
         }
         this.shuffleOrder = shuffleOrder;
@@ -313,15 +303,13 @@ import java.util.Set;
      * @return A new {@link MediaPeriod}.
      */
     public MediaPeriod createPeriod(
-        MediaSource.MediaPeriodId id, Allocator allocator, long startPositionUs) {
+            MediaSource.MediaPeriodId id, Allocator allocator, long startPositionUs) {
         Object mediaSourceHolderUid = getMediaSourceHolderUid(id.periodUid);
-        MediaSource.MediaPeriodId childMediaPeriodId =
-            id.copyWithPeriodUid(getChildPeriodUid(id.periodUid));
+        MediaSource.MediaPeriodId childMediaPeriodId = id.copyWithPeriodUid(getChildPeriodUid(id.periodUid));
         MediaSourceHolder holder = Assertions.checkNotNull(mediaSourceByUid.get(mediaSourceHolderUid));
         enableMediaSource(holder);
         holder.activeMediaPeriodIds.add(childMediaPeriodId);
-        MediaPeriod mediaPeriod =
-            holder.mediaSource.createPeriod(childMediaPeriodId, allocator, startPositionUs);
+        MediaPeriod mediaPeriod = holder.mediaSource.createPeriod(childMediaPeriodId, allocator, startPositionUs);
         mediaSourceByMediaPeriod.put(mediaPeriod, holder);
         disableUnusedMediaSources();
         return mediaPeriod;
@@ -333,8 +321,7 @@ import java.util.Set;
      * @param mediaPeriod The period to release.
      */
     public void releasePeriod(MediaPeriod mediaPeriod) {
-        MediaSourceHolder holder =
-            Assertions.checkNotNull(mediaSourceByMediaPeriod.remove(mediaPeriod));
+        MediaSourceHolder holder = Assertions.checkNotNull(mediaSourceByMediaPeriod.remove(mediaPeriod));
         holder.mediaSource.releasePeriod(mediaPeriod);
         holder.activeMediaPeriodIds.remove(((MaskingMediaPeriod) mediaPeriod).id);
         if (!mediaSourceByMediaPeriod.isEmpty()) {
@@ -430,12 +417,11 @@ import java.util.Set;
 
     @Nullable
     private static MediaSource.MediaPeriodId getMediaPeriodIdForChildMediaPeriodId(
-        MediaSourceHolder mediaSourceHolder, MediaSource.MediaPeriodId mediaPeriodId) {
+            MediaSourceHolder mediaSourceHolder, MediaSource.MediaPeriodId mediaPeriodId) {
         for (int i = 0; i < mediaSourceHolder.activeMediaPeriodIds.size(); i++) {
             // Ensure the reported media period id has the same window sequence number as the one created
             // by this media source. Otherwise it does not belong to this child source.
-            if (mediaSourceHolder.activeMediaPeriodIds.get(i).windowSequenceNumber
-                == mediaPeriodId.windowSequenceNumber) {
+            if (mediaSourceHolder.activeMediaPeriodIds.get(i).windowSequenceNumber == mediaPeriodId.windowSequenceNumber) {
                 Object periodUid = getPeriodUid(mediaSourceHolder, mediaPeriodId.periodUid);
                 return mediaPeriodId.copyWithPeriodUid(periodUid);
             }
@@ -444,14 +430,13 @@ import java.util.Set;
     }
 
     private static int getWindowIndexForChildWindowIndex(
-        MediaSourceHolder mediaSourceHolder, int windowIndex) {
+            MediaSourceHolder mediaSourceHolder, int windowIndex) {
         return windowIndex + mediaSourceHolder.firstWindowIndexInChild;
     }
 
     private void prepareChildSource(MediaSourceHolder holder) {
         MediaSource mediaSource = holder.mediaSource;
-        MediaSource.MediaSourceCaller caller =
-            (source, timeline) -> mediaSourceListInfoListener.onPlaylistUpdateRequested();
+        MediaSource.MediaSourceCaller caller = (source, timeline) -> mediaSourceListInfoListener.onPlaylistUpdateRequested();
         ForwardingEventListener eventListener = new ForwardingEventListener(holder);
         childSources.put(holder, new MediaSourceAndListener(mediaSource, caller, eventListener));
         mediaSource.addEventListener(Util.createHandlerForCurrentOrMainLooper(), eventListener);
@@ -462,8 +447,7 @@ import java.util.Set;
     private void maybeReleaseChildSource(MediaSourceHolder mediaSourceHolder) {
         // Release if the source has been removed from the playlist and no periods are still active.
         if (mediaSourceHolder.isRemoved && mediaSourceHolder.activeMediaPeriodIds.isEmpty()) {
-            MediaSourceAndListener removedChild =
-                Assertions.checkNotNull(childSources.remove(mediaSourceHolder));
+            MediaSourceAndListener removedChild = Assertions.checkNotNull(childSources.remove(mediaSourceHolder));
             removedChild.mediaSource.releaseSource(removedChild.caller);
             removedChild.mediaSource.removeEventListener(removedChild.eventListener);
             removedChild.mediaSource.removeDrmEventListener(removedChild.eventListener);
@@ -530,18 +514,14 @@ import java.util.Set;
         public final MediaSource.MediaSourceCaller caller;
         public final ForwardingEventListener eventListener;
 
-        public MediaSourceAndListener(
-            MediaSource mediaSource,
-            MediaSource.MediaSourceCaller caller,
-            ForwardingEventListener eventListener) {
+        public MediaSourceAndListener(MediaSource mediaSource, MediaSource.MediaSourceCaller caller, ForwardingEventListener eventListener) {
             this.mediaSource = mediaSource;
             this.caller = caller;
             this.eventListener = eventListener;
         }
     }
 
-    private final class ForwardingEventListener
-        implements MediaSourceEventListener, DrmSessionEventListener {
+    private final class ForwardingEventListener implements MediaSourceEventListener, DrmSessionEventListener {
 
         private final MediaSourceList.MediaSourceHolder id;
         private MediaSourceEventListener.EventDispatcher mediaSourceEventDispatcher;
@@ -556,66 +536,42 @@ import java.util.Set;
         // MediaSourceEventListener implementation
 
         @Override
-        public void onLoadStarted(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            LoadEventInfo loadEventData,
-            MediaLoadData mediaLoadData) {
+        public void onLoadStarted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventData, MediaLoadData mediaLoadData) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 mediaSourceEventDispatcher.loadStarted(loadEventData, mediaLoadData);
             }
         }
 
         @Override
-        public void onLoadCompleted(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            LoadEventInfo loadEventData,
-            MediaLoadData mediaLoadData) {
+        public void onLoadCompleted(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventData, MediaLoadData mediaLoadData) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 mediaSourceEventDispatcher.loadCompleted(loadEventData, mediaLoadData);
             }
         }
 
         @Override
-        public void onLoadCanceled(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            LoadEventInfo loadEventData,
-            MediaLoadData mediaLoadData) {
+        public void onLoadCanceled(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventData, MediaLoadData mediaLoadData) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 mediaSourceEventDispatcher.loadCanceled(loadEventData, mediaLoadData);
             }
         }
 
         @Override
-        public void onLoadError(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            LoadEventInfo loadEventData,
-            MediaLoadData mediaLoadData,
-            IOException error,
-            boolean wasCanceled) {
+        public void onLoadError(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, LoadEventInfo loadEventData, MediaLoadData mediaLoadData, IOException error, boolean wasCanceled) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 mediaSourceEventDispatcher.loadError(loadEventData, mediaLoadData, error, wasCanceled);
             }
         }
 
         @Override
-        public void onUpstreamDiscarded(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            MediaLoadData mediaLoadData) {
+        public void onUpstreamDiscarded(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 mediaSourceEventDispatcher.upstreamDiscarded(mediaLoadData);
             }
         }
 
         @Override
-        public void onDownstreamFormatChanged(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            MediaLoadData mediaLoadData) {
+        public void onDownstreamFormatChanged(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, MediaLoadData mediaLoadData) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 mediaSourceEventDispatcher.downstreamFormatChanged(mediaLoadData);
             }
@@ -624,50 +580,42 @@ import java.util.Set;
         // DrmSessionEventListener implementation
 
         @Override
-        public void onDrmSessionAcquired(
-            int windowIndex,
-            @Nullable MediaSource.MediaPeriodId mediaPeriodId,
-            @DrmSession.State int state) {
+        public void onDrmSessionAcquired(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, @DrmSession.State int state) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 drmEventDispatcher.drmSessionAcquired(state);
             }
         }
 
         @Override
-        public void onDrmKeysLoaded(
-            int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
+        public void onDrmKeysLoaded(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 drmEventDispatcher.drmKeysLoaded();
             }
         }
 
         @Override
-        public void onDrmSessionManagerError(
-            int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, Exception error) {
+        public void onDrmSessionManagerError(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId, Exception error) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 drmEventDispatcher.drmSessionManagerError(error);
             }
         }
 
         @Override
-        public void onDrmKeysRestored(
-            int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
+        public void onDrmKeysRestored(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 drmEventDispatcher.drmKeysRestored();
             }
         }
 
         @Override
-        public void onDrmKeysRemoved(
-            int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
+        public void onDrmKeysRemoved(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 drmEventDispatcher.drmKeysRemoved();
             }
         }
 
         @Override
-        public void onDrmSessionReleased(
-            int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
+        public void onDrmSessionReleased(int windowIndex, @Nullable MediaSource.MediaPeriodId mediaPeriodId) {
             if (maybeUpdateEventDispatcher(windowIndex, mediaPeriodId)) {
                 drmEventDispatcher.drmSessionReleased();
             }
@@ -676,8 +624,7 @@ import java.util.Set;
         /**
          * Updates the event dispatcher and returns whether the event should be dispatched.
          */
-        private boolean maybeUpdateEventDispatcher(
-            int childWindowIndex, @Nullable MediaSource.MediaPeriodId childMediaPeriodId) {
+        private boolean maybeUpdateEventDispatcher(int childWindowIndex, @Nullable MediaSource.MediaPeriodId childMediaPeriodId) {
             @Nullable MediaSource.MediaPeriodId mediaPeriodId = null;
             if (childMediaPeriodId != null) {
                 mediaPeriodId = getMediaPeriodIdForChildMediaPeriodId(id, childMediaPeriodId);
@@ -687,16 +634,11 @@ import java.util.Set;
                 }
             }
             int windowIndex = getWindowIndexForChildWindowIndex(id, childWindowIndex);
-            if (mediaSourceEventDispatcher.windowIndex != windowIndex
-                || !Util.areEqual(mediaSourceEventDispatcher.mediaPeriodId, mediaPeriodId)) {
-                mediaSourceEventDispatcher =
-                    MediaSourceList.this.mediaSourceEventDispatcher.withParameters(
-                        windowIndex, mediaPeriodId, /* mediaTimeOffsetMs= */ 0L);
+            if (mediaSourceEventDispatcher.windowIndex != windowIndex || !Util.areEqual(mediaSourceEventDispatcher.mediaPeriodId, mediaPeriodId)) {
+                mediaSourceEventDispatcher = MediaSourceList.this.mediaSourceEventDispatcher.withParameters(windowIndex, mediaPeriodId, /* mediaTimeOffsetMs= */ 0L);
             }
-            if (drmEventDispatcher.windowIndex != windowIndex
-                || !Util.areEqual(drmEventDispatcher.mediaPeriodId, mediaPeriodId)) {
-                drmEventDispatcher =
-                    MediaSourceList.this.drmEventDispatcher.withParameters(windowIndex, mediaPeriodId);
+            if (drmEventDispatcher.windowIndex != windowIndex || !Util.areEqual(drmEventDispatcher.mediaPeriodId, mediaPeriodId)) {
+                drmEventDispatcher = MediaSourceList.this.drmEventDispatcher.withParameters(windowIndex, mediaPeriodId);
             }
             return true;
         }

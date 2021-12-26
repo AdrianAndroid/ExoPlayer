@@ -594,10 +594,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setOutput(@Nullable Object output) throws ExoPlaybackException {
         log("seetOutput", "output=", output);
-
         // Handle unsupported (i.e., non-Surface) outputs by clearing the surface.
         @Nullable Surface surface = output instanceof Surface ? (Surface) output : null;
-
         if (surface == null) {
             // Use a dummy surface if possible.
             if (dummySurface != null) {
@@ -616,7 +614,6 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             this.surface = surface;
             frameReleaseHelper.onSurfaceChanged(surface);
             haveReportedFirstFrameRenderedForCurrentSurface = false;
-
             @State int state = getState();
             @Nullable MediaCodecAdapter codec = getCodec();
             if (codec != null) {
@@ -663,14 +660,8 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
 
     @TargetApi(17) // Needed for dummySurface usage. dummySurface is always null on API level 16.
     @Override
-    protected MediaCodecAdapter.Configuration getMediaCodecConfiguration(
-            MediaCodecInfo codecInfo,
-            Format format,
-            @Nullable MediaCrypto crypto,
-            float codecOperatingRate) {
-
+    protected MediaCodecAdapter.Configuration getMediaCodecConfiguration(MediaCodecInfo codecInfo, Format format, @Nullable MediaCrypto crypto, float codecOperatingRate) {
         log("getMediaCodecConfiguration codecInfo=", codecInfo, "format=", format, "crypto=", crypto);
-
         if (dummySurface != null && dummySurface.secure != codecInfo.secure) {
             // We can't re-use the current DummySurface instance with the new decoder.
             dummySurface.release();

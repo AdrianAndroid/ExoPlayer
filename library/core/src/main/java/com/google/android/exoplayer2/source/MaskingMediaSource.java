@@ -99,8 +99,7 @@ public final class MaskingMediaSource extends CompositeMediaSource<Void> {
   }
 
   @Override
-  public MaskingMediaPeriod createPeriod(
-      MediaPeriodId id, Allocator allocator, long startPositionUs) {
+  public MaskingMediaPeriod createPeriod(MediaPeriodId id, Allocator allocator, long startPositionUs) {
     MaskingMediaPeriod mediaPeriod = new MaskingMediaPeriod(id, allocator, startPositionUs);
     mediaPeriod.setMediaSource(mediaSource);
     if (isPrepared) {
@@ -135,24 +134,16 @@ public final class MaskingMediaSource extends CompositeMediaSource<Void> {
   }
 
   @Override
-  protected void onChildSourceInfoRefreshed(
-      Void id, MediaSource mediaSource, Timeline newTimeline) {
+  protected void onChildSourceInfoRefreshed(Void id, MediaSource mediaSource, Timeline newTimeline) {
     @Nullable MediaPeriodId idForMaskingPeriodPreparation = null;
     if (isPrepared) {
       timeline = timeline.cloneWithUpdatedTimeline(newTimeline);
       if (unpreparedMaskingMediaPeriod != null) {
         // Reset override in case the duration changed and we need to update our override.
-        setPreparePositionOverrideToUnpreparedMaskingPeriod(
-            unpreparedMaskingMediaPeriod.getPreparePositionOverrideUs());
+        setPreparePositionOverrideToUnpreparedMaskingPeriod(unpreparedMaskingMediaPeriod.getPreparePositionOverrideUs());
       }
     } else if (newTimeline.isEmpty()) {
-      timeline =
-          hasRealTimeline
-              ? timeline.cloneWithUpdatedTimeline(newTimeline)
-              : MaskingTimeline.createWithRealTimeline(
-                  newTimeline,
-                  Window.SINGLE_WINDOW_UID,
-                  MaskingTimeline.MASKING_EXTERNAL_PERIOD_UID);
+      timeline = hasRealTimeline ? timeline.cloneWithUpdatedTimeline(newTimeline) : MaskingTimeline.createWithRealTimeline(newTimeline, Window.SINGLE_WINDOW_UID, MaskingTimeline.MASKING_EXTERNAL_PERIOD_UID);
     } else {
       // Determine first period and the start position.
       // This will be:
@@ -173,56 +164,43 @@ public final class MaskingMediaSource extends CompositeMediaSource<Void> {
         long periodPreparePositionUs = unpreparedMaskingMediaPeriod.getPreparePositionUs();
         timeline.getPeriodByUid(unpreparedMaskingMediaPeriod.id.periodUid, period);
         long windowPreparePositionUs = period.getPositionInWindowUs() + periodPreparePositionUs;
-        long oldWindowDefaultPositionUs =
-            timeline.getWindow(/* windowIndex= */ 0, window).getDefaultPositionUs();
+        long oldWindowDefaultPositionUs = timeline.getWindow(/* windowIndex= */ 0, window).getDefaultPositionUs();
         if (windowPreparePositionUs != oldWindowDefaultPositionUs) {
           windowStartPositionUs = windowPreparePositionUs;
         }
       }
-      Pair<Object, Long> periodPosition =
-          newTimeline.getPeriodPosition(
-              window, period, /* windowIndex= */ 0, windowStartPositionUs);
+      Pair<Object, Long> periodPosition = newTimeline.getPeriodPosition(window, period, /* windowIndex= */ 0, windowStartPositionUs);
       Object periodUid = periodPosition.first;
       long periodPositionUs = periodPosition.second;
-      timeline =
-          hasRealTimeline
-              ? timeline.cloneWithUpdatedTimeline(newTimeline)
-              : MaskingTimeline.createWithRealTimeline(newTimeline, windowUid, periodUid);
+      timeline = hasRealTimeline ? timeline.cloneWithUpdatedTimeline(newTimeline) : MaskingTimeline.createWithRealTimeline(newTimeline, windowUid, periodUid);
       if (unpreparedMaskingMediaPeriod != null) {
         MaskingMediaPeriod maskingPeriod = unpreparedMaskingMediaPeriod;
         setPreparePositionOverrideToUnpreparedMaskingPeriod(periodPositionUs);
-        idForMaskingPeriodPreparation =
-            maskingPeriod.id.copyWithPeriodUid(getInternalPeriodUid(maskingPeriod.id.periodUid));
+        idForMaskingPeriodPreparation = maskingPeriod.id.copyWithPeriodUid(getInternalPeriodUid(maskingPeriod.id.periodUid));
       }
     }
     hasRealTimeline = true;
     isPrepared = true;
     refreshSourceInfo(this.timeline);
     if (idForMaskingPeriodPreparation != null) {
-      Assertions.checkNotNull(unpreparedMaskingMediaPeriod)
-          .createPeriod(idForMaskingPeriodPreparation);
+      Assertions.checkNotNull(unpreparedMaskingMediaPeriod).createPeriod(idForMaskingPeriodPreparation);
     }
   }
 
   @Override
   @Nullable
-  protected MediaPeriodId getMediaPeriodIdForChildMediaPeriodId(
-      Void id, MediaPeriodId mediaPeriodId) {
+  protected MediaPeriodId getMediaPeriodIdForChildMediaPeriodId(Void id, MediaPeriodId mediaPeriodId) {
     return mediaPeriodId.copyWithPeriodUid(getExternalPeriodUid(mediaPeriodId.periodUid));
   }
 
   private Object getInternalPeriodUid(Object externalPeriodUid) {
-    return timeline.replacedInternalPeriodUid != null
-            && externalPeriodUid.equals(MaskingTimeline.MASKING_EXTERNAL_PERIOD_UID)
-        ? timeline.replacedInternalPeriodUid
-        : externalPeriodUid;
+    return timeline.replacedInternalPeriodUid != null && externalPeriodUid.equals(MaskingTimeline.MASKING_EXTERNAL_PERIOD_UID)
+        ? timeline.replacedInternalPeriodUid : externalPeriodUid;
   }
 
   private Object getExternalPeriodUid(Object internalPeriodUid) {
-    return timeline.replacedInternalPeriodUid != null
-            && timeline.replacedInternalPeriodUid.equals(internalPeriodUid)
-        ? MaskingTimeline.MASKING_EXTERNAL_PERIOD_UID
-        : internalPeriodUid;
+    return timeline.replacedInternalPeriodUid != null && timeline.replacedInternalPeriodUid.equals(internalPeriodUid)
+        ? MaskingTimeline.MASKING_EXTERNAL_PERIOD_UID : internalPeriodUid;
   }
 
   @RequiresNonNull("unpreparedMaskingMediaPeriod")
@@ -263,10 +241,7 @@ public final class MaskingMediaSource extends CompositeMediaSource<Void> {
      * @param mediaItem A {@link MediaItem}.
      */
     public static MaskingTimeline createWithPlaceholderTimeline(MediaItem mediaItem) {
-      return new MaskingTimeline(
-          new PlaceholderTimeline(mediaItem),
-          Window.SINGLE_WINDOW_UID,
-          MASKING_EXTERNAL_PERIOD_UID);
+      return new MaskingTimeline(new PlaceholderTimeline(mediaItem), Window.SINGLE_WINDOW_UID, MASKING_EXTERNAL_PERIOD_UID);
     }
 
     /**
@@ -279,15 +254,11 @@ public final class MaskingMediaSource extends CompositeMediaSource<Void> {
      * @param firstPeriodUid The period UID in the timeline which will be replaced by the already
      *     assigned {@link #MASKING_EXTERNAL_PERIOD_UID}.
      */
-    public static MaskingTimeline createWithRealTimeline(
-        Timeline timeline, @Nullable Object firstWindowUid, @Nullable Object firstPeriodUid) {
+    public static MaskingTimeline createWithRealTimeline(Timeline timeline, @Nullable Object firstWindowUid, @Nullable Object firstPeriodUid) {
       return new MaskingTimeline(timeline, firstWindowUid, firstPeriodUid);
     }
 
-    private MaskingTimeline(
-        Timeline timeline,
-        @Nullable Object replacedInternalWindowUid,
-        @Nullable Object replacedInternalPeriodUid) {
+    private MaskingTimeline(Timeline timeline, @Nullable Object replacedInternalWindowUid, @Nullable Object replacedInternalPeriodUid) {
       super(timeline);
       this.replacedInternalWindowUid = replacedInternalWindowUid;
       this.replacedInternalPeriodUid = replacedInternalPeriodUid;
@@ -327,10 +298,7 @@ public final class MaskingMediaSource extends CompositeMediaSource<Void> {
 
     @Override
     public int getIndexOfPeriod(Object uid) {
-      return timeline.getIndexOfPeriod(
-          MASKING_EXTERNAL_PERIOD_UID.equals(uid) && replacedInternalPeriodUid != null
-              ? replacedInternalPeriodUid
-              : uid);
+      return timeline.getIndexOfPeriod(MASKING_EXTERNAL_PERIOD_UID.equals(uid) && replacedInternalPeriodUid != null ? replacedInternalPeriodUid : uid);
     }
 
     @Override
