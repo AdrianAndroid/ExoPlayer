@@ -78,7 +78,7 @@ public final class VideoFrameReleaseHelper {
      * cleared.
      */
     private static final int MINIMUM_FRAMES_WITHOUT_SYNC_TO_CLEAR_SURFACE_FRAME_RATE =
-        2 * FixedFrameRateEstimator.CONSECUTIVE_MATCHING_FRAME_DURATIONS_FOR_SYNC;
+            2 * FixedFrameRateEstimator.CONSECUTIVE_MATCHING_FRAME_DURATIONS_FOR_SYNC;
 
     /**
      * The period between sampling display VSYNC timestamps, in milliseconds.
@@ -215,8 +215,9 @@ public final class VideoFrameReleaseHelper {
 
     /**
      * Called by the renderer for each frame, prior to it being skipped, dropped or rendered.
+     * 由渲染器在每帧被跳过、丢弃或渲染之前调用。
      *
-     * @param framePresentationTimeUs The frame presentation timestamp, in microseconds.
+     * @param framePresentationTimeUs The frame presentation timestamp, in microseconds.  帧呈现时间戳，以微妙为单位.
      */
     public void onNextFrame(long framePresentationTimeUs) {
         if (pendingLastAdjustedFrameIndex != C.INDEX_UNSET) {
@@ -270,8 +271,8 @@ public final class VideoFrameReleaseHelper {
         if (lastAdjustedFrameIndex != C.INDEX_UNSET && frameRateEstimator.isSynced()) {
             long frameDurationNs = frameRateEstimator.getFrameDurationNs();
             long candidateAdjustedReleaseTimeNs =
-                lastAdjustedReleaseTimeNs
-                    + (long) ((frameDurationNs * (frameIndex - lastAdjustedFrameIndex)) / playbackSpeed);
+                    lastAdjustedReleaseTimeNs
+                            + (long) ((frameDurationNs * (frameIndex - lastAdjustedFrameIndex)) / playbackSpeed);
             if (adjustmentAllowed(releaseTimeNs, candidateAdjustedReleaseTimeNs)) {
                 adjustedReleaseTimeNs = candidateAdjustedReleaseTimeNs;
             } else {
@@ -301,7 +302,7 @@ public final class VideoFrameReleaseHelper {
     }
 
     private static boolean adjustmentAllowed(
-        long unadjustedReleaseTimeNs, long adjustedReleaseTimeNs) {
+            long unadjustedReleaseTimeNs, long adjustedReleaseTimeNs) {
         return Math.abs(unadjustedReleaseTimeNs - adjustedReleaseTimeNs) <= MAX_ALLOWED_ADJUSTMENT_NS;
     }
 
@@ -310,7 +311,7 @@ public final class VideoFrameReleaseHelper {
     /**
      * Updates the media frame rate that's used to calculate the playback frame rate of the current
      * {@link #surface}. If the frame rate is updated then {@link #updateSurfacePlaybackFrameRate} is
-     * called to update the surface.
+     * called to update the surface. 更新用于计算当前Surface播放帧率的媒体帧率。如果更新了帧速率，则调用UpdateSurfacePlaybackFrameRate来更新Surface.
      */
     private void updateSurfaceMediaFrameRate() {
         if (Util.SDK_INT < 30 || surface == null) {
@@ -327,19 +328,19 @@ public final class VideoFrameReleaseHelper {
         boolean shouldUpdate;
         if (candidateFrameRate != Format.NO_VALUE && surfaceMediaFrameRate != Format.NO_VALUE) {
             boolean candidateIsHighConfidence =
-                frameRateEstimator.isSynced()
-                    && frameRateEstimator.getMatchingFrameDurationSumNs()
-                    >= MINIMUM_MATCHING_FRAME_DURATION_FOR_HIGH_CONFIDENCE_NS;
+                    frameRateEstimator.isSynced()
+                            && frameRateEstimator.getMatchingFrameDurationSumNs()
+                            >= MINIMUM_MATCHING_FRAME_DURATION_FOR_HIGH_CONFIDENCE_NS;
             float minimumChangeForUpdate =
-                candidateIsHighConfidence
-                    ? MINIMUM_MEDIA_FRAME_RATE_CHANGE_FOR_UPDATE_HIGH_CONFIDENCE
-                    : MINIMUM_MEDIA_FRAME_RATE_CHANGE_FOR_UPDATE_LOW_CONFIDENCE;
+                    candidateIsHighConfidence
+                            ? MINIMUM_MEDIA_FRAME_RATE_CHANGE_FOR_UPDATE_HIGH_CONFIDENCE
+                            : MINIMUM_MEDIA_FRAME_RATE_CHANGE_FOR_UPDATE_LOW_CONFIDENCE;
             shouldUpdate = Math.abs(candidateFrameRate - surfaceMediaFrameRate) >= minimumChangeForUpdate;
         } else if (candidateFrameRate != Format.NO_VALUE) {
             shouldUpdate = true;
         } else {
             shouldUpdate = frameRateEstimator.getFramesWithoutSyncCount() >=
-                MINIMUM_FRAMES_WITHOUT_SYNC_TO_CLEAR_SURFACE_FRAME_RATE;
+                    MINIMUM_FRAMES_WITHOUT_SYNC_TO_CLEAR_SURFACE_FRAME_RATE;
         }
 
         if (shouldUpdate) {
@@ -386,9 +387,9 @@ public final class VideoFrameReleaseHelper {
     @RequiresApi(30)
     private static void setSurfaceFrameRateV30(Surface surface, float frameRate) {
         int compatibility =
-            frameRate == 0
-                ? Surface.FRAME_RATE_COMPATIBILITY_DEFAULT
-                : Surface.FRAME_RATE_COMPATIBILITY_FIXED_SOURCE;
+                frameRate == 0
+                        ? Surface.FRAME_RATE_COMPATIBILITY_DEFAULT
+                        : Surface.FRAME_RATE_COMPATIBILITY_FIXED_SOURCE;
         try {
             surface.setFrameRate(frameRate, compatibility);
         } catch (IllegalStateException e) {
@@ -478,7 +479,7 @@ public final class VideoFrameReleaseHelper {
         @Nullable
         public static DisplayHelper maybeBuildNewInstance(Context context) {
             WindowManager windowManager =
-                (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                    (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             return windowManager != null ? new DisplayHelperV16(windowManager) : null;
         }
 
@@ -501,12 +502,12 @@ public final class VideoFrameReleaseHelper {
 
     @RequiresApi(17)
     private static final class DisplayHelperV17
-        implements DisplayHelper, DisplayManager.DisplayListener {
+            implements DisplayHelper, DisplayManager.DisplayListener {
 
         @Nullable
         public static DisplayHelper maybeBuildNewInstance(Context context) {
             DisplayManager displayManager =
-                (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+                    (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
             return displayManager != null ? new DisplayHelperV17(displayManager) : null;
         }
 

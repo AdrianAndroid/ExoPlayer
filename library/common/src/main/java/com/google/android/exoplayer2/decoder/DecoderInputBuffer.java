@@ -250,10 +250,10 @@ public class DecoderInputBuffer extends Buffer {
     public void clear() {
         super.clear();
         if (data != null) {
-            data.clear();
+            data.clear(); // 只是把position移动到最前面， 不删除数据
         }
         if (supplementalData != null) {
-            supplementalData.clear();
+            supplementalData.clear(); // 只是把position移动到最前面， 不删除数据
         }
         waitingForKeys = false;
     }

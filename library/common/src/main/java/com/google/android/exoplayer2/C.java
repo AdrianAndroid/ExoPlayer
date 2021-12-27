@@ -289,8 +289,7 @@ public final class C {
   /** @see android.media.AudioAttributes#CONTENT_TYPE_MUSIC */
   public static final int CONTENT_TYPE_MUSIC = android.media.AudioAttributes.CONTENT_TYPE_MUSIC;
   /** @see android.media.AudioAttributes#CONTENT_TYPE_SONIFICATION */
-  public static final int CONTENT_TYPE_SONIFICATION =
-      android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION;
+  public static final int CONTENT_TYPE_SONIFICATION = android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION;
   /** @see android.media.AudioAttributes#CONTENT_TYPE_SPEECH */
   public static final int CONTENT_TYPE_SPEECH = android.media.AudioAttributes.CONTENT_TYPE_SPEECH;
   /** @see android.media.AudioAttributes#CONTENT_TYPE_UNKNOWN */
@@ -304,13 +303,10 @@ public final class C {
    */
   @Documented
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef(
-      flag = true,
-      value = {FLAG_AUDIBILITY_ENFORCED})
+  @IntDef(flag = true, value = {FLAG_AUDIBILITY_ENFORCED})
   public @interface AudioFlags {}
   /** @see android.media.AudioAttributes#FLAG_AUDIBILITY_ENFORCED */
-  public static final int FLAG_AUDIBILITY_ENFORCED =
-      android.media.AudioAttributes.FLAG_AUDIBILITY_ENFORCED;
+  public static final int FLAG_AUDIBILITY_ENFORCED = android.media.AudioAttributes.FLAG_AUDIBILITY_ENFORCED;
 
   /**
    * Usage types for audio attributes. One of {@link #USAGE_ALARM}, {@link
@@ -346,14 +342,11 @@ public final class C {
   /** @see android.media.AudioAttributes#USAGE_ALARM */
   public static final int USAGE_ALARM = android.media.AudioAttributes.USAGE_ALARM;
   /** @see android.media.AudioAttributes#USAGE_ASSISTANCE_ACCESSIBILITY */
-  public static final int USAGE_ASSISTANCE_ACCESSIBILITY =
-      android.media.AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY;
+  public static final int USAGE_ASSISTANCE_ACCESSIBILITY = android.media.AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY;
   /** @see android.media.AudioAttributes#USAGE_ASSISTANCE_NAVIGATION_GUIDANCE */
-  public static final int USAGE_ASSISTANCE_NAVIGATION_GUIDANCE =
-      android.media.AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE;
+  public static final int USAGE_ASSISTANCE_NAVIGATION_GUIDANCE = android.media.AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE;
   /** @see android.media.AudioAttributes#USAGE_ASSISTANCE_SONIFICATION */
-  public static final int USAGE_ASSISTANCE_SONIFICATION =
-      android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION;
+  public static final int USAGE_ASSISTANCE_SONIFICATION = android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION;
   /** @see android.media.AudioAttributes#USAGE_ASSISTANT */
   public static final int USAGE_ASSISTANT = android.media.AudioAttributes.USAGE_ASSISTANT;
   /** @see android.media.AudioAttributes#USAGE_GAME */
@@ -363,28 +356,21 @@ public final class C {
   /** @see android.media.AudioAttributes#USAGE_NOTIFICATION */
   public static final int USAGE_NOTIFICATION = android.media.AudioAttributes.USAGE_NOTIFICATION;
   /** @see android.media.AudioAttributes#USAGE_NOTIFICATION_COMMUNICATION_DELAYED */
-  public static final int USAGE_NOTIFICATION_COMMUNICATION_DELAYED =
-      android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_DELAYED;
+  public static final int USAGE_NOTIFICATION_COMMUNICATION_DELAYED = android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_DELAYED;
   /** @see android.media.AudioAttributes#USAGE_NOTIFICATION_COMMUNICATION_INSTANT */
-  public static final int USAGE_NOTIFICATION_COMMUNICATION_INSTANT =
-      android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT;
+  public static final int USAGE_NOTIFICATION_COMMUNICATION_INSTANT = android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT;
   /** @see android.media.AudioAttributes#USAGE_NOTIFICATION_COMMUNICATION_REQUEST */
-  public static final int USAGE_NOTIFICATION_COMMUNICATION_REQUEST =
-      android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST;
+  public static final int USAGE_NOTIFICATION_COMMUNICATION_REQUEST = android.media.AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST;
   /** @see android.media.AudioAttributes#USAGE_NOTIFICATION_EVENT */
-  public static final int USAGE_NOTIFICATION_EVENT =
-      android.media.AudioAttributes.USAGE_NOTIFICATION_EVENT;
+  public static final int USAGE_NOTIFICATION_EVENT = android.media.AudioAttributes.USAGE_NOTIFICATION_EVENT;
   /** @see android.media.AudioAttributes#USAGE_NOTIFICATION_RINGTONE */
-  public static final int USAGE_NOTIFICATION_RINGTONE =
-      android.media.AudioAttributes.USAGE_NOTIFICATION_RINGTONE;
+  public static final int USAGE_NOTIFICATION_RINGTONE = android.media.AudioAttributes.USAGE_NOTIFICATION_RINGTONE;
   /** @see android.media.AudioAttributes#USAGE_UNKNOWN */
   public static final int USAGE_UNKNOWN = android.media.AudioAttributes.USAGE_UNKNOWN;
   /** @see android.media.AudioAttributes#USAGE_VOICE_COMMUNICATION */
-  public static final int USAGE_VOICE_COMMUNICATION =
-      android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION;
+  public static final int USAGE_VOICE_COMMUNICATION = android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION;
   /** @see android.media.AudioAttributes#USAGE_VOICE_COMMUNICATION_SIGNALLING */
-  public static final int USAGE_VOICE_COMMUNICATION_SIGNALLING =
-      android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION_SIGNALLING;
+  public static final int USAGE_VOICE_COMMUNICATION_SIGNALLING = android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION_SIGNALLING;
 
   /**
    * Capture policies for audio attributes. One of {@link #ALLOW_CAPTURE_BY_ALL}, {@link
@@ -423,11 +409,9 @@ public final class C {
   /** @see AudioManager#AUDIOFOCUS_GAIN_TRANSIENT */
   public static final int AUDIOFOCUS_GAIN_TRANSIENT = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT;
   /** @see AudioManager#AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK */
-  public static final int AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK =
-      AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK;
+  public static final int AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK;
   /** @see AudioManager#AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE */
-  public static final int AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE =
-      AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE;
+  public static final int AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE;
 
   /**
    * Flags which can apply to a buffer containing a media sample. Possible flag values are {@link
@@ -484,11 +468,9 @@ public final class C {
   @IntDef(value = {VIDEO_SCALING_MODE_SCALE_TO_FIT, VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING})
   public @interface VideoScalingMode {}
   /** See {@link MediaCodec#VIDEO_SCALING_MODE_SCALE_TO_FIT}. */
-  public static final int VIDEO_SCALING_MODE_SCALE_TO_FIT =
-      MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT;
+  public static final int VIDEO_SCALING_MODE_SCALE_TO_FIT = MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT;
   /** See {@link MediaCodec#VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING}. */
-  public static final int VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING =
-      MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING;
+  public static final int VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING = MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING;
   /** A default video scaling mode for {@link MediaCodec}-based renderers. */
   public static final int VIDEO_SCALING_MODE_DEFAULT = VIDEO_SCALING_MODE_SCALE_TO_FIT;
 
@@ -498,9 +480,7 @@ public final class C {
    */
   @Documented
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef(
-      flag = true,
-      value = {SELECTION_FLAG_DEFAULT, SELECTION_FLAG_FORCED, SELECTION_FLAG_AUTOSELECT})
+  @IntDef(flag = true, value = {SELECTION_FLAG_DEFAULT, SELECTION_FLAG_FORCED, SELECTION_FLAG_AUTOSELECT})
   public @interface SelectionFlags {}
   /** Indicates that the track should be selected if user preferences do not state otherwise. */
   public static final int SELECTION_FLAG_DEFAULT = 1;

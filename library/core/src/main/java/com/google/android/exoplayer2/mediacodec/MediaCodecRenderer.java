@@ -671,12 +671,12 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
 
     /**
      * Updates the output formats for the specified output buffer timestamp, calling {@link
-     * #onOutputFormatChanged} if a change has occurred.
+     * #onOutputFormatChanged} if a change has occurred. 更新指定输出缓冲区时间戳的输出格式，如果发生更改，则调用onOutputFormatChanged
      *
      * <p>Subclasses should only call this method if operating in a mode where buffers are not
-     * dequeued from the decoder, for example when using video tunneling).
+     * dequeued from the decoder, for example when using video tunneling).子类应该只在缓冲区不从解码器出列的模式下运行时调用此方法，例如在使用视频隧道时
      *
-     * @throws ExoPlaybackException Thrown if an error occurs as a result of the output format change.
+     * @throws ExoPlaybackException Thrown if an error occurs as a result of the output format change. 如果由于输出格式更改而发生错误，则抛出该错误。
      */
     protected final void updateOutputFormatForTime(long presentationTimeUs) throws ExoPlaybackException {
         boolean outputFormatChanged = false;
@@ -867,11 +867,11 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
                 log("codec != null codec=" + codec);
                 long renderStartTimeMs = SystemClock.elapsedRealtime();
                 TraceUtil.beginSection("drainAndFeed");
-                // 输出缓冲区
+                // 输出缓冲区, 先输出，看到效果（前提已经有读入的数据）
                 while (drainOutputBuffer(positionUs, elapsedRealtimeUs) && shouldContinueRendering(renderStartTimeMs)) {
                     log("while drainOutputBuffer(positionUs, elapsedRealtimeUs) positionUs=" + positionUs + " , elapsedRealtimeUs=" + elapsedRealtimeUs);
                 }
-                // 输入缓冲区
+                // 输入缓冲区， 再读入下一帧的数据
                 while (feedInputBuffer() && shouldContinueRendering(renderStartTimeMs)) {
                     log("while feedInputBuffer()");
                 }
@@ -1199,7 +1199,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     /**
-     * 输入缓冲区
+     * 输入缓冲区 ， 就是读取缓冲区了
      *
      * @return Whether it may be possible to feed more input data.
      * @throws ExoPlaybackException If an error occurs feeding the input buffer.
@@ -1580,14 +1580,13 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     /**
-     * Called when an output buffer is successfully processed.
+     * Called when an output buffer is successfully processed. 当成功处理输出缓冲区时调用。
      *
-     * @param presentationTimeUs The timestamp associated with the output buffer.
+     * @param presentationTimeUs The timestamp associated with the output buffer. 与输出缓冲区关联的时间戳。
      */
     @CallSuper
     protected void onProcessedOutputBuffer(long presentationTimeUs) {
-        while (pendingOutputStreamOffsetCount != 0
-                && presentationTimeUs >= pendingOutputStreamSwitchTimesUs[0]) {
+        while (pendingOutputStreamOffsetCount != 0 && presentationTimeUs >= pendingOutputStreamSwitchTimesUs[0]) {
             outputStreamStartPositionUs = pendingOutputStreamStartPositionsUs[0];
             outputStreamOffsetUs = pendingOutputStreamOffsetsUs[0];
             pendingOutputStreamOffsetCount--;
@@ -1805,7 +1804,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     /**
-     * 排空输出缓冲区
+     * 排空输出缓冲区, 这里就显示了
      * 解码
      *
      * @return Whether it may be possible to drain more output data. 是否有可能排出更多的输出数据。
@@ -1930,23 +1929,27 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     /**
-     * Processes an output media buffer.
-     *
-     * <p>When a new {@link ByteBuffer} is passed to this method its position and limit delineate the
+     * Processes an output media buffer. 处理输出媒体缓冲区
+     * <p>
+     * When a new {@link ByteBuffer} is passed to this method its position and limit delineate the
      * data to be processed. The return value indicates whether the buffer was processed in full. If
      * true is returned then the next call to this method will receive a new buffer to be processed.
      * If false is returned then the same buffer will be passed to the next call. An implementation of
      * this method is free to modify the buffer and can assume that the buffer will not be externally
      * modified between successive calls. Hence an implementation can, for example, modify the
      * buffer's position to keep track of how much of the data it has processed.
+     * 当一个新的ByteBuffer被传递给这个方法时，它的位置和限制描述了要处理的数据。返回值只是缓冲区是否已经完全处理。
+     * 如果返回true则下一次调用此方法将接收要处理的新缓冲区。如果返回false，则相同的缓冲区将传递给下一次调用。
+     * 一个实现此方法可以自由修改缓冲区，并且可以假设缓冲区不会在外部在连续调用之间修改。因此，一个实现可以，例如：
+     * 修改缓冲区的位置来跟踪它处理了多少数据。
      *
      * <p>Note that the first call to this method following a call to {@link #onPositionReset(long,
      * boolean)} will always receive a new {@link ByteBuffer} to be processed.
      *
      * @param positionUs               The current media time in microseconds, measured at the start of the current
-     *                                 iteration of the rendering loop.
+     *                                 iteration of the rendering loop. 当前媒体时间（以微妙为单位），再渲染循环的当前迭代开始时测量。
      * @param elapsedRealtimeUs        {@link SystemClock#elapsedRealtime()} in microseconds, measured at the
-     *                                 start of the current iteration of the rendering loop.
+     *                                 start of the current iteration of the rendering loop. 在渲染循环的当前迭代开始时测量。
      * @param codec                    The {@link MediaCodecAdapter} instance, or null in bypass mode were no codec is
      *                                 used.
      * @param buffer                   The output buffer to process, or null if the buffer data is not made available to
@@ -1956,8 +1959,8 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * @param bufferIndex              The index of the output buffer.
      * @param bufferFlags              The flags attached to the output buffer.
      * @param sampleCount              The number of samples extracted from the sample queue in the buffer. This
-     *                                 allows handling multiple samples as a batch for efficiency.
-     * @param bufferPresentationTimeUs The presentation time of the output buffer in microseconds.
+     *                                 allows handling multiple samples as a batch for efficiency. 从缓冲区中的样本队列中提取的样本数。这允许将多个样品作为一个批次处理以提高效率。
+     * @param bufferPresentationTimeUs The presentation time of the output buffer in microseconds. 输出缓冲区的呈现时间（以微妙为单位）。
      * @param isDecodeOnlyBuffer       Whether the buffer was marked with {@link C#BUFFER_FLAG_DECODE_ONLY}
      *                                 by the source.
      * @param isLastBuffer             Whether the buffer is known to contain the last sample of the current
@@ -2030,6 +2033,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * Returns the offset that should be subtracted from {@code bufferPresentationTimeUs} in {@link
      * #processOutputBuffer(long, long, MediaCodecAdapter, ByteBuffer, int, int, int, long, boolean,
      * boolean, Format)} to get the playback position with respect to the media.
+     * 返回应该从 processOutputBuffer 中的#bufferPresentationTimUs 中减去的偏移量，以获得相对于媒体的播放位置。
      */
     protected final long getOutputStreamOffsetUs() {
         return outputStreamOffsetUs;
@@ -2039,8 +2043,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * Returns whether this renderer supports the given {@link Format Format's} DRM scheme.
      */
     protected static boolean supportsFormatDrm(Format format) {
-        return format.exoMediaCryptoType == null
-                || FrameworkMediaCrypto.class.equals(format.exoMediaCryptoType);
+        return format.exoMediaCryptoType == null || FrameworkMediaCrypto.class.equals(format.exoMediaCryptoType);
     }
 
     /**
@@ -2048,12 +2051,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * false} is returned then either {@code oldSession == newSession} (i.e., there was no change), or
      * it's possible to update the existing codec using MediaCrypto.setMediaDrmSession.
      */
-    private boolean drmNeedsCodecReinitialization(
-            MediaCodecInfo codecInfo,
-            Format newFormat,
-            @Nullable DrmSession oldSession,
-            @Nullable DrmSession newSession)
-            throws ExoPlaybackException {
+    private boolean drmNeedsCodecReinitialization(MediaCodecInfo codecInfo, Format newFormat, @Nullable DrmSession oldSession, @Nullable DrmSession newSession) throws ExoPlaybackException {
         if (oldSession == newSession) {
             // No need to re-initialize if the old and new sessions are the same.
             return false;
@@ -2073,8 +2071,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
             // required to switch to newSession on older API levels.
             return true;
         }
-        if (C.PLAYREADY_UUID.equals(oldSession.getSchemeUuid())
-                || C.PLAYREADY_UUID.equals(newSession.getSchemeUuid())) {
+        if (C.PLAYREADY_UUID.equals(oldSession.getSchemeUuid()) || C.PLAYREADY_UUID.equals(newSession.getSchemeUuid())) {
             // The PlayReady CDM does not support MediaCrypto.setMediaDrmSession, either as the old or new
             // session.
             // TODO: Add an API check once [Internal ref: b/128835874] is fixed.
@@ -2103,8 +2100,7 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
      * @param format             The {@link Format}.
      * @return Whether a secure decoder may be required.
      */
-    private boolean maybeRequiresSecureDecoder(
-            FrameworkMediaCrypto sessionMediaCrypto, Format format) {
+    private boolean maybeRequiresSecureDecoder(FrameworkMediaCrypto sessionMediaCrypto, Format format) {
         if (sessionMediaCrypto.forceAllowInsecureDecoderComponents) {
             return false;
         }
@@ -2153,16 +2149,12 @@ public abstract class MediaCodecRenderer extends BaseRenderer {
     }
 
     @Nullable
-    private FrameworkMediaCrypto getFrameworkMediaCrypto(DrmSession drmSession)
-            throws ExoPlaybackException {
+    private FrameworkMediaCrypto getFrameworkMediaCrypto(DrmSession drmSession) throws ExoPlaybackException {
         @Nullable ExoMediaCrypto mediaCrypto = drmSession.getMediaCrypto();
         if (mediaCrypto != null && !(mediaCrypto instanceof FrameworkMediaCrypto)) {
             // This should not happen if the track went through a supportsFormatDrm() check, during track
             // selection.
-            throw createRendererException(
-                    new IllegalArgumentException("Expecting FrameworkMediaCrypto but found: " + mediaCrypto),
-                    inputFormat,
-                    PlaybackException.ERROR_CODE_DRM_SCHEME_UNSUPPORTED);
+            throw createRendererException(new IllegalArgumentException("Expecting FrameworkMediaCrypto but found: " + mediaCrypto), inputFormat, PlaybackException.ERROR_CODE_DRM_SCHEME_UNSUPPORTED);
         }
         return (FrameworkMediaCrypto) mediaCrypto;
     }

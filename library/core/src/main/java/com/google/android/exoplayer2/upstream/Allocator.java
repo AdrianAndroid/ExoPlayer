@@ -15,42 +15,48 @@
  */
 package com.google.android.exoplayer2.upstream;
 
-/** A source of allocations. */
+/**
+ * A source of allocations. 分配的来源
+ */
 public interface Allocator {
 
-  /**
-   * Obtain an {@link Allocation}.
-   *
-   * <p>When the caller has finished with the {@link Allocation}, it should be returned by calling
-   * {@link #release(Allocation)}.
-   *
-   * @return The {@link Allocation}.
-   */
-  Allocation allocate();
+    /**
+     * Obtain an {@link Allocation}. 获得分配
+     *
+     * <p>When the caller has finished with the {@link Allocation}, it should be returned by calling
+     * {@link #release(Allocation)}.  当调用者完成分配时，它应该通过调用release返回。
+     *
+     * @return The {@link Allocation}.
+     */
+    Allocation allocate();
 
-  /**
-   * Releases an {@link Allocation} back to the allocator.
-   *
-   * @param allocation The {@link Allocation} being released.
-   */
-  void release(Allocation allocation);
+    /**
+     * Releases an {@link Allocation} back to the allocator.
+     *
+     * @param allocation The {@link Allocation} being released.
+     */
+    void release(Allocation allocation);
 
-  /**
-   * Releases an array of {@link Allocation}s back to the allocator.
-   *
-   * @param allocations The array of {@link Allocation}s being released.
-   */
-  void release(Allocation[] allocations);
+    /**
+     * Releases an array of {@link Allocation}s back to the allocator.
+     *
+     * @param allocations The array of {@link Allocation}s being released.
+     */
+    void release(Allocation[] allocations);
 
-  /**
-   * Hints to the allocator that it should make a best effort to release any excess {@link
-   * Allocation}s.
-   */
-  void trim();
+    /**
+     * Hints to the allocator that it should make a best effort to release any excess {@link
+     * Allocation}s.提示分配器它应该尽最大努力释放任何多余的分配。
+     */
+    void trim();
 
-  /** Returns the total number of bytes currently allocated. */
-  int getTotalBytesAllocated();
+    /**
+     * Returns the total number of bytes currently allocated. 返回当前分配的总字节数。
+     */
+    int getTotalBytesAllocated();
 
-  /** Returns the length of each individual {@link Allocation}. */
-  int getIndividualAllocationLength();
+    /**
+     * Returns the length of each individual {@link Allocation}. 返回每个单独分配的长度。
+     */
+    int getIndividualAllocationLength();
 }

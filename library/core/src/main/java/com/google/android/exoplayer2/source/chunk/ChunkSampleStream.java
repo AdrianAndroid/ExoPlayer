@@ -56,9 +56,9 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 /**
  * A {@link SampleStream} that loads media in {@link Chunk}s, obtained from a {@link ChunkSource}.
  * May also be configured to expose additional embedded {@link SampleStream}s.
+ * 在Chunk中加载媒体的SampleStream，从ChunkSource获得。也可以配置为公开额外的嵌入式SampleStream。
  */
-public class ChunkSampleStream<T extends ChunkSource>
-    implements SampleStream, SequenceableLoader, Loader.Callback<Chunk>, Loader.ReleaseCallback {
+public class ChunkSampleStream<T extends ChunkSource> implements SampleStream, SequenceableLoader, Loader.Callback<Chunk>, Loader.ReleaseCallback {
 
     /**
      * A callback to be notified when a sample stream has finished being released.
@@ -124,17 +124,17 @@ public class ChunkSampleStream<T extends ChunkSource>
      *                                   events.
      */
     public ChunkSampleStream(
-        int primaryTrackType,
-        @Nullable int[] embeddedTrackTypes,
-        @Nullable Format[] embeddedTrackFormats,
-        T chunkSource,
-        Callback<ChunkSampleStream<T>> callback,
-        Allocator allocator,
-        long positionUs,
-        DrmSessionManager drmSessionManager,
-        DrmSessionEventListener.EventDispatcher drmEventDispatcher,
-        LoadErrorHandlingPolicy loadErrorHandlingPolicy,
-        MediaSourceEventListener.EventDispatcher mediaSourceEventDispatcher) {
+            int primaryTrackType,
+            @Nullable int[] embeddedTrackTypes,
+            @Nullable Format[] embeddedTrackFormats,
+            T chunkSource,
+            Callback<ChunkSampleStream<T>> callback,
+            Allocator allocator,
+            long positionUs,
+            DrmSessionManager drmSessionManager,
+            DrmSessionEventListener.EventDispatcher drmEventDispatcher,
+            LoadErrorHandlingPolicy loadErrorHandlingPolicy,
+            MediaSourceEventListener.EventDispatcher mediaSourceEventDispatcher) {
         this.primaryTrackType = primaryTrackType;
         this.embeddedTrackTypes = embeddedTrackTypes == null ? new int[0] : embeddedTrackTypes;
         this.embeddedTrackFormats = embeddedTrackFormats == null ? new Format[0] : embeddedTrackFormats;
@@ -385,7 +385,7 @@ public class ChunkSampleStream<T extends ChunkSource>
             return C.RESULT_NOTHING_READ;
         }
         if (canceledMediaChunk != null &&
-            canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 0) <= primarySampleQueue.getReadIndex()) {
+                canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 0) <= primarySampleQueue.getReadIndex()) {
             // Don't read into chunk that's going to be discarded.
             // TODO: Support splicing to allow this. See [internal b/161130873].
             return C.RESULT_NOTHING_READ;
@@ -479,16 +479,16 @@ public class ChunkSampleStream<T extends ChunkSource>
 
         boolean canceled = !loadErrorAction.isRetry();
         mediaSourceEventDispatcher.loadError(
-            loadEventInfo,
-            loadable.type,
-            primaryTrackType,
-            loadable.trackFormat,
-            loadable.trackSelectionReason,
-            loadable.trackSelectionData,
-            loadable.startTimeUs,
-            loadable.endTimeUs,
-            error,
-            canceled);
+                loadEventInfo,
+                loadable.type,
+                primaryTrackType,
+                loadable.trackFormat,
+                loadable.trackSelectionReason,
+                loadable.trackSelectionData,
+                loadable.startTimeUs,
+                loadable.endTimeUs,
+                error,
+                canceled);
         if (canceled) {
             loadingChunk = null;
             loadErrorHandlingPolicy.onLoadTaskConcluded(loadable.loadTaskId);
@@ -553,14 +553,14 @@ public class ChunkSampleStream<T extends ChunkSource>
         }
         long elapsedRealtimeMs = loader.startLoading(loadable, this, loadErrorHandlingPolicy.getMinimumLoadableRetryCount(loadable.type));
         mediaSourceEventDispatcher.loadStarted(
-            new LoadEventInfo(loadable.loadTaskId, loadable.dataSpec, elapsedRealtimeMs),
-            loadable.type,
-            primaryTrackType,
-            loadable.trackFormat,
-            loadable.trackSelectionReason,
-            loadable.trackSelectionData,
-            loadable.startTimeUs,
-            loadable.endTimeUs);
+                new LoadEventInfo(loadable.loadTaskId, loadable.dataSpec, elapsedRealtimeMs),
+                loadable.type,
+                primaryTrackType,
+                loadable.trackFormat,
+                loadable.trackSelectionReason,
+                loadable.trackSelectionData,
+                loadable.startTimeUs,
+                loadable.endTimeUs);
         return true;
     }
 
@@ -780,14 +780,11 @@ public class ChunkSampleStream<T extends ChunkSource>
         }
 
         @Override
-        public int readData(
-            FormatHolder formatHolder, DecoderInputBuffer buffer, @ReadFlags int readFlags) {
+        public int readData(FormatHolder formatHolder, DecoderInputBuffer buffer, @ReadFlags int readFlags) {
             if (isPendingReset()) {
                 return C.RESULT_NOTHING_READ;
             }
-            if (canceledMediaChunk != null
-                && canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 1 + index)
-                <= sampleQueue.getReadIndex()) {
+            if (canceledMediaChunk != null && canceledMediaChunk.getFirstSampleIndex(/* trackIndex= */ 1 + index) <= sampleQueue.getReadIndex()) {
                 // Don't read into chunk that's going to be discarded.
                 // TODO: Support splicing to allow this. See [internal b/161130873].
                 return C.RESULT_NOTHING_READ;

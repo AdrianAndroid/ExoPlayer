@@ -453,8 +453,7 @@ public final class Util {
      * @return A {@link Handler} with the specified callback on the current {@link Looper} thread.
      * @throws IllegalStateException If the current thread doesn't have a {@link Looper}.
      */
-    public static Handler createHandlerForCurrentLooper(
-        @Nullable Handler.@UnknownInitialization Callback callback) {
+    public static Handler createHandlerForCurrentLooper(@Nullable Handler.@UnknownInitialization Callback callback) {
         return createHandler(Assertions.checkStateNotNull(Looper.myLooper()), callback);
     }
 
@@ -500,8 +499,7 @@ public final class Util {
      * @return A {@link Handler} with the specified callback on the current {@link Looper} thread.
      */
     @SuppressWarnings({"nullness:argument", "nullness:return"})
-    public static Handler createHandler(
-        Looper looper, @Nullable Handler.@UnknownInitialization Callback callback) {
+    public static Handler createHandler(Looper looper, @Nullable Handler.@UnknownInitialization Callback callback) {
         return new Handler(looper, callback);
     }
 

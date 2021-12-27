@@ -887,44 +887,35 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
             boolean isDecodeOnlyBuffer,
             boolean isLastBuffer,
             Format format) throws ExoPlaybackException {
-
         log("processOutputBuffer positionUs=", positionUs, "elapsedRealtimeUs=", elapsedRealtimeUs, "codec=", codec,
                 "buffer", buffer, " bufferIndex", bufferIndex, "bufferFlags=", bufferFlags, "bufferPresentationTimeus",
                 bufferPresentationTimeUs, "isDecodeOnlyBuffer=", isDecodeOnlyBuffer, "isLastBuffer=", isLastBuffer);
-
         Assertions.checkNotNull(codec); // Can not render video without codec
-
         if (initialPositionUs == C.TIME_UNSET) {
             initialPositionUs = positionUs;
         }
-
         if (bufferPresentationTimeUs != lastBufferPresentationTimeUs) {
             frameReleaseHelper.onNextFrame(bufferPresentationTimeUs);
             this.lastBufferPresentationTimeUs = bufferPresentationTimeUs;
         }
-
         long outputStreamOffsetUs = getOutputStreamOffsetUs();
         long presentationTimeUs = bufferPresentationTimeUs - outputStreamOffsetUs;
-
         if (isDecodeOnlyBuffer && !isLastBuffer) {
             skipOutputBuffer(codec, bufferIndex, presentationTimeUs);
             return true;
         }
-
         // Note: Use of double rather than float is intentional for accuracy in the calculations below.
         double playbackSpeed = getPlaybackSpeed();
         boolean isStarted = getState() == STATE_STARTED;
         long elapsedRealtimeNowUs = SystemClock.elapsedRealtime() * 1000;
-
         // Calculate how early we are. In other words, the realtime duration that needs to elapse whilst
         // the renderer is started before the frame should be rendered. A negative value means that
-        // we're already late.
+        // we're already late. 计算我们有多早。换句话说，在渲染帧之前需要经过的实时持续时间。负值意味着我们已经迟到了。
         long earlyUs = (long) ((bufferPresentationTimeUs - positionUs) / playbackSpeed);
         if (isStarted) {
             // Account for the elapsed time since the start of this iteration of the rendering loop.
             earlyUs -= elapsedRealtimeNowUs - elapsedRealtimeUs;
         }
-
         if (surface == dummySurface) {
             // Skip frames in sync with playback, so we'll be at the right frame if the mode changes.
             if (isBufferLate(earlyUs)) {
@@ -1022,7 +1013,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
     }
 
     /**
-     * Called when a buffer was processed in tunneling mode.
+     * Called when a buffer was processed in tunneling mode. 在隧道模式下处理缓冲区时调用
      */
     protected void onProcessedTunneledBuffer(long presentationTimeUs) throws ExoPlaybackException {
         log("onProcessedTunneledBuffer presentationTimeUs=", presentationTimeUs);
@@ -1186,7 +1177,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
      */
     protected void updateVideoFrameProcessingOffsetCounters(long processingOffsetUs) {
         log("updateVideoFrameProcessingOffsetCounters processingOffsetUs=", processingOffsetUs);
-        decoderCounters.addVideoFrameProcessingOffset(processingOffsetUs);
+        decoderCounters.addVideoFrameProcessingOffset(processingOffsetUs); // 调试
         totalVideoFrameProcessingOffsetUs += processingOffsetUs;
         videoFrameProcessingOffsetCount++;
     }
@@ -1225,7 +1216,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         log("renderOutputBufferV21 codec=", codec, "index=", index, "presentationTimeUs=", presentationTimeUs, "releaseTimeNs=", releaseTimeNs);
         maybeNotifyVideoSizeChanged();
         TraceUtil.beginSection("releaseOutputBuffer");
-        codec.releaseOutputBuffer(index, releaseTimeNs);
+        codec.releaseOutputBuffer(index, releaseTimeNs); // 显示在surface上
         TraceUtil.endSection();
         lastRenderRealtimeUs = SystemClock.elapsedRealtime() * 1000;
         decoderCounters.renderedOutputBufferCount++;
@@ -1264,7 +1255,7 @@ public class MediaCodecVideoRenderer extends MediaCodecRenderer {
         }
     }
 
-    /* package */ void maybeNotifyRenderedFirstFrame() {
+    /* package */ void maybeNotifyRenderedFirstFrame() { // 第一帧的时候才回调这个方法
         log("maybeNotifyRenderedFirstFrame()");
         renderedFirstFrameAfterEnable = true;
         if (!renderedFirstFrameAfterReset) {

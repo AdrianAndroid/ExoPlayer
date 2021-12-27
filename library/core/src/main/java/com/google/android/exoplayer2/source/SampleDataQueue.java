@@ -98,10 +98,7 @@ import java.util.Arrays;
       // Reset the successor of the last node to be an uninitialized node.
       lastNodeToKeep.next = new AllocationNode(lastNodeToKeep.endPosition, allocationLength);
       // Update writeAllocationNode and readAllocationNode as necessary.
-      writeAllocationNode =
-          this.totalBytesWritten == lastNodeToKeep.endPosition
-              ? lastNodeToKeep.next
-              : lastNodeToKeep;
+      writeAllocationNode = this.totalBytesWritten == lastNodeToKeep.endPosition ? lastNodeToKeep.next : lastNodeToKeep;
       if (readAllocationNode == firstNodeToDiscard) {
         readAllocationNode = lastNodeToKeep.next;
       }
@@ -267,11 +264,7 @@ import java.util.Arrays;
    * @throws InsufficientCapacityException If the {@code buffer} has insufficient capacity to hold
    *     the sample data.
    */
-  private static AllocationNode readSampleData(
-      AllocationNode allocationNode,
-      DecoderInputBuffer buffer,
-      SampleExtrasHolder extrasHolder,
-      ParsableByteArray scratch) {
+  private static AllocationNode readSampleData(AllocationNode allocationNode, DecoderInputBuffer buffer, SampleExtrasHolder extrasHolder, ParsableByteArray scratch) {
     if (buffer.isEncrypted()) {
       allocationNode = readEncryptionData(allocationNode, buffer, extrasHolder, scratch);
     }
@@ -297,8 +290,7 @@ import java.util.Arrays;
     } else {
       // Write the sample data.
       buffer.ensureSpaceForWrite(extrasHolder.size);
-      allocationNode =
-          readData(allocationNode, extrasHolder.offset, buffer.data, extrasHolder.size);
+      allocationNode = readData(allocationNode, extrasHolder.offset, buffer.data, extrasHolder.size);
     }
     return allocationNode;
   }
@@ -316,11 +308,7 @@ import java.util.Arrays;
    * @param scratch A scratch {@link ParsableByteArray}.
    * @return The first {@link AllocationNode} that contains unread bytes after this method returns.
    */
-  private static AllocationNode readEncryptionData(
-      AllocationNode allocationNode,
-      DecoderInputBuffer buffer,
-      SampleExtrasHolder extrasHolder,
-      ParsableByteArray scratch) {
+  private static AllocationNode readEncryptionData(AllocationNode allocationNode, DecoderInputBuffer buffer, SampleExtrasHolder extrasHolder, ParsableByteArray scratch) {
     long offset = extrasHolder.offset;
 
     // Read the signal byte.
@@ -405,8 +393,7 @@ import java.util.Arrays;
    * @param length The number of bytes to read.
    * @return The first {@link AllocationNode} that contains unread bytes after this method returns.
    */
-  private static AllocationNode readData(
-      AllocationNode allocationNode, long absolutePosition, ByteBuffer target, int length) {
+  private static AllocationNode readData(AllocationNode allocationNode, long absolutePosition, ByteBuffer target, int length) {
     allocationNode = getNodeContainingPosition(allocationNode, absolutePosition);
     int remaining = length;
     while (remaining > 0) {
@@ -431,8 +418,7 @@ import java.util.Arrays;
    * @param length The number of bytes to read.
    * @return The first {@link AllocationNode} that contains unread bytes after this method returns.
    */
-  private static AllocationNode readData(
-      AllocationNode allocationNode, long absolutePosition, byte[] target, int length) {
+  private static AllocationNode readData(AllocationNode allocationNode, long absolutePosition, byte[] target, int length) {
     allocationNode = getNodeContainingPosition(allocationNode, absolutePosition);
     int remaining = length;
     while (remaining > 0) {
@@ -457,8 +443,7 @@ import java.util.Arrays;
    * Returns the {@link AllocationNode} in {@code allocationNode}'s chain which contains the given
    * {@code absolutePosition}.
    */
-  private static AllocationNode getNodeContainingPosition(
-      AllocationNode allocationNode, long absolutePosition) {
+  private static AllocationNode getNodeContainingPosition(AllocationNode allocationNode, long absolutePosition) {
     while (absolutePosition >= allocationNode.endPosition) {
       allocationNode = allocationNode.next;
     }

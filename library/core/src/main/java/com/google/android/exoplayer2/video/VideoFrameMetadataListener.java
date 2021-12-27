@@ -26,19 +26,15 @@ import com.google.android.exoplayer2.Format;
  */
 public interface VideoFrameMetadataListener {
     /**
-     * Called on the playback thread when a video frame is about to be rendered.
+     * Called on the playback thread when a video frame is about to be rendered. 当将要呈现视频帧时在播放线程上调用。
      *
-     * @param presentationTimeUs The presentation time of the frame, in microseconds.
-     * @param releaseTimeNs      The wallclock time at which the frame should be displayed, in nanoseconds.
-     *                           If the platform API version of the device is less than 21, then this is a best effort.
-     * @param format             The format associated with the frame.
+     * @param presentationTimeUs The presentation time of the frame, in microseconds. 帧的呈现时间，以微妙为单位。
+     * @param releaseTimeNs      The wallclock time at which the frame should be displayed, in nanoseconds.  应现实帧的挂钟时间，以纳秒为单位
+     *                           If the platform API version of the device is less than 21, then this is a best effort.  如果设备的平台 API 版本低于 21，那么这是最好的。
+     * @param format             The format associated with the frame. 与框架关联的格式
      * @param mediaFormat        The framework media format associated with the frame, or {@code null} if not
      *                           known or not applicable (e.g., because the frame was not output by a {@link
-     *                           android.media.MediaCodec MediaCodec}).
+     *                           android.media.MediaCodec MediaCodec}). 与框架关联的框架媒体格式，如果未知或不可用，则为null（）
      */
-    void onVideoFrameAboutToBeRendered(
-        long presentationTimeUs,
-        long releaseTimeNs,
-        Format format,
-        @Nullable MediaFormat mediaFormat);
+    void onVideoFrameAboutToBeRendered(long presentationTimeUs, long releaseTimeNs, Format format, @Nullable MediaFormat mediaFormat);
 }

@@ -28,17 +28,17 @@ import java.util.Arrays;
 /* package */ final class FixedFrameRateEstimator {
 
     /**
-     * The number of consecutive matching frame durations required to detect a fixed frame rate.
+     * The number of consecutive matching frame durations required to detect a fixed frame rate. 检测固定帧率所需的连续匹配帧持续时间的数量。
      */
     public static final int CONSECUTIVE_MATCHING_FRAME_DURATIONS_FOR_SYNC = 15;
     /**
      * The maximum amount frame durations can differ for them to be considered matching, in
-     * nanoseconds.
+     * nanoseconds. 最大数量的帧持续时间可以不同， 以将它们视为匹配，以纳秒为单位。
      *
      * <p>This constant is set to 1ms to account for container formats that only represent frame
      * presentation timestamps to the nearest millisecond. In such cases, frame durations need to
      * switch between values that are 1ms apart to achieve common fixed frame rates (e.g., 30fps
-     * content will need frames that are 33ms and 34ms).
+     * content will need frames that are 33ms and 34ms). 该常量设置为 1 毫秒，以考虑仅将帧呈现时间戳表示为最接近的毫秒的容器格式。 在这种情况下，帧持续时间需要在相隔 1 毫秒的值之间切换以实现常见的固定帧速率（例如，30 fps 内容将需要 33 毫秒和 34 毫秒的帧）。
      */
     @VisibleForTesting
     static final long MAX_MATCHING_FRAME_DIFFERENCE_NS = 1_000_000;
@@ -68,7 +68,7 @@ import java.util.Arrays;
     }
 
     /**
-     * Called with each frame presentation timestamp.
+     * Called with each frame presentation timestamp. 使用每个帧呈现时间戳调用。
      *
      * @param framePresentationTimeNs The frame presentation timestamp, in nanoseconds.
      */
@@ -137,13 +137,13 @@ import java.util.Arrays;
      */
     public float getFrameRate() {
         return isSynced()
-            ? (float) ((double) C.NANOS_PER_SECOND / currentMatcher.getFrameDurationNs())
-            : Format.NO_VALUE;
+                ? (float) ((double) C.NANOS_PER_SECOND / currentMatcher.getFrameDurationNs())
+                : Format.NO_VALUE;
     }
 
     /**
      * Tries to match frame durations against the duration of the first frame it receives.
-     * 尝试将帧持续时间与其接收的第一帧的持续时间进行匹配。
+     * 尝试将帧持续时间与其接收的第一帧的持续时间进行匹配。 难道是音视频同步?
      */
     private static final class Matcher {
 
