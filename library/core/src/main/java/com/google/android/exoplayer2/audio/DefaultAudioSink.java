@@ -1955,7 +1955,7 @@ public final class DefaultAudioSink implements AudioSink {
         @C.Encoding
         public final int outputEncoding;
         public final int bufferSize;
-        public final AudioProcessor[] availableAudioProcessors;
+        public final AudioProcessor[] availableAudioProcessors; // ResamplingAudioProcessor ChannelMappingAudioProcessor TrimmingAudiorocessor SilenceSkippingAudioProcessor SonicAudioProcessor
 
         public Configuration(
                 Format inputFormat,
