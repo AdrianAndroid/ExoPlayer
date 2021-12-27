@@ -57,8 +57,7 @@ public interface TrackOutput {
      * @param encryptedBlocks See {@link #encryptedBlocks}.
      * @param clearBlocks See {@link #clearBlocks}.
      */
-    public CryptoData(
-        @C.CryptoMode int cryptoMode, byte[] encryptionKey, int encryptedBlocks, int clearBlocks) {
+    public CryptoData(@C.CryptoMode int cryptoMode, byte[] encryptionKey, int encryptedBlocks, int clearBlocks) {
       this.cryptoMode = cryptoMode;
       this.encryptionKey = encryptionKey;
       this.encryptedBlocks = encryptedBlocks;
@@ -173,9 +172,7 @@ public interface TrackOutput {
    * @return The number of bytes appended.
    * @throws IOException If an error occurred reading from the input.
    */
-  int sampleData(
-      DataReader input, int length, boolean allowEndOfInput, @SampleDataPart int sampleDataPart)
-      throws IOException;
+  int sampleData(DataReader input, int length, boolean allowEndOfInput, @SampleDataPart int sampleDataPart) throws IOException;
 
   /**
    * Called to write sample data to the output.
@@ -200,6 +197,5 @@ public interface TrackOutput {
    *     the sample whose metadata is being passed.
    * @param cryptoData The encryption data required to decrypt the sample. May be null.
    */
-  void sampleMetadata(
-      long timeUs, @C.BufferFlags int flags, int size, int offset, @Nullable CryptoData cryptoData);
+  void sampleMetadata(long timeUs, @C.BufferFlags int flags, int size, int offset, @Nullable CryptoData cryptoData);
 }
