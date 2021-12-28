@@ -36,8 +36,7 @@ import java.nio.ByteBuffer;
 /* package */ final class ResamplingAudioProcessor extends BaseAudioProcessor {
 
     @Override
-    public AudioFormat onConfigure(AudioFormat inputAudioFormat)
-            throws UnhandledAudioFormatException {
+    public AudioFormat onConfigure(AudioFormat inputAudioFormat) throws UnhandledAudioFormatException {
         @C.PcmEncoding int encoding = inputAudioFormat.encoding;
         if (encoding != C.ENCODING_PCM_8BIT
                 && encoding != C.ENCODING_PCM_16BIT
@@ -118,8 +117,7 @@ import java.nio.ByteBuffer;
                 for (int i = position; i < limit; i += 4) {
                     // Clamp to avoid integer overflow if the floating point values exceed their nominal range
                     // [Internal ref: b/161204847].
-                    float floatValue =
-                            Util.constrainValue(inputBuffer.getFloat(i), /* min= */ -1, /* max= */ 1);
+                    float floatValue = Util.constrainValue(inputBuffer.getFloat(i), /* min= */ -1, /* max= */ 1);
                     short shortValue = (short) (floatValue * Short.MAX_VALUE);
                     buffer.put((byte) (shortValue & 0xFF));
                     buffer.put((byte) ((shortValue >> 8) & 0xFF));
