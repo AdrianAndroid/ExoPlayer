@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".TestActivity">
+
+  <Button
+    android:id="@+id/btnPlay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#ff0000"
+    android:text="点击播放" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek1"
+    android:layout_width="match_parent"
+    android:layout_height="10dp" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="#22000000" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="#22000000" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek3"
+    android:layout_width="match_parent"
+    android:layout_height="10dp" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="#22000000" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek4"
+    android:layout_width="match_parent"
+    android:layout_height="10dp" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="#22000000" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek5"
+    android:layout_width="match_parent"
+    android:layout_height="10dp" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="#22000000" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek6"
+    android:layout_width="match_parent"
+    android:layout_height="10dp" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="#22000000" />
+
+  <androidx.appcompat.widget.AppCompatSeekBar
+    android:id="@+id/seek7"
+    android:layout_width="match_parent"
+    android:layout_height="10dp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

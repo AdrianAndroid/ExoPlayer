@@ -35,3 +35,4 @@ include modulePrefix + 'playbacktests'
 project(modulePrefix + 'playbacktests').projectDir = new File(rootDir, 'playbacktests')
 
 apply from: 'core_settings.gradle'
+include ':flannery'
